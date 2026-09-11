@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --radius: 14px;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-bg text-ink antialiased;
+    font-feature-settings: 'kern' 1;
+    /* Prevent layout shift from scrollbar appearing/disappearing */
+    scrollbar-gutter: stable;
+  }
+
+  /* Numbers, times and English keep the Manrope face even inside Hebrew text. */
+  .num,
+  time,
+  [dir='ltr'] {
+    font-family: var(--font-manrope), var(--font-heebo), system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * The header is sticky and the member navigation is fixed to the bottom, so
+   * anything the browser scrolls into view (focusing a field, jumping to an
+   * anchor) must keep clear of both or it lands underneath them.
+   */
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [tabindex] {
+    scroll-margin-bottom: 104px;
+    scroll-margin-top: 72px;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+  }
+
+  ::selection {
+    background: rgba(199, 255, 74, 0.25);
+    color: #f6f3eb;
+  }
+
+  /* Tame the default scrollbar so surfaces stay calm. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #29322d;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer components {
+  .surface {
+    @apply rounded-lg border border-line bg-surface;
+  }
+
+  .surface-raised {
+    @apply rounded-lg border border-line bg-raised;
+  }
+
+  /* Restrained luminous edge used on selected actions and active timers. */
+  .glow-ring {
+    box-shadow:
+      0 0 0 1px rgba(199, 255, 74, 0.4),
+      0 0 26px -8px rgba(199, 255, 74, 0.5);
+  }
+
+  .stat-value {
+    font-family: var(--font-manrope), var(--font-heebo), sans-serif;
+    font-variant-numeric: tabular-nums;
+    @apply text-2xl font-extrabold tracking-tight;
+  }
+
+  .label-muted {
+    @apply text-xs font-medium text-muted;
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded-md bg-raised;
+  }
+
+  /* Safe area for the fixed bottom navigation. */
+  .pb-nav {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

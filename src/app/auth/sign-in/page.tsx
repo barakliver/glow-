@@ -1,0 +1,43 @@
+import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { getCurrentUser, getRepository } from '@/lib/auth';
+import { isDemoMode, GOOGLE_AUTH_ENABLED } from '@/lib/env';
+import { DEMO_ACCOUNTS } from '@/lib/data/seed';
+import { SignInForm } from './sign-in-form';
+
+export const metadata: Metadata = { title: 'כניסה' };
+
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ returnTo?: string }>;
+}) {
+  const params = await searchParams;
+  const user = await getCurrentUser();
+  if (user) redirect(params.returnTo ?? '/');
+
+  const demo = isDemoMode();
+  let accounts: { id: string; name: string; role: string; email: string }[] = [];
+  if (demo) {
+    const repository = await getRepository();
+    const members = await repository.listMembers();
+    accounts = members.map((row) => ({
+      id: row.profile.id,
+      name: row.profile.full_name,
+      role: row.membership.role,
+      email: row.profile.email,
+    }));
+    if (accounts.length === 0) {
+      accounts = DEMO_ACCOUNTS.map((a) => ({ id: a.id, name: a.name, role: a.role, email: a.email }));
+    }
+  }
+
+  return (
+    <SignInForm
+      demoMode={demo}
+      googleEnabled={GOOGLE_AUTH_ENABLED && !demo}
+      accounts={accounts}
+      returnTo={params.returnTo ?? null}
+    />
+  );
+}
