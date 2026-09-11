@@ -106,3 +106,14 @@ test.describe('offline capability', () => {
     await context.setOffline(false);
   });
 });
+
+test.describe('hosted demo mode', () => {
+  test('no demo warning on a local host', async ({ page }) => {
+    await signInAs(page, DEMO.member);
+    await page.goto('/');
+    // 127.0.0.1 is a development machine; the warning would only be noise.
+    // The hostname rule itself is covered by tests/unit/demo-banner.test.ts,
+    // because window.location.hostname cannot be overridden in Chromium.
+    await expect(page.getByText('מצב הדגמה.')).toHaveCount(0);
+  });
+});

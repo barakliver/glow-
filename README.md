@@ -166,8 +166,10 @@ PLAYWRIGHT_CHROMIUM_PATH=/path/to/chromium npm run test:e2e
 
 ## Deployment
 
-> **Hebrew step-by-step guide: [`docs/DEPLOY.md`](docs/DEPLOY.md)** — covers
-> Supabase, Vercel, and installing the app on a phone.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbarakliver%2Fglow-&project-name=glow&repository-name=glow)
+
+> **Hebrew step-by-step guide: [`docs/DEPLOY.md`](docs/DEPLOY.md)** — getting a
+> live URL, connecting Supabase, and inviting members.
 
 Any Node host that runs Next.js 15 works; Vercel needs no extra configuration —
 `vercel.json` already sets the reminder cron and the service-worker headers.

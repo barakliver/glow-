@@ -4,6 +4,8 @@ import { requireStaff } from '@/lib/auth';
 import { Logo } from '@/components/brand/logo';
 import { Badge } from '@/components/ui/badge';
 import { AdminNav } from './admin-nav';
+import { DemoBanner } from '@/components/pwa/demo-banner';
+import { isDemoMode } from '@/lib/env';
 import { ROLE_LABELS } from '@/lib/labels';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -11,6 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-dvh bg-bg">
+      {isDemoMode() && <DemoBanner />}
       <header className="sticky top-0 z-30 border-b border-line bg-bg/92 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4">
           <div className="flex items-center gap-2">
