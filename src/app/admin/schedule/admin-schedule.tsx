@@ -12,6 +12,7 @@ import {
   Ban,
   Lock,
   LockOpen,
+  Megaphone,
   Pencil,
   Repeat,
   Trash2,
@@ -48,6 +49,7 @@ import {
   deleteClassAction,
   duplicateClassAction,
   patchClassAction,
+  publishWeekAction,
   updateSeriesScopeAction,
 } from '@/app/actions/admin';
 import { classFormSchema, seriesFormSchema, zodFieldErrors } from '@/lib/validation';
@@ -131,6 +133,7 @@ export function AdminSchedule({
   weekDays,
   isOwner,
   myTrainerId,
+  weekRange,
 }: {
   classes: ClassWithMeta[];
   trainers: { id: string; name: string }[];
@@ -139,6 +142,7 @@ export function AdminSchedule({
   weekDays: string[];
   isOwner: boolean;
   myTrainerId: string | null;
+  weekRange: { fromIso: string; toIso: string };
 }) {
   const router = useRouter();
   const { toast } = useToast();
@@ -245,6 +249,14 @@ export function AdminSchedule({
     });
   };
 
+  const publishWeek = () => {
+    startTransition(async () => {
+      const result = await publishWeekAction(weekRange.fromIso, weekRange.toIso);
+      toast({ title: result.message, tone: result.ok ? 'success' : 'error' });
+      if (result.ok) router.refresh();
+    });
+  };
+
   const duplicate = () => {
     if (!duplicating) return;
     startTransition(async () => {
@@ -284,6 +296,27 @@ export function AdminSchedule({
               <Repeat className="size-4" aria-hidden />
               סדרה קבועה
             </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="secondary" size="sm" disabled={pending}>
+                  <Megaphone className="size-4" aria-hidden />
+                  פרסום הלוח
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>לפרסם את לוח השבוע?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    כל השיעורים שנשמרו כטיוטה בשבוע הזה יפורסמו, וכל המתאמנים יקבלו התראה שהלוח
+                    החדש פתוח להרשמה.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogAction onClick={publishWeek}>כן, פרסמו והודיעו</AlertDialogAction>
+                  <AlertDialogCancel>ביטול</AlertDialogCancel>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
       </div>

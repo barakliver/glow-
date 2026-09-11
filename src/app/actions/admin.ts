@@ -455,3 +455,49 @@ export async function saveGymSettingsAction(input: unknown): Promise<ActionResul
   revalidatePath('/schedule');
   return { ok: true, message: 'ההגדרות נשמרו.' };
 }
+
+/**
+ * Publishes every draft class in a week and tells members the schedule is up.
+ * One notification per member, not one per class.
+ */
+export async function publishWeekAction(
+  fromIso: string,
+  toIso: string,
+): Promise<ActionResult<{ published: number; notified: number }>> {
+  await requireOwner();
+  const repository = await getRepository();
+
+  const classes = await repository.listClasses({
+    fromIso,
+    toIso,
+    profileId: null,
+    includeUnpublished: true,
+  });
+  const drafts = classes.filter((c) => !c.published && c.status === 'scheduled');
+  for (const draft of drafts) {
+    await repository.updateClass(draft.id, { published: true });
+  }
+
+  const members = await repository.listMembers();
+  const recipients = members.filter((row) => row.membership.status === 'active');
+  for (const recipient of recipients) {
+    await repository.createNotification({
+      profile_id: recipient.profile.id,
+      type: 'schedule_published',
+      title: 'הלוח השבועי עודכן',
+      body: `יש ${classes.length} שיעורים פתוחים להרשמה בשבוע הקרוב.`,
+      link: '/schedule',
+    });
+  }
+
+  revalidateSchedule();
+  revalidatePath('/notifications');
+  return {
+    ok: true,
+    message:
+      drafts.length > 0
+        ? `פורסמו ${drafts.length} שיעורים והודעה נשלחה ל-${recipients.length} מתאמנים.`
+        : `הלוח כבר מפורסם. נשלחה הודעה ל-${recipients.length} מתאמנים.`,
+    data: { published: drafts.length, notified: recipients.length },
+  };
+}

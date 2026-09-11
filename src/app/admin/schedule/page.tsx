@@ -38,6 +38,10 @@ export default async function AdminSchedulePage({
       weekDays={gymWeekDays(anchor)}
       isOwner={user.membership.role === 'owner'}
       myTrainerId={user.trainer?.id ?? null}
+      weekRange={{
+        fromIso: weekStart.toISOString(),
+        toIso: addDays(weekStart, 7).toISOString(),
+      }}
     />
   );
 }
