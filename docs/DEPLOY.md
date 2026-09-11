@@ -34,11 +34,14 @@
 
 **Project Settings → API**, ומעתיקים שלושה ערכים:
 
-| בדשבורד | לאן זה הולך |
+| בדשבורד (Project Settings → API Keys) | לאן זה הולך |
 | --- | --- |
-| `Project URL` | `NEXT_PUBLIC_SUPABASE_URL` |
-| `anon public` | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
-| `service_role` | `SUPABASE_SERVICE_ROLE_KEY` |
+| כתובת הפרויקט (General → Project ID) | `NEXT_PUBLIC_SUPABASE_URL` |
+| **Publishable key** (`sb_publishable_...`) | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| **Secret key** (`sb_secret_...`) | `SUPABASE_SERVICE_ROLE_KEY` |
+
+בפרויקטים ותיקים יותר המפתחות נקראים `anon` ו-`service_role` ונמצאים בלשונית
+**Legacy**. שניהם נתמכים — שם משתנה הסביבה לא משתנה.
 
 `service_role` הוא מפתח רגיש. הוא נשאר בשרת בלבד — לעולם לא עם הקידומת
 `NEXT_PUBLIC_`.
