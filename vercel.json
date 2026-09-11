@@ -4,8 +4,8 @@
   "regions": ["fra1"],
   "crons": [
     {
-      "path": "/api/cron/reminders?minutes=120",
-      "schedule": "0 * * * *"
+      "path": "/api/cron/reminders?minutes=1440",
+      "schedule": "0 5 * * *"
     }
   ],
   "headers": [
