@@ -46,6 +46,6 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: false,
     timeout: 240_000,
-    env: { NEXT_PUBLIC_DEMO_MODE: 'true' },
+    env: { DEMO_MODE: 'true' },
   },
 });

@@ -87,11 +87,16 @@ npx supabase db push
 
 | משתנה | ערך |
 | --- | --- |
-| `NEXT_PUBLIC_APP_URL` | הכתובת שקיבלת, לדוגמה `https://glow.vercel.app` |
-| `NEXT_PUBLIC_SUPABASE_URL` | מ-Supabase |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | מ-Supabase |
-| `SUPABASE_SERVICE_ROLE_KEY` | מ-Supabase |
+| `SUPABASE_URL` | כתובת הפרויקט מ-Supabase |
+| `SUPABASE_ANON_KEY` | המפתח שמתחיל ב-`sb_publishable_` |
+| `SUPABASE_SERVICE_ROLE_KEY` | המפתח שמתחיל ב-`sb_secret_` |
 | `CRON_SECRET` | מחרוזת אקראית כלשהי |
+
+אין צורך לבחור סוג מיוחד — כל המשתנים נקראים בשרת בלבד, אז אפשר להשאיר את
+ברירת המחדל (Secret). אין כאן משתני `NEXT_PUBLIC_`, ולכן גם לא האזהרה של
+Vercel על חשיפה לדפדפן.
+
+את `APP_URL` אפשר להשאיר ריק — ב-Vercel הכתובת מזוהה אוטומטית.
 
 אחרי השמירה לוחצים **Redeploy**. הודעת ההדגמה נעלמת מעצמה.
 

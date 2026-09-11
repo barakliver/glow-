@@ -54,14 +54,20 @@ and it never touches a production database.
 2. **Fill in `.env.local`**:
 
    ```dotenv
-   NEXT_PUBLIC_APP_URL=http://localhost:3000
-   NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
-   SUPABASE_SERVICE_ROLE_KEY=<service role key>   # server only, never NEXT_PUBLIC_
+   APP_URL=http://localhost:3000
+   SUPABASE_URL=https://<project>.supabase.co
+   SUPABASE_ANON_KEY=<publishable or anon key>
+   SUPABASE_SERVICE_ROLE_KEY=<secret or service_role key>
    ```
 
+   None of these reach the browser: the app talks to Supabase only from server
+   components, server actions and route handlers, so no `NEXT_PUBLIC_` prefix is
+   needed. On a host that inlines public variables at build time (Vercel among
+   them) this also avoids having to mark them as non-secret. The old
+   `NEXT_PUBLIC_*` names are still read, so existing deployments keep working.
+
    The app leaves demo mode automatically once the URL and anon key are present.
-   Set `NEXT_PUBLIC_DEMO_MODE=true` to force demo mode anyway.
+   Set `DEMO_MODE=true` to force demo mode anyway.
 
 3. **Create the schema.** Easiest path: open the Supabase SQL editor and paste
    **`supabase/setup.sql`** — one generated file containing the three
@@ -194,9 +200,9 @@ Any Node host that runs Next.js 15 works; Vercel needs no extra configuration �
 server process, so on a serverless host it resets between invocations and is not
 shared across instances. Connect Supabase before inviting real members.
 
-1. Set the environment variables from `.env.example`. `NEXT_PUBLIC_APP_URL` must
-   be the real public origin — invitation links, ICS files and QR codes are
-   built from it.
+1. Set the environment variables from `.env.example`. `APP_URL` should be the
+   real public origin — invitation links, ICS files and QR codes are built from
+   it. On Vercel it is detected automatically and may be left unset.
 2. Add `<origin>/auth/callback` to the Supabase redirect allow list.
 3. Deploy. `npm run build` runs typecheck and lint as part of the Next build.
 4. The service worker is served from `/sw.js` with `no-store`, so a new
