@@ -16,6 +16,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { Logo } from '@/components/brand/logo';
 import { Badge } from '@/components/ui/badge';
 import { SignOutButton } from './sign-out-button';
+import { InstallApp } from '@/components/pwa/install-app';
 import { ROLE_LABELS } from '@/lib/labels';
 import { isDemoMode } from '@/lib/env';
 
@@ -94,6 +95,17 @@ export default async function MorePage() {
           })}
         </ul>
       </nav>
+
+      <section className="space-y-2" aria-labelledby="install-title">
+        <h2 id="install-title" className="text-sm font-bold">
+          האפליקציה במכשיר שלך
+        </h2>
+        <p className="text-xs text-muted">
+          אפשר להתקין את GLoW כאפליקציה עצמאית. הטיימר והאימון הפעיל ימשיכו לעבוד גם בלי חיבור
+          לאינטרנט.
+        </p>
+        <InstallApp />
+      </section>
 
       <SignOutButton />
 

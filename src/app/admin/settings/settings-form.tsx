@@ -149,10 +149,15 @@ export function GymSettingsForm({
           value={demoMode ? 'מצב הדגמה (נתונים בזיכרון)' : 'Supabase'}
         />
         {demoMode && (
-          <p className="rounded-md border border-warning/30 bg-warning/8 p-3 text-xs text-warning">
-            מצב הדגמה פעיל כי לא הוגדרו פרטי Supabase. כל השינויים נשמרים בזיכרון השרת ונמחקים
-            בהפעלה מחדש. להפעלה מלאה, מלאו את המשתנים בקובץ ‎.env.local‎.
-          </p>
+          <div className="space-y-2 rounded-md border border-warning/30 bg-warning/8 p-3 text-xs text-warning">
+            <p>
+              מצב הדגמה פעיל כי לא הוגדרו פרטי Supabase. כל השינויים נשמרים בזיכרון השרת ונמחקים
+              בהפעלה מחדש.
+            </p>
+            <p className="font-bold">
+              לפני שמזמינים מתאמנים אמיתיים חובה לחבר Supabase, אחרת הרישומים והאימונים לא יישמרו.
+            </p>
+          </div>
         )}
       </section>
     </div>

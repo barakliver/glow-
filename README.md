@@ -166,7 +166,15 @@ PLAYWRIGHT_CHROMIUM_PATH=/path/to/chromium npm run test:e2e
 
 ## Deployment
 
-Any Node host that runs Next.js 15 works; Vercel needs no extra configuration.
+> **Hebrew step-by-step guide: [`docs/DEPLOY.md`](docs/DEPLOY.md)** — covers
+> Supabase, Vercel, and installing the app on a phone.
+
+Any Node host that runs Next.js 15 works; Vercel needs no extra configuration —
+`vercel.json` already sets the reminder cron and the service-worker headers.
+
+**Demo mode is not suitable for a deployed instance.** Its data lives in the
+server process, so on a serverless host it resets between invocations and is not
+shared across instances. Connect Supabase before inviting real members.
 
 1. Set the environment variables from `.env.example`. `NEXT_PUBLIC_APP_URL` must
    be the real public origin — invitation links, ICS files and QR codes are
@@ -176,9 +184,18 @@ Any Node host that runs Next.js 15 works; Vercel needs no extra configuration.
 4. The service worker is served from `/sw.js` with `no-store`, so a new
    deployment replaces the cached shell on the next visit.
 
-The app is an installable PWA: manifest at `/manifest.webmanifest`, icons under
-`/public/icons`. The Tabata timer and an active workout keep working offline,
-and pending workout records sync when the connection returns.
+### Installing as an app
+
+GLoW is an installable PWA — no App Store, no Google Play. Once deployed over
+HTTPS, members install it from **עוד → האפליקציה במכשיר שלך**:
+
+- **Android / desktop Chrome** — one tap, using `beforeinstallprompt`.
+- **iOS Safari** — Apple exposes no install API, so the button opens the
+  Share → Add to Home Screen steps instead of failing silently.
+
+Manifest at `/manifest.webmanifest`, icons under `/public/icons`. The Tabata
+timer and an active workout keep working offline, and pending workout records
+sync when the connection returns.
 
 ---
 

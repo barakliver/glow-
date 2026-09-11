@@ -7,7 +7,10 @@ export function ServiceWorkerRegistrar() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!('serviceWorker' in navigator)) return;
-    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') return;
+    // Service workers need a secure context. `isSecureContext` is the correct
+    // test: it covers https plus every loopback host (localhost, 127.0.0.1, ::1),
+    // which a hostname string comparison silently misses.
+    if (!window.isSecureContext) return;
 
     const register = () => {
       navigator.serviceWorker.register('/sw.js').catch(() => {
