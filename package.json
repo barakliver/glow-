@@ -12,7 +12,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "verify": "npm run typecheck && npm run lint && npm run test && npm run build"
+    "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "verify:sql": "bash scripts/verify-sql.sh",
+    "build:setup-sql": "node scripts/build-setup-sql.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

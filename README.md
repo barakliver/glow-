@@ -63,7 +63,13 @@ and it never touches a production database.
    The app leaves demo mode automatically once the URL and anon key are present.
    Set `NEXT_PUBLIC_DEMO_MODE=true` to force demo mode anyway.
 
-3. **Apply the migrations**, in order:
+3. **Create the schema.** Easiest path: open the Supabase SQL editor and paste
+   **`supabase/setup.sql`** — one generated file containing the three
+   migrations plus the starter content (exercise library, workout templates,
+   timer presets) and no demo people. Rebuild it with
+   `npm run build:setup-sql` after changing a migration.
+
+   Or apply the migrations individually, in order:
 
    ```bash
    npx supabase link --project-ref <project-ref>
@@ -144,8 +150,18 @@ npm run test           # vitest — 111 unit tests
 npm run build          # production build
 npm run verify         # all four, in order
 
-npm run test:e2e       # Playwright — 13 tests × mobile and desktop
+npm run test:e2e       # Playwright — mobile and desktop
+npm run verify:sql     # migrations + booking RPCs against a throwaway Postgres
 ```
+
+`verify:sql` spins up a local PostgreSQL, stubs the handful of Supabase objects
+the migrations depend on (`auth.users`, `auth.uid()`, the API roles, the
+realtime publication) and then applies every migration, the seed and
+`setup.sql`. It asserts the production SQL path directly: capacity is never
+exceeded, duplicate bookings are refused, the waiting list promotes in order and
+renumbers, a started class refuses bookings, a revoked or expired invitation
+token returns nothing, and Row Level Security is on for every table. It needs
+PostgreSQL server binaries but no Supabase account.
 
 Unit tests cover capacity rules, duplicate-booking prevention, waiting-list
 order and promotion, booking and cancellation cutoffs, the recommendation rules,

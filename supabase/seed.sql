@@ -209,7 +209,10 @@ begin
 
     for v_offset in -1..1 loop
       v_day := v_week_start + (v_offset * 7) + (v_row ->> 0)::int;
-      v_starts := ((v_day::text || ' ' || (v_row ->> 1) || ':00') at time zone 'Asia/Jerusalem');
+      -- Build the gym-local wall clock, then interpret it in the gym timezone.
+      -- The explicit ::timestamp cast is required: "at time zone" cannot take the
+      -- untyped result of a string concatenation.
+      v_starts := ((v_day::text || ' ' || (v_row ->> 1) || ':00')::timestamp at time zone 'Asia/Jerusalem');
       insert into public.classes (organization_id, series_id, title, description, category, difficulty,
                                   trainer_id, location, capacity, starts_at, ends_at, equipment, published)
       values (v_org, v_series, v_row ->> 2, v_row ->> 9, (v_row ->> 3)::public.training_category,
