@@ -1,60 +1,69 @@
 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient id="g3-glow" cx="50%" cy="60%" r="50%">
-      <stop offset="0%" stop-color="#C7FF4A" stop-opacity="0.22"/>
-      <stop offset="55%" stop-color="#6E9A22" stop-opacity="0.09"/>
+    <radialGradient id="g3-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C7FF4A" stop-opacity="0.17"/>
+      <stop offset="46%" stop-color="#6E9A22" stop-opacity="0.10"/>
       <stop offset="100%" stop-color="#0D100F" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="g3-body" x1="10%" y1="15%" x2="95%" y2="85%">
+    <linearGradient id="g3-body" x1="12%" y1="12%" x2="92%" y2="92%">
       <stop offset="0%" stop-color="#22380D"/>
-      <stop offset="60%" stop-color="#182809"/>
+      <stop offset="78%" stop-color="#22380D"/>
       <stop offset="100%" stop-color="#0A1105"/>
     </linearGradient>
-    <linearGradient id="g3-rim" x1="0%" y1="0%" x2="10%" y2="100%">
-      <stop offset="0%" stop-color="#EAFDB4"/>
-      <stop offset="40%" stop-color="#C7FF4A"/>
-      <stop offset="100%" stop-color="#6E9A22"/>
+    <linearGradient id="g3-rim" x1="0%" y1="100%" x2="20%" y2="0%">
+      <stop offset="0%" stop-color="#6E9A22"/>
+      <stop offset="38%" stop-color="#C7FF4A"/>
+      <stop offset="82%" stop-color="#C7FF4A"/>
+      <stop offset="100%" stop-color="#EAFDB4"/>
     </linearGradient>
   </defs>
 
   <g id="icon">
     <rect x="0" y="0" width="512" height="512" fill="#0D100F"/>
-    <ellipse cx="256" cy="304" rx="228" ry="228" fill="url(#g3-glow)"/>
+    <ellipse cx="252" cy="300" rx="212" ry="212" fill="url(#g3-glow)"/>
 
-    <path d="M 304 68 C 322 44, 352 42, 364 48 C 360 72, 340 88, 312 82 Z" fill="#6E9A22"/>
-    <path d="M 302 86 L 306 58" stroke="#54330F" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M 297 68 C 313 52, 343 50, 357 56 C 351 80, 327 92, 301 80 Z" fill="#6E9A22"/>
+    <path d="M 288 78 L 294 56" stroke="#54330F" stroke-width="10" stroke-linecap="round" fill="none"/>
 
-    <path d="M 300 82
-             C 316 100, 328 142, 336 182
-             C 341 208, 340 250, 330 288
-             C 344 318, 374 328, 382 366
-             C 388 400, 376 430, 352 446
-             C 320 462, 250 464, 204 456
-             C 166 448, 138 434, 134 404
-             C 130 376, 148 350, 174 332
-             C 196 316, 214 306, 216 290
-             C 218 272, 194 274, 188 250
-             C 183 228, 194 214, 208 202
-             C 218 194, 220 186, 216 176
-             C 200 168, 196 144, 206 128
-             C 218 110, 244 110, 256 124
-             C 266 136, 268 150, 264 164
-             C 272 176, 280 182, 284 188
-             C 288 158, 292 116, 300 82 Z"
+    <path d="M 286 76
+             C 300 92, 307 128, 305 168
+             C 304 194, 303 216, 304 238
+             C 310 258, 311 282, 303 304
+             C 330 322, 354 344, 364 380
+             C 373 412, 357 438, 326 450
+             C 290 458, 236 458, 194 448
+             C 172 442, 152 430, 145 412
+             C 138 396, 142 382, 152 370
+             C 162 358, 173 350, 179 336
+             C 189 322, 203 320, 203 306
+             C 199 288, 170 288, 161 269
+             C 153 257, 153 245, 161 237
+             C 168 229, 178 226, 182 218
+             C 188 213, 192 210, 192 206
+             C 180 204, 168 192, 168 172
+             C 168 146, 182 124, 204 124
+             C 224 124, 236 140, 236 164
+             C 236 184, 232 196, 226 204
+             C 236 214, 244 224, 250 234
+             C 256 190, 266 128, 280 76 Z"
           fill="url(#g3-body)"/>
 
-    <circle cx="266" cy="378" r="40" fill="#54330F"/>
+    <circle cx="258" cy="368" r="40" fill="#54330F"/>
 
-    <path d="M 206 128
-             C 196 144, 200 168, 216 176
-             C 220 186, 218 194, 208 202
-             C 194 214, 183 228, 188 250
-             C 194 274, 218 272, 216 290
-             C 214 306, 196 316, 174 332
-             C 148 350, 130 376, 134 404"
-          fill="none" stroke="url(#g3-rim)" stroke-width="8" stroke-linecap="round"/>
-
-    <path d="M 300 82 C 316 100, 328 142, 336 182"
-          fill="none" stroke="#6E9A22" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
+    <path d="M 145 412
+             C 138 396, 142 382, 152 370
+             C 162 358, 173 350, 179 336
+             C 189 322, 203 320, 203 306
+             C 199 288, 170 288, 161 269
+             C 153 257, 153 245, 161 237
+             C 168 229, 178 226, 182 218
+             C 188 213, 192 210, 192 206
+             C 180 204, 168 192, 168 172
+             C 168 146, 182 124, 204 124
+             C 224 124, 236 140, 236 164
+             C 236 184, 232 196, 226 204
+             C 236 214, 244 224, 250 234
+             C 256 190, 266 128, 280 76"
+          fill="none" stroke="url(#g3-rim)" stroke-width="7" stroke-linecap="round"/>
   </g>
 </svg>
