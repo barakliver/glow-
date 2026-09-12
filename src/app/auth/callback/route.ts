@@ -12,7 +12,15 @@ export async function GET(request: NextRequest) {
   const returnTo = rawReturnTo?.startsWith('/') ? rawReturnTo : '/';
 
   if (!code) {
-    return NextResponse.redirect(new URL('/auth/sign-in?error=missing_code', APP_URL));
+    // Pass on whatever the provider did send, so the screen can name the real
+    // problem instead of guessing. Anything in the URL fragment is invisible
+    // here and gets read in the browser instead.
+    const providerError = searchParams.get('error');
+    const target = new URL('/auth/sign-in', APP_URL);
+    target.searchParams.set('error', providerError ?? 'missing_code');
+    const description = searchParams.get('error_description');
+    if (description) target.searchParams.set('error_description', description);
+    return NextResponse.redirect(target);
   }
 
   const supabase = await createServerSupabase();

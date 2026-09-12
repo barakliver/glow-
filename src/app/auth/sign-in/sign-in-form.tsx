@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Mail, ShieldCheck, Sparkles, TriangleAlert } from 'lucide-react';
 import { Logo } from '@/components/brand/logo';
@@ -89,6 +89,24 @@ export function SignInForm({
     });
   };
 
+  /*
+   * Supabase reports some sign-in failures in the URL fragment, which never
+   * reaches the server - the callback then sees no code, no error, and can only
+   * say "something went wrong". Reading it here is the difference between a
+   * shrug and the actual reason.
+   */
+  const [hashError, setHashError] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.location.hash) return;
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    const description = params.get('error_description');
+    const code = params.get('error');
+    if (!description && !code) return;
+    setHashError(description ? description.replace(/\+/g, ' ') : code);
+    // Clear it so a refresh does not keep showing a failure that is over.
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  }, []);
+
   const signInGoogle = () => {
     startTransition(async () => {
       const result = await signInWithGoogleAction(returnTo ?? undefined);
@@ -107,13 +125,13 @@ export function SignInForm({
         <p className="mt-3 text-sm text-muted">מועדון אימונים פרטי · בהזמנה בלבד</p>
       </div>
 
-      {error && (
+      {(hashError ?? error) && (
         <div
           role="alert"
           className="mb-4 flex items-start gap-2 rounded-md border border-danger/40 bg-danger/10 px-3.5 py-3 text-sm text-danger"
         >
           <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
-          <span>{error}</span>
+          <span>{hashError ?? error}</span>
         </div>
       )}
 
