@@ -7,10 +7,29 @@ import { SignInForm } from './sign-in-form';
 
 export const metadata: Metadata = { title: 'כניסה' };
 
+/**
+ * Turns whatever came back on the URL into something a person can act on.
+ *
+ * A failed sign-in used to bounce silently back to this screen, which leaves
+ * the member - and whoever is setting the club up - with nothing to go on.
+ */
+function signInError(code?: string, description?: string): string | null {
+  if (!code) return null;
+  if (code === 'missing_code') {
+    return 'ההתחברות בוטלה או שהקישור פג. נסו שוב.';
+  }
+  if (code === 'exchange_failed') {
+    return 'ההתחברות נכשלה בשלב האחרון. אם זה חוזר, בדקו שכתובת החזרה של המועדון מוגדרת נכון.';
+  }
+  // Anything else is Google's or Supabase's own wording; showing it beats
+  // hiding it, because it names the actual problem.
+  return description ? decodeURIComponent(description.replace(/\+/g, ' ')) : `ההתחברות נכשלה (${code}).`;
+}
+
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ returnTo?: string }>;
+  searchParams: Promise<{ returnTo?: string; error?: string; error_description?: string }>;
 }) {
   const params = await searchParams;
   const user = await getCurrentUser();
@@ -39,6 +58,7 @@ export default async function SignInPage({
       demoMode={demo}
       accounts={accounts}
       returnTo={params.returnTo ?? null}
+      error={signInError(params.error, params.error_description)}
     />
   );
 }

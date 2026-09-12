@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Mail, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft, Mail, ShieldCheck, Sparkles, TriangleAlert } from 'lucide-react';
 import { Logo } from '@/components/brand/logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,10 +40,12 @@ export function SignInForm({
   demoMode,
   accounts,
   returnTo,
+  error,
 }: {
   demoMode: boolean;
   accounts: DemoAccount[];
   returnTo: string | null;
+  error?: string | null;
 }) {
   const router = useRouter();
   const { toast } = useToast();
@@ -104,6 +106,16 @@ export function SignInForm({
         <Logo size="xl" className="justify-center" />
         <p className="mt-3 text-sm text-muted">מועדון אימונים פרטי · בהזמנה בלבד</p>
       </div>
+
+      {error && (
+        <div
+          role="alert"
+          className="mb-4 flex items-start gap-2 rounded-md border border-danger/40 bg-danger/10 px-3.5 py-3 text-sm text-danger"
+        >
+          <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
+          <span>{error}</span>
+        </div>
+      )}
 
       {!demoMode ? (
         <div className="surface space-y-4 p-6">
