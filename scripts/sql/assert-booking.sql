@@ -136,3 +136,57 @@ begin
   end if;
   raise notice 'row level security checks passed';
 end $$;
+
+-- 12. The invitation status function replaces the service-role read entirely:
+-- it must classify every token state without exposing anything sensitive.
+do $$
+declare
+  v_token text := 'glow-status-check';
+  v_row record;
+begin
+  insert into invite_links (organization_id, token, label, created_by)
+  values ('00000000-0000-4000-8000-000000000001', v_token, 'בדיקת סטטוס',
+          '00000000-0000-4000-8000-100000000001')
+  on conflict (token) do update set revoked = false, expires_at = null, max_uses = null, uses = 0;
+
+  select * into v_row from public_invite_status(v_token);
+  if v_row.status <> 'valid' then raise exception 'expected valid, got %', v_row.status; end if;
+  if v_row.label <> 'בדיקת סטטוס' then raise exception 'label not returned'; end if;
+  if v_row.organization_name is null or v_row.organization_name = '' then
+    raise exception 'club name not returned';
+  end if;
+
+  update invite_links set revoked = true where token = v_token;
+  select * into v_row from public_invite_status(v_token);
+  if v_row.status <> 'revoked' then raise exception 'expected revoked, got %', v_row.status; end if;
+  -- A revoked link must not leak the label it was created with.
+  if v_row.label <> '' then raise exception 'revoked link leaked its label'; end if;
+
+  update invite_links set revoked = false, expires_at = now() - interval '1 day' where token = v_token;
+  select * into v_row from public_invite_status(v_token);
+  if v_row.status <> 'expired' then raise exception 'expected expired, got %', v_row.status; end if;
+
+  update invite_links set expires_at = null, max_uses = 1, uses = 1 where token = v_token;
+  select * into v_row from public_invite_status(v_token);
+  if v_row.status <> 'exhausted' then raise exception 'expected exhausted, got %', v_row.status; end if;
+
+  select * into v_row from public_invite_status('no-such-token-at-all');
+  if v_row.status <> 'invalid' then raise exception 'expected invalid, got %', v_row.status; end if;
+
+  delete from invite_links where token = v_token;
+  raise notice 'invitation status checks passed';
+end $$;
+
+-- 13. anon must be able to call both public functions, since the app no longer
+-- holds a service-role key.
+do $$
+begin
+  if not has_function_privilege('anon', 'public.public_invite_status(text)', 'execute') then
+    raise exception 'anon cannot call public_invite_status';
+  end if;
+  if not has_function_privilege('anon',
+        'public.public_schedule(text, timestamptz, timestamptz)', 'execute') then
+    raise exception 'anon cannot call public_schedule';
+  end if;
+  raise notice 'anonymous access to the public functions confirmed';
+end $$;

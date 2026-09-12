@@ -36,12 +36,15 @@
 
 | בדשבורד (Project Settings → API Keys) | לאן זה הולך |
 | --- | --- |
-| כתובת הפרויקט (General → Project ID) | `NEXT_PUBLIC_SUPABASE_URL` |
-| **Publishable key** (`sb_publishable_...`) | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
-| **Secret key** (`sb_secret_...`) | `SUPABASE_SERVICE_ROLE_KEY` |
+| כתובת הפרויקט | `SUPABASE_URL` |
+| **Publishable key** (`sb_publishable_...`) | `SUPABASE_ANON_KEY` |
 
-בפרויקטים ותיקים יותר המפתחות נקראים `anon` ו-`service_role` ונמצאים בלשונית
-**Legacy**. שניהם נתמכים — שם משתנה הסביבה לא משתנה.
+**את מפתח ה-Secret לא צריך בכלל.** האפליקציה לא מחזיקה שום מפתח שעוקף את
+הרשאות האבטחה — גם דף ההזמנה הציבורי עובד דרך פונקציות מסד מוגבלות שמותר
+למשתמש אנונימי לקרוא להן.
+
+בפרויקטים ותיקים יותר המפתח נקרא `anon` ונמצא בלשונית **Legacy**. שניהם
+נתמכים.
 
 `service_role` הוא מפתח רגיש. הוא נשאר בשרת בלבד — לעולם לא עם הקידומת
 `NEXT_PUBLIC_`.
@@ -89,8 +92,7 @@ npx supabase db push
 | --- | --- |
 | `SUPABASE_URL` | כתובת הפרויקט מ-Supabase |
 | `SUPABASE_ANON_KEY` | המפתח שמתחיל ב-`sb_publishable_` |
-| `SUPABASE_SERVICE_ROLE_KEY` | המפתח שמתחיל ב-`sb_secret_` |
-| `CRON_SECRET` | מחרוזת אקראית כלשהי |
+| `CRON_SECRET` | מחרוזת אקראית כלשהי (אופציונלי, לתזכורות) |
 
 אין צורך לבחור סוג מיוחד — כל המשתנים נקראים בשרת בלבד, אז אפשר להשאיר את
 ברירת המחדל (Secret). אין כאן משתני `NEXT_PUBLIC_`, ולכן גם לא האזהרה של

@@ -1,7 +1,7 @@
 import 'server-only';
 import { isDemoMode } from '@/lib/env';
 import { DemoRepository } from '@/lib/data/demo-repository';
-import { createServiceSupabase } from '@/lib/supabase/server';
+import { createServerSupabase } from '@/lib/supabase/server';
 import { allowRate } from '@/lib/data/store';
 import { spotsLeft } from '@/lib/domain/booking-rules';
 
@@ -80,31 +80,33 @@ export async function resolveInvite(
     };
   }
 
-  const supabase = createServiceSupabase();
+  // The anon key is enough here. Both calls below are security-definer
+  // functions that validate the token inside the database and return a narrow
+  // projection, so no service-role key is needed anywhere in the deployment.
+  const supabase = await createServerSupabase();
   if (!supabase) return { status: 'invalid' };
 
-  const { data: invite } = await supabase
-    .from('invite_links')
-    .select('label, revoked, expires_at, max_uses, uses, organization_id')
-    .eq('token', token)
-    .maybeSingle();
+  const { data: statusRows, error: statusError } = await supabase.rpc('public_invite_status', {
+    p_token: token,
+  });
+  if (statusError) return { status: 'invalid' };
 
-  if (!invite) return { status: 'invalid' };
-  if (invite.revoked) return { status: 'revoked' };
-  if (invite.expires_at && new Date(invite.expires_at).getTime() < Date.now()) {
-    return { status: 'expired' };
-  }
-  if (invite.max_uses !== null && invite.uses >= invite.max_uses) return { status: 'exhausted' };
+  const invite = (statusRows as { status: string; label: string; organization_name: string }[] | null)?.[0];
+  if (!invite || invite.status === 'invalid') return { status: 'invalid' };
+  if (invite.status === 'revoked') return { status: 'revoked' };
+  if (invite.status === 'expired') return { status: 'expired' };
+  if (invite.status === 'exhausted') return { status: 'exhausted' };
 
-  const [{ data: classes }, { data: organization }] = await Promise.all([
-    supabase.rpc('public_schedule', { p_token: token, p_from: fromIso, p_to: toIso }),
-    supabase.from('organizations').select('name').eq('id', invite.organization_id).maybeSingle(),
-  ]);
+  const { data: classes } = await supabase.rpc('public_schedule', {
+    p_token: token,
+    p_from: fromIso,
+    p_to: toIso,
+  });
 
   return {
     status: 'valid',
-    label: invite.label as string,
-    organizationName: (organization?.name as string) ?? 'GLoW',
+    label: invite.label,
+    organizationName: invite.organization_name || 'GLoW',
     classes: ((classes ?? []) as PublicClass[]).map((row) => ({
       id: row.id,
       title: row.title,

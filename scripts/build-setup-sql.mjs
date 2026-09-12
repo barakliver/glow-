@@ -5,17 +5,17 @@
  * It is generated rather than hand-maintained so it can never drift from the
  * migrations. Re-run with: node scripts/build-setup-sql.mjs
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const parts = [
-  'migrations/20260101000000_initial_schema.sql',
-  'migrations/20260101000001_functions.sql',
-  'migrations/20260101000002_rls.sql',
-  'starter-content.sql',
-];
+// Read the migration list from disk so a newly added one is never missed.
+const migrations = readdirSync(join(root, 'supabase/migrations'))
+  .filter((name) => name.endsWith('.sql'))
+  .sort()
+  .map((name) => `migrations/${name}`);
+const parts = [...migrations, 'starter-content.sql'];
 
 const banner = `-- =============================================================================
 -- GLoW - complete database setup

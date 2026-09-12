@@ -57,10 +57,11 @@ and it never touches a production database.
    APP_URL=http://localhost:3000
    SUPABASE_URL=https://<project>.supabase.co
    SUPABASE_ANON_KEY=<publishable or anon key>
-   SUPABASE_SERVICE_ROLE_KEY=<secret or service_role key>
    ```
 
-   None of these reach the browser: the app talks to Supabase only from server
+   There is no service-role key: the public invitation page reads through
+   security-definer functions that `anon` may execute, so nothing in the
+   deployment can bypass Row Level Security. None of these reach the browser: the app talks to Supabase only from server
    components, server actions and route handlers, so no `NEXT_PUBLIC_` prefix is
    needed. On a host that inlines public variables at build time (Vercel among
    them) this also avoids having to mark them as non-secret. The old

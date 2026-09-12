@@ -1,6 +1,6 @@
 import 'server-only';
 import { createServerClient } from '@supabase/ssr';
-import { createClient as createSupabaseClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { SUPABASE_ANON_KEY, SUPABASE_URL, isDemoMode } from '@/lib/env';
 
@@ -23,17 +23,5 @@ export async function createServerSupabase(): Promise<SupabaseClient | null> {
         }
       },
     },
-  });
-}
-
-/**
- * Service-role client. SERVER ONLY - used exclusively by the public invitation
- * endpoint, which returns a narrow projection of published classes.
- */
-export function createServiceSupabase(): SupabaseClient | null {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!SUPABASE_URL || !key) return null;
-  return createSupabaseClient(SUPABASE_URL, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
   });
 }
