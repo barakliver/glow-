@@ -51,7 +51,9 @@ export function WeeklySchedule({
   const [category, setCategory] = useState<TrainingCategory | 'all'>('all');
   const [trainerId, setTrainerId] = useState<string>('all');
   const [availability, setAvailability] = useState<Availability>('all');
-  const [view, setView] = useState<'day' | 'week'>('day');
+  // 'auto' lets CSS decide: one day on a phone, the whole week on a wide
+  // screen. Touching the toggle pins it to an explicit choice.
+  const [view, setView] = useState<'auto' | 'day' | 'week'>('auto');
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
@@ -107,10 +109,16 @@ export function WeeklySchedule({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={view === 'day' ? 'תצוגת שבוע' : 'תצוגת יום'}
-            onClick={() => setView(view === 'day' ? 'week' : 'day')}
+            aria-label="החלפה בין תצוגת יום לתצוגת שבוע"
+            onClick={() => {
+              const wide =
+                typeof window !== 'undefined' &&
+                window.matchMedia('(min-width: 1024px)').matches;
+              const effective = view === 'auto' ? (wide ? 'week' : 'day') : view;
+              setView(effective === 'day' ? 'week' : 'day');
+            }}
           >
-            {view === 'day' ? <LayoutGrid className="size-4" /> : <List className="size-4" />}
+            {view === 'week' ? <List className="size-4" /> : <LayoutGrid className="size-4" />}
           </Button>
           <Button
             variant={activeFilters > 0 ? 'primary' : 'ghost'}
@@ -204,8 +212,14 @@ export function WeeklySchedule({
         </div>
       )}
 
-      {view === 'day' ? (
-        <>
+      <div
+        className={cn(
+          view === 'day' && 'block',
+          view === 'week' && 'hidden',
+          view === 'auto' && 'block lg:hidden',
+        )}
+      >
+        <div className="space-y-4">
           {/* Day strip */}
           <div
             role="tablist"
@@ -287,9 +301,17 @@ export function WeeklySchedule({
               ))
             )}
           </section>
-        </>
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        </div>
+      </div>
+
+      <div
+        className={cn(
+          view === 'week' && 'block',
+          view === 'day' && 'hidden',
+          view === 'auto' && 'hidden lg:block',
+        )}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {weekDays.map((day) => {
             const date = parseISO(`${day}T12:00:00`);
             const items = byDay.get(day) ?? [];
@@ -307,14 +329,14 @@ export function WeeklySchedule({
                 ) : (
                   <ul className="space-y-2">
                     {items.map((gymClass) => (
-                      <li key={gymClass.id}>
-                        <Link
-                          href={`/classes/${gymClass.id}`}
-                          className={cn(
-                            'block rounded-md border px-2.5 py-2 transition-colors hover:border-accent/40',
-                            gymClass.my_booking ? 'border-accent/45 bg-accent/5' : 'border-line bg-raised',
-                          )}
-                        >
+                      <li
+                        key={gymClass.id}
+                        className={cn(
+                          'rounded-md border transition-colors focus-within:border-accent/40 hover:border-accent/40',
+                          gymClass.my_booking ? 'border-accent/45 bg-accent/5' : 'border-line bg-raised',
+                        )}
+                      >
+                        <Link href={`/classes/${gymClass.id}`} className="block px-2.5 pb-1.5 pt-2">
                           <span className="num block text-xs font-bold text-accent">
                             {new Date(gymClass.starts_at).toLocaleTimeString('he-IL', {
                               hour: '2-digit',
@@ -327,6 +349,17 @@ export function WeeklySchedule({
                             {CATEGORY_LABELS[gymClass.category]} · {gymClass.spots_left} פנויים
                           </span>
                         </Link>
+                        {/* The week grid is the default on a wide screen, so it has
+                            to be bookable in place and not only a way in to the
+                            class page. */}
+                        <div className="px-2.5 pb-2">
+                          <BookingButton
+                            classId={gymClass.id}
+                            availability={availabilityForClass(gymClass)}
+                            waitlistPosition={gymClass.my_booking?.waitlist_position}
+                            size="sm"
+                          />
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -335,7 +368,7 @@ export function WeeklySchedule({
             );
           })}
         </div>
-      )}
+      </div>
     </div>
   );
 }

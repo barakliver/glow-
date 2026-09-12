@@ -24,12 +24,21 @@ test.describe('invitation and booking', () => {
     await signInAs(page, DEMO.member);
 
     // Walk this week and the next until a class with a free seat shows up.
-    const bookButton = page.getByRole('button', { name: 'הרשמה לשיעור' }).first();
+    // A wide screen renders the whole week at once, a phone one day at a time,
+    // so look at the week as it stands first and only then walk the day tabs.
+    const bookButton = page
+      .getByRole('button', { name: 'הרשמה לשיעור' })
+      .filter({ visible: true })
+      .first();
     let found = false;
     for (const week of [0, 1]) {
       await page.goto(`/schedule?week=${week}`);
       await expect(page.getByRole('heading', { name: 'לוח שבועי' })).toBeVisible();
-      const days = page.getByRole('tab');
+      if (await bookButton.isVisible().catch(() => false)) {
+        found = true;
+        break;
+      }
+      const days = page.getByRole('tab').filter({ visible: true });
       const count = await days.count();
       for (let day = 0; day < count; day += 1) {
         await days.nth(day).click();
@@ -45,7 +54,7 @@ test.describe('invitation and booking', () => {
     await bookButton.click();
 
     await expect(page.getByText('נרשמת לשיעור').first()).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByText('רשום לשיעור').first()).toBeVisible();
+    await expect(page.getByText('רשום לשיעור').filter({ visible: true }).first()).toBeVisible();
 
     await page.goto('/bookings');
     await expect(page.getByRole('heading', { name: 'ההזמנות שלי' })).toBeVisible();

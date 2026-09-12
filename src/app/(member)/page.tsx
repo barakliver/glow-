@@ -7,7 +7,8 @@ import { BookingButton } from '@/components/classes/booking-button';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
-import { buildRecommendations } from '@/lib/data/insights';
+import { buildRecommendations, buildScore } from '@/lib/data/insights';
+import { RipenessCard } from '@/components/score/ripeness-card';
 import { availabilityForClass } from '@/lib/domain/booking-rules';
 import { GOAL_LABELS } from '@/lib/labels';
 import {
@@ -40,7 +41,8 @@ export default async function HomePage() {
   const weekStart = gymWeekStart(reference);
   const weekEnd = addDays(weekStart, 7);
 
-  const [bookings, readiness, sessions, upcomingClasses, { recommendations }] = await Promise.all([
+  const [bookings, readiness, sessions, upcomingClasses, { recommendations }, score] =
+    await Promise.all([
     repository.listMyBookings(user.profile.id),
     repository.getReadiness(user.profile.id, dayKey(reference)),
     repository.listSessions(user.profile.id, 20),
@@ -50,6 +52,7 @@ export default async function HomePage() {
       profileId: user.profile.id,
     }),
     buildRecommendations(repository, user.profile.id, { limit: 1 }),
+    buildScore(repository, user.profile.id),
   ]);
 
   const upcomingBookings = bookings
@@ -176,6 +179,8 @@ export default async function HomePage() {
           לצפייה בהתקדמות המלאה
         </Link>
       </section>
+
+      <RipenessCard score={score} />
 
       <ReadinessCheck existing={readiness} />
 

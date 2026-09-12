@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { requireUser, getRepository } from '@/lib/auth';
 import { ProgressView } from './progress-view';
+import { buildScore } from '@/lib/data/insights';
 import {
   computePersonalRecords,
   movementBalance,
@@ -32,11 +33,12 @@ export default async function ProgressPage({
   const reference = now();
   const since = addDays(reference, -RANGE_DAYS[range]);
 
-  const [sessions, allSets, exercises, bookings] = await Promise.all([
+  const [sessions, allSets, exercises, bookings, score] = await Promise.all([
     repository.listSessions(user.profile.id, 200),
     repository.listSets(user.profile.id),
     repository.listExercises(true),
     repository.listMyBookings(user.profile.id),
+    buildScore(repository, user.profile.id),
   ]);
 
   const sessionIds = new Set(sessions.map((s) => s.id));
@@ -106,6 +108,7 @@ export default async function ProgressPage({
 
   return (
     <ProgressView
+      score={score}
       range={range}
       stats={{
         workouts: completedSessions.length,

@@ -19,7 +19,7 @@ export function AppHeader({
         className,
       )}
     >
-      <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
+      <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4 lg:max-w-4xl">
         <Link href="/" className="rounded-md" aria-label="GLoW - דף הבית">
           <Logo size="sm" />
         </Link>

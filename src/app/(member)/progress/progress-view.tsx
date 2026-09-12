@@ -23,6 +23,8 @@ import {
 import { PR_LABELS, type PersonalRecord } from '@/lib/domain/progress';
 import { formatHebrewFullDate } from '@/lib/time';
 import { cn, num } from '@/lib/utils';
+import { RipenessDetail } from '@/components/score/ripeness-detail';
+import type { ScoreSummary } from '@/lib/domain/score';
 import type { RangeKey } from './page';
 
 const RANGE_LABELS: Record<RangeKey, string> = {
@@ -32,6 +34,7 @@ const RANGE_LABELS: Record<RangeKey, string> = {
 };
 
 interface Props {
+  score: ScoreSummary;
   range: RangeKey;
   stats: {
     workouts: number;
@@ -49,6 +52,7 @@ interface Props {
 }
 
 export function ProgressView({
+  score,
   range,
   stats,
   weeks,
@@ -70,6 +74,8 @@ export function ProgressView({
   return (
     <div className="space-y-4">
       <PageHeader title="ההתקדמות שלך" subtitle="ביצועים, עקביות והתאוששות" backHref="/" />
+
+      <RipenessDetail score={score} />
 
       <nav aria-label="טווח זמן" className="flex gap-1.5">
         {(Object.keys(RANGE_LABELS) as RangeKey[]).map((key) => (

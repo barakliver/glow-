@@ -92,6 +92,12 @@ export function gymWeekDays(value: string | Date): string[] {
   return Array.from({ length: 7 }, (_, i) => format(addDays(start, i), 'yyyy-MM-dd'));
 }
 
+/** First moment of the current gym-local month, as a UTC instant. */
+export function startOfMonth(value: string | Date): Date {
+  const zoned = toGymTime(value);
+  return fromGymTime(format(zoned, 'yyyy-MM-01'), '00:00');
+}
+
 export function addWeeks(value: Date, weeks: number): Date {
   return addDays(value, weeks * 7);
 }

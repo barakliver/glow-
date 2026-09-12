@@ -7,7 +7,9 @@ import {
   type Recommendation,
   type RecommendationInput,
 } from '@/lib/domain/recommend';
-import { dayKey, now } from '@/lib/time';
+import { computePersonalRecords } from '@/lib/domain/progress';
+import { computeScore, type ScoreSummary } from '@/lib/domain/score';
+import { dayKey, gymWeekStart, now, startOfMonth } from '@/lib/time';
 import type { Equipment, Exercise, TrainingGoal, WorkoutSession } from '@/lib/domain/types';
 
 /** Equipment that GLoW keeps in the gym; used when the member has not narrowed it. */
@@ -101,4 +103,36 @@ export async function buildRecommendations(
   };
 
   return { recommendations: recommendWorkouts(input, options.limit ?? 3), input };
+}
+
+/**
+ * Assembles the ripeness score for one member.
+ * Everything it counts is activity the member already generated - no new data
+ * is collected for the sake of the score.
+ */
+export async function buildScore(
+  repository: Repository,
+  profileId: string,
+): Promise<ScoreSummary> {
+  const reference = now();
+  const [sessions, bookings, readiness, sets] = await Promise.all([
+    repository.listSessions(profileId, 500),
+    repository.listMyBookings(profileId),
+    repository.listReadiness(profileId, 400),
+    repository.listSets(profileId),
+  ]);
+
+  return computeScore({
+    completedWorkouts: sessions
+      .filter((s) => s.status === 'completed' && s.completed_at)
+      .map((s) => s.completed_at as string),
+    attendedClasses: bookings
+      .filter((row) => row.booking.status === 'attended')
+      .map((row) => row.gymClass.starts_at),
+    readinessDays: readiness.map((row) => row.log_date),
+    personalRecords: computePersonalRecords(sets).length,
+    now: reference,
+    weekStart: gymWeekStart(reference),
+    monthStart: startOfMonth(reference),
+  });
 }

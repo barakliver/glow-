@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
     "verify:sql": "bash scripts/verify-sql.sh",
-    "build:setup-sql": "node scripts/build-setup-sql.mjs"
+    "build:setup-sql": "node scripts/build-setup-sql.mjs",
+    "build:icons": "node scripts/build-icons.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -64,6 +65,7 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "^15.5.25",
     "postcss": "^8.4.49",
+    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"

@@ -14,7 +14,7 @@ export default async function MemberLayout({ children }: { children: React.React
     <div className="min-h-dvh bg-bg">
       {isDemoMode() && <DemoBanner />}
       <AppHeader unreadCount={unread} showAdminLink={isStaff(user)} />
-      <main id="main" className="pb-nav mx-auto w-full max-w-2xl px-4 pt-4">
+      <main id="main" className="pb-nav mx-auto w-full max-w-2xl px-4 pt-4 lg:max-w-4xl">
         {children}
       </main>
       <BottomNav />
