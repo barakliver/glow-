@@ -66,8 +66,10 @@ export async function signInWithEmailAction(formData: FormData): Promise<ActionR
 export async function signInAsDemoAccountAction(profileId: string): Promise<ActionResult> {
   if (!isDemoMode()) return { ok: false, message: 'זמין רק במצב הדגמה.' };
   const repository = await getRepository();
-  const user = await repository.getSessionUser(profileId);
-  if (!user) return { ok: false, message: 'המשתמש לא נמצא.' };
+  // Not getSessionUser: the picker also offers an account that is still waiting
+  // for approval, and signing in as it is how the demo shows that screen.
+  const row = (await repository.listMembers()).find((m) => m.profile.id === profileId);
+  if (!row) return { ok: false, message: 'המשתמש לא נמצא.' };
 
   const store = await cookies();
   store.set(DEMO_SESSION_COOKIE, profileId, {
@@ -77,7 +79,7 @@ export async function signInAsDemoAccountAction(profileId: string): Promise<Acti
     maxAge: SESSION_MAX_AGE,
   });
   revalidatePath('/', 'layout');
-  return { ok: true, message: `התחברת בתור ${user.profile.full_name}.` };
+  return { ok: true, message: `התחברת בתור ${row.profile.full_name}.` };
 }
 
 export async function signInWithGoogleAction(returnTo?: string): Promise<ActionResult<{ url: string }>> {

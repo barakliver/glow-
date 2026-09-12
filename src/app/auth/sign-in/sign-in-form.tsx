@@ -188,8 +188,18 @@ export function SignInForm({
                       {account.email}
                     </span>
                   </span>
-                  <Badge tone={account.role === 'owner' ? 'accent' : account.role === 'trainer' ? 'warning' : 'neutral'}>
-                    {ROLE_LABELS[account.role as Role] ?? account.role}
+                  <Badge
+                    tone={
+                      account.role === 'owner'
+                        ? 'accent'
+                        : account.role === 'trainer'
+                          ? 'warning'
+                          : 'neutral'
+                    }
+                  >
+                    {account.role === 'pending'
+                      ? 'ממתין לאישור'
+                      : (ROLE_LABELS[account.role as Role] ?? account.role)}
                   </Badge>
                 </button>
               </li>

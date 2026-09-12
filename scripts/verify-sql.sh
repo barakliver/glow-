@@ -86,6 +86,9 @@ apply glow_migrations supabase/seed.sql "seed.sql"
 echo "==> asserting booking behaviour"
 assert glow_migrations scripts/sql/assert-booking.sql
 
+echo "==> asserting who gets in, and as what"
+assert glow_migrations scripts/sql/assert-joining.sql
+
 # --- 2. setup.sql, the single file pasted into the Supabase SQL editor --------
 echo "==> applying setup.sql (the one-paste path)"
 "${PSQL[@]}" -d postgres -c "create database glow_setup;" >/dev/null

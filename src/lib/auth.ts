@@ -7,7 +7,7 @@ import { DemoRepository } from '@/lib/data/demo-repository';
 import { SupabaseRepository } from '@/lib/data/supabase-repository';
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { Repository } from '@/lib/data/repository';
-import type { SessionUser } from '@/lib/domain/types';
+import type { AccessState, SessionUser } from '@/lib/domain/types';
 
 export const DEMO_SESSION_COOKIE = 'glow_demo_profile';
 export const RETURN_TO_COOKIE = 'glow_return_to';
@@ -40,10 +40,22 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
   return repository.getSessionUser(profileId);
 });
 
+/** Why the signed-in person can or cannot use the app. */
+export const getAccessState = cache(async (): Promise<AccessState> => {
+  const profileId = await getCurrentProfileId();
+  if (!profileId) return 'none';
+  const repository = await getRepository();
+  return repository.getAccessState(profileId);
+});
+
 /** Redirects to sign-in, preserving where the member wanted to go. */
 export async function requireUser(returnTo?: string): Promise<SessionUser> {
   const user = await getCurrentUser();
   if (!user) {
+    // Someone signed in but held at the door must be told so. Sending them back
+    // to sign-in would only loop them through a form they already completed.
+    const state = await getAccessState();
+    if (state === 'pending' || state === 'suspended') redirect('/auth/waiting');
     const target = returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : '';
     redirect(`/auth/sign-in${target}`);
   }

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Phone, Search, ShieldCheck, UserCog, Users } from 'lucide-react';
+import { Check, Phone, Search, ShieldCheck, UserCog, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { setMemberRoleAction, setMemberStatusAction } from '@/app/actions/admin';
+import { approveMemberAction, setMemberRoleAction, setMemberStatusAction } from '@/app/actions/admin';
 import { ROLE_LABELS } from '@/lib/labels';
 import { formatHebrewFullDate } from '@/lib/time';
 import type { Membership, Role } from '@/lib/domain/types';
@@ -38,6 +38,8 @@ interface Row {
   phone: string | null;
   role: Role;
   status: Membership['status'];
+  /** Null while this person is still waiting to be let in. */
+  approvedAt: string | null;
   joinedAt: string;
   attended: number;
   upcoming: number;
@@ -57,9 +59,12 @@ export function MemberDirectory({
   const [query, setQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all');
 
+  const waiting = useMemo(() => rows.filter((row) => row.approvedAt === null), [rows]);
+
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return rows
+      .filter((row) => row.approvedAt !== null)
       .filter((row) => roleFilter === 'all' || row.role === roleFilter)
       .filter(
         (row) =>
@@ -83,9 +88,58 @@ export function MemberDirectory({
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight">מתאמנים</h1>
         <p className="text-sm text-muted">
-          {rows.length} חברים במועדון · {rows.filter((r) => r.role !== 'member').length} אנשי צוות
+          {rows.length - waiting.length} חברים במועדון ·{' '}
+          {rows.filter((r) => r.approvedAt !== null && r.role !== 'member').length} אנשי צוות
         </p>
       </div>
+
+      {waiting.length > 0 && (
+        <section aria-labelledby="waiting-title" className="surface space-y-3 border-accent/40 p-3.5">
+          <div>
+            <h2 id="waiting-title" className="text-sm font-bold">
+              ממתינים לאישור
+              <Badge tone="accent" className="ms-2">
+                {waiting.length}
+              </Badge>
+            </h2>
+            <p className="mt-0.5 text-xs text-muted">
+              נרשמו לאפליקציה ועדיין לא נכנסו למועדון. בחרו אם להכניס אותם כמתאמנים או כמאמנים.
+            </p>
+          </div>
+
+          <ul className="space-y-2">
+            {waiting.map((row) => (
+              <li key={row.profileId} className="rounded-md border border-line bg-raised p-3">
+                <p className="text-sm font-bold">{row.name}</p>
+                <p className="num text-xs text-muted">{row.email}</p>
+                {row.phone && <p className="num text-xs text-muted">{row.phone}</p>}
+                <p className="num mt-1 text-[11px] text-muted">
+                  נרשם {formatHebrewFullDate(row.joinedAt)}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    disabled={pending}
+                    onClick={() => run(() => approveMemberAction(row.profileId, 'member'))}
+                  >
+                    <Check className="size-4" aria-hidden />
+                    אישור כמתאמן
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={pending}
+                    onClick={() => run(() => approveMemberAction(row.profileId, 'trainer'))}
+                  >
+                    <UserCog className="size-4" aria-hidden />
+                    אישור כמאמן
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="grid gap-2 sm:grid-cols-[1fr_200px]">
         <div className="relative">

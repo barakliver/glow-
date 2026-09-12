@@ -101,10 +101,16 @@ export interface Membership {
   profile_id: string;
   role: Role;
   status: 'active' | 'suspended';
+  /** Null until an owner lets this person into the club. */
+  approved_at: string | null;
+  approved_by: string | null;
   joined_at: string;
   created_at: string;
   updated_at: string;
 }
+
+/** Why a signed-in person can or cannot use the app. */
+export type AccessState = 'none' | 'pending' | 'suspended' | 'active';
 
 export interface Trainer {
   id: string;

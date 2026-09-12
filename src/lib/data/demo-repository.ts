@@ -29,6 +29,7 @@ import {
   type TemplateWithExercises,
 } from '@/lib/data/repository';
 import type {
+  AccessState,
   AppNotification,
   Attendance,
   Booking,
@@ -75,13 +76,38 @@ export class DemoRepository implements Repository {
     const database = db();
     const profile = database.profiles.find((p) => p.id === profileId);
     const membership = database.memberships.find((m) => m.profile_id === profileId);
-    if (!profile || !membership || membership.status !== 'active') return null;
+    // A membership that is suspended or still waiting for approval yields no
+    // session at all, so nothing about the club can leak to it.
+    if (!profile || !membership) return null;
+    if (membership.status !== 'active' || !membership.approved_at) return null;
     return {
       profile,
       membership,
       organization: database.organization,
       trainer: database.trainers.find((t) => t.profile_id === profileId) ?? null,
     };
+  }
+
+  async getAccessState(profileId: string | null): Promise<AccessState> {
+    if (!profileId) return 'none';
+    const membership = db().memberships.find((m) => m.profile_id === profileId);
+    if (!membership) return 'none';
+    if (membership.status !== 'active') return 'suspended';
+    return membership.approved_at ? 'active' : 'pending';
+  }
+
+  async approveMember(
+    profileId: string,
+    role: Membership['role'],
+    approvedBy: string,
+  ): Promise<void> {
+    const membership = db().memberships.find((m) => m.profile_id === profileId);
+    if (!membership) throw new Error('membership_not_found');
+    membership.status = 'active';
+    membership.approved_at = nowIso();
+    membership.approved_by = approvedBy;
+    touch(membership);
+    await this.setMemberRole(profileId, role);
   }
 
   async updateProfile(profileId: string, patch: Partial<Profile>): Promise<Profile> {
@@ -153,6 +179,10 @@ export class DemoRepository implements Repository {
       profile_id: profile.id,
       role: 'member',
       status: 'active',
+      // Mirrors handle_new_user: a new face joins as a member and waits for an
+      // owner to let them in.
+      approved_at: null,
+      approved_by: null,
       joined_at: nowIso(),
       created_at: nowIso(),
       updated_at: nowIso(),

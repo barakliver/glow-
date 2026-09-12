@@ -291,6 +291,20 @@ export async function setMemberRoleAction(
   return { ok: true, message: 'התפקיד עודכן.' };
 }
 
+export async function approveMemberAction(
+  profileId: string,
+  role: Membership['role'],
+): Promise<ActionResult> {
+  const user = await requireOwner();
+  const repository = await getRepository();
+  await repository.approveMember(profileId, role, user.profile.id);
+  revalidatePath('/admin/members');
+  return {
+    ok: true,
+    message: role === 'trainer' ? 'אושר והוגדר כמאמן.' : 'אושר והוגדר כמתאמן.',
+  };
+}
+
 export async function setMemberStatusAction(
   profileId: string,
   status: Membership['status'],

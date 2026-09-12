@@ -54,3 +54,44 @@ test.describe('owner administration', () => {
     await expect(page.getByRole('img', { name: /קוד QR/ })).toBeVisible({ timeout: 10_000 });
   });
 });
+
+test.describe('joining the club', () => {
+  /** Signs up a brand new address and returns it. Each test gets its own, so
+   *  the two Playwright projects never fight over one shared demo database. */
+  async function signUpFreshly(page: import('@playwright/test').Page) {
+    const email = `newcomer-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.test`;
+    await page.goto('/auth/sign-in');
+    await page.getByLabel('כתובת אימייל').fill(email);
+    await page.getByRole('button', { name: 'כניסה' }).click();
+    return email;
+  }
+
+  test('someone who signed up but was not approved is told so, not bounced', async ({ page }) => {
+    await signUpFreshly(page);
+
+    await expect(page).toHaveURL(/\/auth\/waiting/, { timeout: 20_000 });
+    await expect(page.getByRole('heading', { name: 'הבקשה שלך נשלחה' })).toBeVisible();
+    // The club itself stays shut until someone opens it.
+    await page.goto('/schedule');
+    await expect(page).toHaveURL(/\/auth\/waiting/);
+  });
+
+  test('an owner approves someone from the queue and picks their role', async ({ page }) => {
+    const email = await signUpFreshly(page);
+    await expect(page).toHaveURL(/\/auth\/waiting/, { timeout: 20_000 });
+
+    await signInAs(page, DEMO.owner);
+    await page.goto('/admin/members');
+
+    const queue = page.getByRole('region', { name: /ממתינים לאישור/ });
+    const row = queue.locator('li').filter({ hasText: email });
+    await expect(row).toBeVisible();
+
+    await row.getByRole('button', { name: 'אישור כמאמן' }).click();
+    await expect(page.getByText('אושר והוגדר כמאמן').first()).toBeVisible({ timeout: 15_000 });
+
+    // They leave the queue and join the club as a trainer.
+    await expect(queue.locator('li').filter({ hasText: email })).toHaveCount(0);
+    await expect(page.getByText(email).first()).toBeVisible();
+  });
+});

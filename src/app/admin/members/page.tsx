@@ -30,6 +30,7 @@ export default async function MembersPage() {
         phone: row.profile.phone,
         role: row.membership.role,
         status: row.membership.status,
+        approvedAt: row.membership.approved_at,
         joinedAt: row.membership.joined_at,
         attended,
         upcoming,

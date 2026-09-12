@@ -19,6 +19,7 @@ import {
   type TemplateWithExercises,
 } from '@/lib/data/repository';
 import type {
+  AccessState,
   AppNotification,
   Attendance,
   Booking,
@@ -110,13 +111,43 @@ export class SupabaseRepository implements Repository {
     ]);
     const profile = profileRes.data as Profile | null;
     const membership = membershipRes.data as Membership | null;
-    if (!profile || !membership || membership.status !== 'active') return null;
+    // A membership that is suspended or still waiting for approval yields no
+    // session at all, so nothing about the club can leak to it.
+    if (!profile || !membership) return null;
+    if (membership.status !== 'active' || !membership.approved_at) return null;
     return {
       profile,
       membership,
       organization: await this.getOrganization(),
       trainer: (trainerRes.data as Trainer | null) ?? null,
     };
+  }
+
+  async getAccessState(profileId: string | null): Promise<AccessState> {
+    if (!profileId) return 'none';
+    const { data } = await this.supabase
+      .from('memberships')
+      .select('status, approved_at')
+      .eq('profile_id', profileId)
+      .eq('organization_id', this.organizationId)
+      .maybeSingle();
+    if (!data) return 'none';
+    if (data.status !== 'active') return 'suspended';
+    return data.approved_at ? 'active' : 'pending';
+  }
+
+  async approveMember(
+    profileId: string,
+    role: Membership['role'],
+    approvedBy: string,
+  ): Promise<void> {
+    const { error } = await this.supabase
+      .from('memberships')
+      .update({ role, status: 'active', approved_at: new Date().toISOString(), approved_by: approvedBy })
+      .eq('profile_id', profileId)
+      .eq('organization_id', this.organizationId);
+    if (error) throw error;
+    if (role === 'trainer') await this.ensureTrainerFor(profileId);
   }
 
   async updateProfile(profileId: string, patch: Partial<Profile>): Promise<Profile> {
@@ -152,17 +183,20 @@ export class SupabaseRepository implements Repository {
       .eq('profile_id', profileId)
       .eq('organization_id', this.organizationId);
     if (error) throw new Error(error.message);
-    if (role === 'trainer') {
-      const profile = await this.supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', profileId)
-        .maybeSingle();
-      await this.upsertTrainer({
-        profile_id: profileId,
-        display_name: (profile.data?.full_name as string) ?? 'מאמן',
-      });
-    }
+    if (role === 'trainer') await this.ensureTrainerFor(profileId);
+  }
+
+  /** A trainer needs a trainer row before they can be put on a class. */
+  private async ensureTrainerFor(profileId: string): Promise<void> {
+    const profile = await this.supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', profileId)
+      .maybeSingle();
+    await this.upsertTrainer({
+      profile_id: profileId,
+      display_name: (profile.data?.full_name as string) ?? 'מאמן',
+    });
   }
 
   async setMemberStatus(profileId: string, status: Membership['status']): Promise<void> {

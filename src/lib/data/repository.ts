@@ -1,4 +1,5 @@
 import type {
+  AccessState,
   AppNotification,
   Attendance,
   Booking,
@@ -66,8 +67,21 @@ export interface Repository {
   getSessionUser(profileId: string | null): Promise<SessionUser | null>;
   updateProfile(profileId: string, patch: Partial<Profile>): Promise<Profile>;
   listMembers(): Promise<{ profile: Profile; membership: Membership }[]>;
+  /**
+   * Why this person can or cannot use the app. Separate from `getSessionUser`,
+   * which stays strict and returns nothing at all for anyone who is not a fully
+   * approved, active member - otherwise a pending sign-in would bounce back to
+   * the sign-in screen forever with no way to explain itself.
+   */
+  getAccessState(profileId: string | null): Promise<AccessState>;
   setMemberRole(profileId: string, role: Membership['role']): Promise<void>;
   setMemberStatus(profileId: string, status: Membership['status']): Promise<void>;
+  /** Lets someone into the club, as a member or as a trainer. */
+  approveMember(
+    profileId: string,
+    role: Membership['role'],
+    approvedBy: string,
+  ): Promise<void>;
   ensureProfile(input: {
     id?: string;
     email: string;

@@ -301,3 +301,58 @@ describe('invitations', () => {
     expect(after?.revoked).toBe(true);
   });
 });
+
+describe('who gets in, and as what', () => {
+  it('holds a new sign-up at the door instead of letting them straight in', async () => {
+    const profile = await repository.ensureProfile({
+      email: 'newcomer@example.test',
+      full_name: 'נועם חדש',
+      phone: '050-1112233',
+    });
+
+    expect(await repository.getAccessState(profile.id)).toBe('pending');
+    // Nothing about the club may reach someone who has not been let in.
+    expect(await repository.getSessionUser(profile.id)).toBeNull();
+  });
+
+  it('lets an owner approve someone as a member', async () => {
+    const profile = await repository.ensureProfile({
+      email: 'member@example.test',
+      full_name: 'יעל חדשה',
+      phone: '050-2223344',
+    });
+
+    await repository.approveMember(profile.id, 'member', PROFILE_IDS.owner);
+
+    expect(await repository.getAccessState(profile.id)).toBe('active');
+    const session = await repository.getSessionUser(profile.id);
+    expect(session?.membership.role).toBe('member');
+    expect(session?.membership.approved_by).toBe(PROFILE_IDS.owner);
+  });
+
+  it('gives a trainer approved from the queue a trainer record to be put on a class', async () => {
+    const profile = await repository.ensureProfile({
+      email: 'coach@example.test',
+      full_name: 'רון מאמן',
+      phone: '050-3334455',
+    });
+
+    await repository.approveMember(profile.id, 'trainer', PROFILE_IDS.owner);
+
+    const session = await repository.getSessionUser(profile.id);
+    expect(session?.membership.role).toBe('trainer');
+    expect(session?.trainer).not.toBeNull();
+  });
+
+  it('reports a suspended member as suspended rather than as a stranger', async () => {
+    await repository.setMemberStatus(PROFILE_IDS.member1, 'suspended');
+
+    expect(await repository.getAccessState(PROFILE_IDS.member1)).toBe('suspended');
+    expect(await repository.getSessionUser(PROFILE_IDS.member1)).toBeNull();
+  });
+
+  it('knows nothing about someone who never signed up', async () => {
+    expect(await repository.getAccessState('00000000-0000-4000-8000-999999999999')).toBe('none');
+    expect(await repository.getAccessState(null)).toBe('none');
+  });
+});

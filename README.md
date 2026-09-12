@@ -103,12 +103,24 @@ and it never touches a production database.
    - Google → optional. Configure the provider, then set
      `NEXT_PUBLIC_ENABLE_GOOGLE_AUTH=true` to show the button.
 
-6. **Promote yourself to owner** after your first sign-in:
+6. **Name the owners.** Addresses listed in `public.owner_emails` become owners
+   automatically, whether they have signed up already or do so later. The table
+   ships empty so that real addresses never reach source control:
 
    ```sql
-   update public.memberships set role = 'owner'
-   where profile_id = (select id from public.profiles where email = 'you@example.com');
+   insert into public.owner_emails (email) values
+     ('you@example.com'),
+     ('cofounder@example.com')
+   on conflict (email) do nothing;
    ```
+
+   Everyone else who signs up joins as a member and waits: an owner lets them in
+   from **ניהול → מתאמנים**, choosing there whether they are a member or a
+   trainer. Until then they see a "waiting for approval" screen and
+   `current_role_in` returns nothing for them, so no policy will let them read
+   anything. Bootstrapping is the reason the allowlist exists at all - without
+   it the first person to sign up is a plain member with no way to reach the
+   admin area and nobody able to promote them.
 
 ### Email notifications
 

@@ -10,6 +10,14 @@ begin
   if not exists (select 1 from pg_roles where rolname = 'service_role') then create role service_role nologin; end if;
 end $$;
 
+-- Supabase hands the API roles table privileges in `public` by default, which is
+-- why row level security is what actually restricts them there. Without this the
+-- local run would pass for the wrong reason - no privilege at all rather than a
+-- policy doing its job.
+grant usage on schema public to anon, authenticated, service_role;
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
+
 create schema if not exists auth;
 
 create table if not exists auth.users (

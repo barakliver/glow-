@@ -59,6 +59,7 @@ const PROFILE_IDS = {
   member3: id(6, '100'),
   member4: id(7, '100'),
   member5: id(8, '100'),
+  applicant: id(9, '100'),
 };
 
 export const DEMO_ACCOUNTS = [
@@ -70,6 +71,14 @@ export const DEMO_ACCOUNTS = [
   { id: PROFILE_IDS.member3, email: 'roni@glow.fit', name: 'רוני גל', role: 'member' as const },
   { id: PROFILE_IDS.member4, email: 'omer@glow.fit', name: 'עומר נחום', role: 'member' as const },
   { id: PROFILE_IDS.member5, email: 'shira@glow.fit', name: 'שירה פלד', role: 'member' as const },
+  // Waiting at the door, so the approval queue is not an empty screen in the demo.
+  {
+    id: PROFILE_IDS.applicant,
+    email: 'dana@glow.fit',
+    name: 'דנה אביב',
+    role: 'member' as const,
+    approved: false,
+  },
 ];
 
 const TS = '2026-01-01T00:00:00.000Z';
@@ -387,6 +396,7 @@ export function buildSeed(anchor: Date = new Date()): SeedData {
     profile(PROFILE_IDS.member3, 'roni@glow.fit', 'רוני גל', '053-6667788', 'intermediate'),
     profile(PROFILE_IDS.member4, 'omer@glow.fit', 'עומר נחום', '054-7778899', 'advanced'),
     profile(PROFILE_IDS.member5, 'shira@glow.fit', 'שירה פלד', '054-8889900', 'beginner'),
+    profile(PROFILE_IDS.applicant, 'dana@glow.fit', 'דנה אביב', '052-4443322', 'beginner'),
   ];
 
   const memberships: Membership[] = DEMO_ACCOUNTS.map((account, index) => ({
@@ -395,6 +405,8 @@ export function buildSeed(anchor: Date = new Date()): SeedData {
     profile_id: account.id,
     role: account.role,
     status: 'active',
+    approved_at: 'approved' in account && account.approved === false ? null : TS,
+    approved_by: null,
     joined_at: TS,
     created_at: TS,
     updated_at: TS,

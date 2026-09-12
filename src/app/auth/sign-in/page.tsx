@@ -18,13 +18,15 @@ export default async function SignInPage({
 
   const demo = isDemoMode();
   let accounts: { id: string; name: string; role: string; email: string }[] = [];
+  // The picker shows a waiting applicant too, so the approval screen is
+  // reachable in the demo. 'pending' stands in for the role label.
   if (demo) {
     const repository = await getRepository();
     const members = await repository.listMembers();
     accounts = members.map((row) => ({
       id: row.profile.id,
       name: row.profile.full_name,
-      role: row.membership.role,
+      role: row.membership.approved_at === null ? 'pending' : row.membership.role,
       email: row.profile.email,
     }));
     if (accounts.length === 0) {
