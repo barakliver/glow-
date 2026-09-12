@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Mail, ShieldCheck, Sparkles } from 'lucide-react';
@@ -220,6 +221,11 @@ export function SignInForm({
       <p className="mt-8 flex items-center justify-center gap-1.5 text-center text-xs text-muted">
         <ShieldCheck className="size-3.5" aria-hidden />
         פרטי הקשר ונתוני האימון שלכם אינם נחשפים בקישורים ציבוריים.
+      </p>
+      <p className="mt-3 flex items-center justify-center gap-3 text-center text-xs text-muted">
+        <Link href="/legal/privacy" className="hover:text-ink">מדיניות פרטיות</Link>
+        <span aria-hidden>·</span>
+        <Link href="/legal/terms" className="hover:text-ink">תנאי שימוש</Link>
       </p>
     </main>
   );
