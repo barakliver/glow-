@@ -1,9 +1,11 @@
 import { cn } from '@/lib/utils';
 
 /**
- * GLoW typographic logo.
- * Original lettering: heavy uppercase G-L-W in the primary ink, with a lowercase
- * "o" rendered as a luminous ring - the "glow" that gives the club its name.
+ * GLoW lockup.
+ *
+ * The mark is the club itself: a halved avocado from the grove the gym sits in,
+ * with a woman holding a flex where the stone would be. Beside it, heavy
+ * uppercase G-L-W with a lowercase accent "o" - the glow the club is named for.
  */
 export function Logo({
   size = 'md',
@@ -15,54 +17,50 @@ export function Logo({
   withMark?: boolean;
 }) {
   const scale = {
-    sm: { text: 'text-lg', ring: 'size-[0.62em]', gap: 'gap-[0.06em]' },
-    md: { text: 'text-2xl', ring: 'size-[0.6em]', gap: 'gap-[0.05em]' },
-    lg: { text: 'text-4xl', ring: 'size-[0.58em]', gap: 'gap-[0.05em]' },
-    xl: { text: 'text-6xl', ring: 'size-[0.56em]', gap: 'gap-[0.04em]' },
+    sm: { text: 'text-lg', mark: 'h-7', gap: 'gap-1.5' },
+    md: { text: 'text-2xl', mark: 'h-9', gap: 'gap-2' },
+    lg: { text: 'text-4xl', mark: 'h-14', gap: 'gap-2.5' },
+    xl: { text: 'text-6xl', mark: 'h-24', gap: 'gap-3.5' },
   }[size];
 
   return (
     <span
-      className={cn(
-        'inline-flex select-none items-center font-num font-extrabold tracking-[-0.03em] text-ink',
-        scale.text,
-        scale.gap,
-        className,
-      )}
+      className={cn('inline-flex select-none items-center', scale.gap, className)}
       dir="ltr"
       aria-label="GLoW"
       role="img"
     >
-      <span aria-hidden>G</span>
-      <span aria-hidden>L</span>
-      {withMark ? (
-        <span
+      {withMark && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src="/brand/mark.svg"
+          alt=""
           aria-hidden
-          className={cn(
-            'relative inline-block rounded-full border-[0.13em] border-accent align-middle',
-            'shadow-[0_0_14px_-2px_rgba(199,255,74,0.75)]',
-            scale.ring,
-          )}
+          className={cn('w-auto drop-shadow-[0_0_18px_rgba(199,255,74,0.35)]', scale.mark)}
         />
-      ) : (
-        <span aria-hidden>o</span>
       )}
-      <span aria-hidden>W</span>
+      <span
+        aria-hidden
+        className={cn(
+          'font-num font-extrabold tracking-[-0.03em] text-ink',
+          scale.text,
+        )}
+      >
+        GL<span className="text-accent">o</span>W
+      </span>
     </span>
   );
 }
 
-/** Compact square mark for the PWA icon and avatars. */
+/** Compact square mark for avatars and dense rows. */
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <span
-      className={cn(
-        'inline-flex size-9 items-center justify-center rounded-md bg-accent font-num text-lg font-extrabold text-bg',
-        className,
-      )}
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/brand/mark.svg"
+      alt=""
       aria-hidden
-    >
-      G
-    </span>
+      className={cn('size-9 object-contain', className)}
+    />
   );
 }

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="GLoW">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="104 24 304 448" width="304" height="448" role="img" aria-label="GLoW">
   <defs>
     <linearGradient id="skinEdge" gradientUnits="userSpaceOnUse" x1="110" y1="50" x2="410" y2="470">
       <stop offset="0"    stop-color="#F2FFC6"/>
@@ -56,9 +56,6 @@
       <ellipse cx="268" cy="432" rx="14" ry="8" stroke="none"/>
     </g>
   </defs>
-
-  <rect width="512" height="512" fill="#0D100F"/>
-  <rect width="512" height="512" fill="url(#halo)"/>
 
   <path d="M 252 74 C 240 62 240 44 252 36 C 264 28 280 34 282 48 C 284 62 272 72 258 76 Z" fill="url(#skinEdge)"/>
   <use href="#fruit" fill="url(#peel)" stroke="url(#skinEdge)" stroke-width="12"/>

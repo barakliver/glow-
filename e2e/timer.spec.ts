@@ -9,7 +9,7 @@ test.describe('interval timer', () => {
     await expect(page.getByRole('heading', { name: 'טיימר אינטרוולים' })).toBeVisible();
     await expect(page.getByText('היכונו').first()).toBeVisible();
     // Classic Tabata default: 10s prepare, 20/10 x 8 => 04:00 total.
-    await expect(page.getByText('סה״כ 04:00', { exact: false })).toBeVisible();
+    await expect(page.getByText('סה״כ 04:00', { exact: false }).first()).toBeVisible();
 
     await page.getByRole('button', { name: 'התחלה' }).click();
     await page.waitForTimeout(2200);
