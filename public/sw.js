@@ -5,7 +5,10 @@
  *   - static assets: stale-while-revalidate
  *   - everything else (POST, server actions, API): straight to the network
  */
-const VERSION = 'glow-v1';
+/* The page registers this worker as /sw.js?v=<build id>, so each deployment
+ * gets its own cache namespace and the previous one is dropped on activate.
+ * Without that the caches from the very first install would live forever. */
+const VERSION = `glow-${new URL(self.location.href).searchParams.get('v') || 'dev'}`;
 const SHELL_CACHE = `${VERSION}-shell`;
 const ASSET_CACHE = `${VERSION}-assets`;
 
@@ -16,19 +19,37 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(SHELL_CACHE)
-      .then((cache) => cache.addAll(PRECACHE_ROUTES).catch(() => undefined))
-      .then(() => self.skipWaiting()),
+      .then((cache) => cache.addAll(PRECACHE_ROUTES).catch(() => undefined)),
   );
+  /* Deliberately no skipWaiting() here. A page that is already open would
+   * otherwise start being served assets from a different build. The new worker
+   * waits until the page asks for it, and the page reloads as it takes over. */
+});
+
+/* Drops the caches of every other deployment. */
+function purgeOtherVersions() {
+  return caches
+    .keys()
+    .then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => key.startsWith('glow-') && !key.startsWith(VERSION))
+          .map((key) => caches.delete(key)),
+      ),
+    );
+}
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'glow:skip-waiting') self.skipWaiting();
+  /* A page loading under this worker is the first moment the previous one is
+   * certainly gone. Anything it re-cached on its way out can go now; purging
+   * only on activate leaves that behind, one dead cache per deployment. */
+  if (event.data?.type === 'glow:tidy') event.waitUntil(purgeOtherVersions());
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(keys.filter((key) => !key.startsWith(VERSION)).map((key) => caches.delete(key))),
-      )
-      .then(() => self.clients.claim()),
+    purgeOtherVersions().then(() => self.clients.claim()),
   );
 });
 

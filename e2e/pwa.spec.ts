@@ -44,6 +44,9 @@ test.describe('installable app', () => {
     // A fetch handler is required for the browser to consider the app offline capable.
     expect(body).toContain("addEventListener('fetch'");
     expect(body).toContain('/offline');
+    // The cache namespace has to come from the registration URL. Hardcoding it
+    // would strand every installed app on the version it first cached.
+    expect(body).toContain("searchParams.get('v')");
   });
 
   test('the page links the manifest and registers the worker', async ({ page }) => {
@@ -54,6 +57,19 @@ test.describe('installable app', () => {
     );
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.locator('html')).toHaveAttribute('lang', 'he');
+  });
+
+  test('the worker is versioned per deployment so updates reach installed apps', async ({
+    page,
+  }) => {
+    await page.goto('/auth/sign-in');
+    const scriptURL = await page.evaluate(async () => {
+      const registration = await navigator.serviceWorker.ready;
+      return (registration.active ?? registration.waiting ?? registration.installing)?.scriptURL ?? '';
+    });
+    // Without the build id in the URL the browser keeps the worker it already
+    // has, and a member who installed the app never sees a new version.
+    expect(scriptURL).toMatch(/\/sw\.js\?v=.+/);
   });
 
   test('the offline fallback page is reachable', async ({ page }) => {

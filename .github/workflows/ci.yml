@@ -1,0 +1,65 @@
+name: CI
+
+# Every push is checked, so a change can never reach the club's members
+# without the whole suite having run against it first.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Types, lint, unit tests, build and end to end
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+
+      # Built explicitly rather than only through Playwright's web server, so a
+      # broken build fails as a build and not as a server that never came up.
+      - run: npm run build
+        env:
+          DEMO_MODE: 'true'
+
+      - name: Install the browser Playwright drives
+        run: npx playwright install --with-deps chromium
+
+      - run: npm run test:e2e
+
+      - name: Keep the report when a run fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  sql:
+    name: Production SQL against a real PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL server binaries
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql
+
+      # Applies the migrations, the seed and setup.sql to a throwaway cluster and
+      # asserts booking, invitations and RLS behave - the paths the demo adapter
+      # cannot exercise.
+      - run: npm run verify:sql

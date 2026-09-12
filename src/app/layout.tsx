@@ -3,6 +3,7 @@ import { Heebo, Manrope } from 'next/font/google';
 import { ToastProvider } from '@/components/ui/toast';
 import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
 import { OfflineSync } from '@/components/pwa/offline-sync';
+import { buildId } from '@/lib/build-id';
 import './globals.css';
 
 const heebo = Heebo({
@@ -61,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <OfflineSync />
         </ToastProvider>
-        <ServiceWorkerRegistrar />
+        <ServiceWorkerRegistrar buildId={buildId()} />
       </body>
     </html>
   );
