@@ -112,7 +112,7 @@ export function ClassRoster({
       )}
 
       <section aria-labelledby="confirmed-title" className="space-y-2">
-        <h2 id="confirmed-title" className="text-sm font-bold">
+        <h2 id="confirmed-title" className="section-label">
           משתתפים רשומים ({confirmed.length})
         </h2>
         {confirmed.length === 0 ? (
@@ -218,7 +218,7 @@ export function ClassRoster({
       </section>
 
       <section aria-labelledby="waitlist-title" className="space-y-2">
-        <h2 id="waitlist-title" className="text-sm font-bold">
+        <h2 id="waitlist-title" className="section-label">
           רשימת המתנה ({waitlisted.length})
         </h2>
         {waitlisted.length === 0 ? (

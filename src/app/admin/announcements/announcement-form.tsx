@@ -38,7 +38,7 @@ export function AnnouncementForm({
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">הודעה לכל המתאמנים</h1>
+        <h1 className="display text-2xl tracking-tight">הודעה לכל המתאמנים</h1>
         <p className="text-sm text-muted">
           ההודעה תופיע במרכז ההתראות של {Math.max(0, recipientCount)} מתאמנים פעילים.
         </p>
@@ -81,7 +81,7 @@ export function AnnouncementForm({
 
       {recent.length > 0 && (
         <section aria-labelledby="recent-title">
-          <h2 id="recent-title" className="mb-2 text-sm font-bold">
+          <h2 id="recent-title" className="section-label mb-2 block">
             הודעות אחרונות
           </h2>
           <ul className="space-y-2">

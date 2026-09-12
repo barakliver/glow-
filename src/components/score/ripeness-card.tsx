@@ -13,18 +13,18 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
       <div className="flex items-start gap-3.5">
         <RipenessMark
           ripeness={score.level.ripeness}
-          size={62}
+          size={54}
           title={`רמת בשלות: ${score.level.name}`}
         />
 
         <div className="min-w-0 flex-1">
-          <h2 id="ripeness-title" className="text-xs font-semibold text-muted">
+          <h2 id="ripeness-title" className="section-label">
             מדד הבשלות שלך
           </h2>
           {/* The level name is the headline here, so it wraps rather than
               clipping, and the streak badge drops below it when space is tight. */}
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <p className="text-lg font-extrabold leading-tight">{score.level.name}</p>
+            <p className="display text-xl leading-tight">{score.level.name}</p>
             {score.streakWeeks > 1 && (
               <Badge tone="accent">
                 <Flame className="size-3" aria-hidden />
@@ -35,7 +35,7 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
 
           <p className="num mt-1.5 text-xs text-muted">
             <span className="font-bold text-ink">{num(score.total)}</span> נקודות · השבוע{' '}
-            <span className="font-bold text-accent">+{num(score.thisWeek)}</span>
+            <span className="font-bold text-ink">+{num(score.thisWeek)}</span>
           </p>
 
           {score.nextLevel ? (
@@ -59,7 +59,7 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
 
       <Link
         href="/progress"
-        className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-accent hover:underline"
+        className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-ink/80 transition-colors hover:text-ink"
       >
         איך צוברים נקודות
         <ChevronLeft className="size-3.5" aria-hidden />

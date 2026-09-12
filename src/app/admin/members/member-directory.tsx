@@ -86,7 +86,7 @@ export function MemberDirectory({
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">מתאמנים</h1>
+        <h1 className="display text-2xl tracking-tight">מתאמנים</h1>
         <p className="text-sm text-muted">
           {rows.length - waiting.length} חברים במועדון ·{' '}
           {rows.filter((r) => r.approvedAt !== null && r.role !== 'member').length} אנשי צוות
@@ -96,7 +96,7 @@ export function MemberDirectory({
       {waiting.length > 0 && (
         <section aria-labelledby="waiting-title" className="surface space-y-3 border-accent/40 p-3.5">
           <div>
-            <h2 id="waiting-title" className="text-sm font-bold">
+            <h2 id="waiting-title" className="section-label">
               ממתינים לאישור
               <Badge tone="accent" className="ms-2">
                 {waiting.length}

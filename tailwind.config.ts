@@ -11,44 +11,59 @@ const config: Config = {
     },
     extend: {
       colors: {
-        bg: '#0D100F',
-        surface: '#151A17',
-        raised: '#1C231F',
+        /*
+         * Warmer and quieter than before. The greens were cold enough to read
+         * as a screen rather than a room, and a boutique reads warm. The accent
+         * keeps the club's hue but drops off the neon end of it - what made the
+         * old palette shout was less the colour than how much of it there was.
+         */
+        bg: '#0F100D',
+        surface: '#171916',
+        raised: '#212420',
         ink: '#F6F3EB',
-        muted: '#ADB7B0',
+        muted: '#A6A79B',
         accent: {
-          DEFAULT: '#C7FF4A',
-          pressed: '#A8DC32',
+          DEFAULT: '#C2E85C',
+          pressed: '#A6CC42',
         },
+        /* Reserved for moments worth marking: a record, a streak, a milestone. */
+        champagne: '#D9C68C',
         success: '#70E1A3',
         warning: '#F4C45E',
         danger: '#FF776D',
-        line: '#29322D',
+        line: '#2A2C26',
         /* shadcn tokens mapped onto the GLoW palette */
-        border: '#29322D',
-        input: '#29322D',
-        ring: '#C7FF4A',
-        background: '#0D100F',
+        border: '#2A2C26',
+        input: '#2A2C26',
+        ring: '#C2E85C',
+        background: '#0F100D',
         foreground: '#F6F3EB',
-        primary: { DEFAULT: '#C7FF4A', foreground: '#0D100F' },
-        secondary: { DEFAULT: '#1C231F', foreground: '#F6F3EB' },
-        destructive: { DEFAULT: '#FF776D', foreground: '#0D100F' },
-        popover: { DEFAULT: '#151A17', foreground: '#F6F3EB' },
-        card: { DEFAULT: '#151A17', foreground: '#F6F3EB' },
+        primary: { DEFAULT: '#C2E85C', foreground: '#0F100D' },
+        secondary: { DEFAULT: '#212420', foreground: '#F6F3EB' },
+        destructive: { DEFAULT: '#FF776D', foreground: '#0F100D' },
+        popover: { DEFAULT: '#171916', foreground: '#F6F3EB' },
+        card: { DEFAULT: '#171916', foreground: '#F6F3EB' },
       },
       fontFamily: {
         sans: ['var(--font-heebo)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-frank)', 'Georgia', 'serif'],
         num: ['var(--font-manrope)', 'var(--font-heebo)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        lg: '18px',
-        md: '14px',
-        sm: '10px',
+        lg: '16px',
+        md: '12px',
+        sm: '8px',
       },
       boxShadow: {
-        glow: '0 0 0 1px rgba(199,255,74,0.35), 0 0 28px -6px rgba(199,255,74,0.45)',
-        'glow-soft': '0 0 22px -8px rgba(199,255,74,0.4)',
-        card: '0 1px 0 0 rgba(255,255,255,0.02), 0 10px 30px -18px rgba(0,0,0,0.9)',
+        /*
+         * The old glow ringed anything important in luminous lime, which is
+         * what made the app read as a game. Depth now comes from a lifted
+         * surface and a soft drop, and the accent is left to the one control
+         * that actually wants the eye.
+         */
+        glow: '0 0 0 1px rgba(194,232,92,0.28)',
+        'glow-soft': '0 8px 24px -14px rgba(0,0,0,0.9)',
+        card: '0 1px 0 0 rgba(255,255,255,0.025), 0 12px 32px -20px rgba(0,0,0,0.95)',
       },
       keyframes: {
         'accordion-down': {

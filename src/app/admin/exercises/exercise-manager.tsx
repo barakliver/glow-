@@ -146,7 +146,7 @@ export function ExerciseManager({ exercises }: { exercises: Exercise[] }) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">ספריית תרגילים</h1>
+          <h1 className="display text-2xl tracking-tight">ספריית תרגילים</h1>
           <p className="text-sm text-muted">
             {exercises.filter((e) => !e.archived).length} תרגילים פעילים
           </p>

@@ -97,7 +97,7 @@ export default async function MorePage() {
       </nav>
 
       <section className="space-y-2" aria-labelledby="install-title">
-        <h2 id="install-title" className="text-sm font-bold">
+        <h2 id="install-title" className="section-label">
           האפליקציה במכשיר שלך
         </h2>
         <p className="text-xs text-muted">

@@ -204,7 +204,7 @@ export function SignInForm({
       {demoMode && accounts.length > 0 && (
         <section className="mt-6" aria-labelledby="demo-heading">
           <div className="mb-2 flex items-center gap-2">
-            <Sparkles className="size-4 text-accent" aria-hidden />
+            <Sparkles className="size-4 text-champagne" aria-hidden />
             <h2 id="demo-heading" className="text-sm font-bold">
               כניסה מהירה להדגמה
             </h2>

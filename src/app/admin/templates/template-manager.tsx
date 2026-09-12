@@ -247,7 +247,7 @@ export function TemplateManager({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">תבניות אימון</h1>
+          <h1 className="display text-2xl tracking-tight">תבניות אימון</h1>
           <p className="text-sm text-muted">
             {templates.filter((t) => !t.archived).length} תבניות פעילות ·{' '}
             {templates.filter((t) => t.suggestable && t.approved && !t.archived).length} זמינות למנוע

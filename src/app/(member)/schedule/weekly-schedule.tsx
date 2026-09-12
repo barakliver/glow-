@@ -104,7 +104,7 @@ export function WeeklySchedule({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-extrabold tracking-tight">לוח שבועי</h1>
+        <h1 className="display text-xl tracking-tight">לוח שבועי</h1>
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
@@ -142,7 +142,7 @@ export function WeeklySchedule({
         <div className="min-w-0 text-center">
           <p className="truncate text-xs font-semibold">{weekLabel}</p>
           {weekOffset !== 0 && (
-            <Link href="/schedule" className="text-[11px] font-bold text-accent hover:underline">
+            <Link href="/schedule" className="text-[11px] font-bold text-ink/80 transition-colors hover:text-ink">
               חזרה להיום
             </Link>
           )}
@@ -162,7 +162,7 @@ export function WeeklySchedule({
               <button
                 type="button"
                 onClick={resetFilters}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-ink/80 transition-colors hover:text-ink"
               >
                 <X className="size-3" aria-hidden />
                 ניקוי

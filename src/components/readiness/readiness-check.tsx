@@ -91,7 +91,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
 
   return (
     <section className="surface p-4" aria-labelledby="readiness-form-title">
-      <h2 id="readiness-form-title" className="text-sm font-bold">
+      <h2 id="readiness-form-title" className="section-label">
         איך אתם מרגישים היום?
       </h2>
       <p className="mt-0.5 text-xs text-muted">פחות מ-20 שניות, ומשפר את ההמלצות שלכם.</p>

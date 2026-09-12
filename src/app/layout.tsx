@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Heebo, Manrope } from 'next/font/google';
+import { Frank_Ruhl_Libre, Heebo, Manrope } from 'next/font/google';
 import { ToastProvider } from '@/components/ui/toast';
 import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
 import { OfflineSync } from '@/components/pwa/offline-sync';
@@ -11,6 +11,19 @@ const heebo = Heebo({
   variable: '--font-heebo',
   display: 'swap',
   weight: ['300', '400', '500', '700', '800', '900'],
+});
+
+/*
+ * A Hebrew serif for headings. Heebo alone is clean but anonymous - every
+ * screen ends up the same weight of the same face. Frank Ruhl Libre is a real
+ * Hebrew typeface with editorial pedigree, and pairing it against Heebo is
+ * what gives the club a voice rather than a default.
+ */
+const frank = Frank_Ruhl_Libre({
+  subsets: ['hebrew', 'latin'],
+  variable: '--font-frank',
+  display: 'swap',
+  weight: ['400', '500', '700', '900'],
 });
 
 const manrope = Manrope({
@@ -50,7 +63,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={`${heebo.variable} ${manrope.variable}`}>
+    <html lang="he" dir="rtl" className={`${heebo.variable} ${manrope.variable} ${frank.variable}`}>
       <body className="min-h-dvh bg-bg font-sans text-ink">
         <a
           href="#main"

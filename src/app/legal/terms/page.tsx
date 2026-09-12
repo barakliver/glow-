@@ -9,7 +9,7 @@ export default function TermsPage() {
   return (
     <article className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">תנאי שימוש</h1>
+        <h1 className="display text-2xl tracking-tight">תנאי שימוש</h1>
         <p className="mt-1 text-xs text-muted">עודכן לאחרונה: ספטמבר 2026</p>
       </div>
 

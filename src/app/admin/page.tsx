@@ -58,7 +58,7 @@ export default async function AdminDashboard({
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">סקירת המועדון</h1>
+          <h1 className="display text-2xl tracking-tight">סקירת המועדון</h1>
           <p className="text-sm text-muted">נתוני {days} הימים האחרונים והשבועיים הקרובים</p>
         </div>
         <nav aria-label="טווח" className="flex gap-1.5">
@@ -121,7 +121,7 @@ export default async function AdminDashboard({
 
       <div className="grid gap-4 md:grid-cols-2">
         <section className="surface p-4">
-          <h2 className="mb-3 text-sm font-bold">השעות המבוקשות</h2>
+          <h2 className="section-label mb-3 block">השעות המבוקשות</h2>
           {stats.popularTimes.length === 0 ? (
             <p className="text-sm text-muted">אין עדיין מספיק נתונים.</p>
           ) : (
@@ -137,7 +137,7 @@ export default async function AdminDashboard({
         </section>
 
         <section className="surface p-4">
-          <h2 className="mb-3 text-sm font-bold">השיעורים הפופולריים</h2>
+          <h2 className="section-label mb-3 block">השיעורים הפופולריים</h2>
           {stats.popularClasses.length === 0 ? (
             <p className="text-sm text-muted">אין עדיין מספיק נתונים.</p>
           ) : (

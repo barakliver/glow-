@@ -134,7 +134,7 @@ export function PersonalWorkoutBuilder({ exercises }: { exercises: Exercise[] })
 
       <section className="space-y-2" aria-labelledby="exercises-title">
         <div className="flex items-center justify-between">
-          <h2 id="exercises-title" className="text-sm font-bold">
+          <h2 id="exercises-title" className="section-label">
             תרגילים ({items.length})
           </h2>
           <Button variant="secondary" size="sm" onClick={() => setPickerOpen(true)}>

@@ -152,7 +152,7 @@ export function WorkoutHub({
       <section aria-labelledby="suggestions-title" className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 id="suggestions-title" className="flex items-center gap-1.5 text-sm font-bold">
-            <Sparkles className="size-4 text-accent" aria-hidden />
+            <Sparkles className="size-4 text-champagne" aria-hidden />
             מומלץ עבורך
           </h2>
           <div className="flex gap-1">
@@ -278,7 +278,7 @@ export function WorkoutHub({
 
       {/* All approved templates */}
       <section aria-labelledby="templates-title" className="space-y-2">
-        <h2 id="templates-title" className="text-sm font-bold">
+        <h2 id="templates-title" className="section-label">
           כל תבניות האימון
         </h2>
         {templates.length === 0 ? (

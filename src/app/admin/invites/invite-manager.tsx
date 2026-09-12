@@ -89,7 +89,7 @@ export function InviteManager({ invites, appUrl }: { invites: InviteLink[]; appU
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">קישורי הזמנה</h1>
+          <h1 className="display text-2xl tracking-tight">קישורי הזמנה</h1>
           <p className="text-sm text-muted">
             מי שמקבל את הקישור רואה את הלוח המפורסם. פרטי המתאמנים אינם נחשפים.
           </p>

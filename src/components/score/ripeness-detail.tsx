@@ -20,7 +20,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
   return (
     <section className="space-y-3" aria-labelledby="ripeness-detail-title">
       <h2 id="ripeness-detail-title" className="flex items-center gap-1.5 text-sm font-bold">
-        <Sprout className="size-4 text-accent" aria-hidden />
+        <Sprout className="size-4 text-champagne" aria-hidden />
         מדד הבשלות
       </h2>
 
@@ -52,7 +52,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
 
         <dl className="mt-4 grid grid-cols-2 gap-2">
           <div className="rounded-md border border-line bg-raised p-2.5 text-center">
-            <dd className="num text-lg font-extrabold text-accent">+{num(score.thisWeek)}</dd>
+            <dd className="num text-lg font-extrabold text-ink">+{num(score.thisWeek)}</dd>
             <dt className="label-muted">השבוע</dt>
           </div>
           <div className="rounded-md border border-line bg-raised p-2.5 text-center">
@@ -77,7 +77,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
                     {num(row.count)} × {POINT_HINT[row.key]}
                   </span>
                 </span>
-                <span className="num shrink-0 text-sm font-extrabold text-accent">
+                <span className="num shrink-0 text-sm font-extrabold text-ink">
                   +{num(row.points)}
                 </span>
               </li>

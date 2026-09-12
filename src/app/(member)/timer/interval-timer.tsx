@@ -441,7 +441,7 @@ export function IntervalTimer({
       {/* Presets */}
       <section aria-labelledby="presets-title" className="space-y-2">
         <div className="flex items-center justify-between">
-          <h2 id="presets-title" className="text-sm font-bold">
+          <h2 id="presets-title" className="section-label">
             תבניות
           </h2>
           <Button variant="secondary" size="sm" onClick={() => setSaveOpen(true)}>

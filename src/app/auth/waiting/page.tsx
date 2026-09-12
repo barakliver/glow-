@@ -38,7 +38,7 @@ export default async function WaitingPage() {
           {pending ? <Clock3 className="size-6" aria-hidden /> : <ShieldAlert className="size-6" aria-hidden />}
         </span>
 
-        <h1 className="text-xl font-extrabold tracking-tight">
+        <h1 className="display text-xl tracking-tight">
           {pending ? 'הבקשה שלך נשלחה' : 'החשבון שלך מושהה'}
         </h1>
         <p className="text-sm text-muted">

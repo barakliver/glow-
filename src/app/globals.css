@@ -52,7 +52,7 @@
   }
 
   ::selection {
-    background: rgba(199, 255, 74, 0.25);
+    background: rgba(194, 232, 92, 0.22);
     color: #f6f3eb;
   }
 
@@ -62,7 +62,7 @@
     height: 10px;
   }
   ::-webkit-scrollbar-thumb {
-    background: #29322d;
+    background: #2a2c26;
     border-radius: 999px;
   }
   ::-webkit-scrollbar-track {
@@ -71,25 +71,46 @@
 }
 
 @layer components {
+  /*
+   * A card is a lifted surface, not a boxed one. Outlining every panel made the
+   * screens read as a grid of containers; the eye should land on the content.
+   */
   .surface {
-    @apply rounded-lg border border-line bg-surface;
+    @apply rounded-lg border border-line/70 bg-surface shadow-card;
   }
 
   .surface-raised {
-    @apply rounded-lg border border-line bg-raised;
+    @apply rounded-lg border border-line/60 bg-raised;
   }
 
-  /* Restrained luminous edge used on selected actions and active timers. */
+  /* Marks the one thing on screen that is live or chosen. Nothing else. */
   .glow-ring {
-    box-shadow:
-      0 0 0 1px rgba(199, 255, 74, 0.4),
-      0 0 26px -8px rgba(199, 255, 74, 0.5);
+    box-shadow: 0 0 0 1px rgba(194, 232, 92, 0.3);
+  }
+
+  /*
+   * Display face for headings. Frank Ruhl Libre against Heebo is what gives a
+   * screen a top line instead of a row of same-weight text.
+   */
+  .display {
+    font-family: var(--font-frank), Georgia, serif;
+    @apply font-bold tracking-normal;
+  }
+
+  /*
+   * Section headings: a level above the cards under them, without shouting.
+   * Deliberately no uppercase and no wide tracking - both are Latin devices.
+   * Hebrew has no capitals, and letter-spacing pulls its letters apart into
+   * something that reads as broken rather than refined.
+   */
+  .section-label {
+    @apply text-[13px] font-bold text-muted;
   }
 
   .stat-value {
     font-family: var(--font-manrope), var(--font-heebo), sans-serif;
     font-variant-numeric: tabular-nums;
-    @apply text-2xl font-extrabold tracking-tight;
+    @apply text-[26px] font-extrabold leading-none tracking-tight;
   }
 
   .label-muted {

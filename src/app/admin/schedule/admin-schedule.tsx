@@ -280,7 +280,7 @@ export function AdminSchedule({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">ניהול לוח שבועי</h1>
+          <h1 className="display text-2xl tracking-tight">ניהול לוח שבועי</h1>
           <p className="text-sm text-muted">
             {formatHebrewFullDate(parseISO(`${weekDays[0]}T12:00:00`))} –{' '}
             {formatHebrewFullDate(parseISO(`${weekDays[6]}T12:00:00`))}
@@ -328,7 +328,7 @@ export function AdminSchedule({
           </Link>
         </Button>
         {weekOffset !== 0 ? (
-          <Link href="/admin/schedule" className="text-xs font-bold text-accent hover:underline">
+          <Link href="/admin/schedule" className="text-xs font-bold text-ink/80 transition-colors hover:text-ink">
             חזרה לשבוע הנוכחי
           </Link>
         ) : (
@@ -366,7 +366,7 @@ export function AdminSchedule({
             const date = parseISO(`${day}T12:00:00`);
             return (
               <section key={day}>
-                <h2 className="mb-2 text-sm font-bold">
+                <h2 className="section-label mb-2 block">
                   יום {HEBREW_WEEKDAYS_SHORT[date.getDay()]}
                   <span className="num ms-2 font-normal text-muted">{format(date, 'd.M')}</span>
                 </h2>

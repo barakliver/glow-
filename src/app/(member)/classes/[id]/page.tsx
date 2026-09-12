@@ -52,7 +52,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-bold">{formatHebrewDate(gymClass.starts_at)}</p>
-            <p className="num mt-0.5 text-2xl font-extrabold tracking-tight text-accent">
+            <p className="num mt-0.5 display text-2xl tracking-tight text-accent">
               {formatTime(gymClass.starts_at)}–{formatTime(gymClass.ends_at)}
             </p>
           </div>
@@ -104,7 +104,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
       )}
 
       <section className="surface p-4">
-        <h2 className="mb-2 text-sm font-bold">ציוד נדרש</h2>
+        <h2 className="section-label mb-2 block">ציוד נדרש</h2>
         {gymClass.equipment.length === 0 ? (
           <p className="text-sm text-muted">לא נדרש ציוד מיוחד. הכל מחכה באולם.</p>
         ) : (
@@ -119,7 +119,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
       </section>
 
       <section className="surface p-4">
-        <h2 className="mb-2 text-sm font-bold">כללי רישום וביטול</h2>
+        <h2 className="section-label mb-2 block">כללי רישום וביטול</h2>
         <ul className="space-y-1.5 text-sm text-muted">
           <li>
             ההרשמה נסגרת {formatDuration(organization.booking_cutoff_minutes)} לפני תחילת השיעור

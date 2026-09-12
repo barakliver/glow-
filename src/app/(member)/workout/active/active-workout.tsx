@@ -316,7 +316,7 @@ export function ActiveWorkout({
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-semibold text-accent">אימון פעיל</p>
-          <h1 className="truncate text-xl font-extrabold tracking-tight">{session.title}</h1>
+          <h1 className="truncate display text-xl tracking-tight">{session.title}</h1>
           <p className="num mt-0.5 text-xs text-muted">
             {formatClock(elapsed)} · {totalSets} סטים נרשמו
           </p>
@@ -496,7 +496,7 @@ export function ActiveWorkout({
 
           {/* Set logging */}
           <section className="surface p-4" aria-labelledby="log-set-title">
-            <h2 id="log-set-title" className="text-sm font-bold">
+            <h2 id="log-set-title" className="section-label">
               רישום סט {currentSets.length + 1}
             </h2>
             <div className="mt-3 grid grid-cols-2 gap-2.5">
@@ -573,7 +573,7 @@ export function ActiveWorkout({
 
           {currentSets.length > 0 && (
             <section className="surface p-4" aria-labelledby="logged-sets-title">
-              <h2 id="logged-sets-title" className="mb-2 text-sm font-bold">
+              <h2 id="logged-sets-title" className="section-label mb-2 block">
                 הסטים שנרשמו
               </h2>
               <ul className="space-y-1.5">

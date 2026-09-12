@@ -92,7 +92,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
       <header className="text-center">
         <Logo size="xl" className="justify-center" />
         <p className="mt-3 text-sm text-muted">{state.label}</p>
-        <h1 className="mt-1 text-2xl font-extrabold tracking-tight">
+        <h1 className="mt-1 display text-2xl tracking-tight">
           הוזמנתם ללוח האימונים של {state.organizationName}
         </h1>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted">
@@ -124,7 +124,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
         ) : (
           days.map((day) => (
             <div key={day}>
-              <h2 className="mb-2 text-sm font-bold">
+              <h2 className="section-label mb-2 block">
                 {formatHebrewDate(parseISO(`${day}T12:00:00`))}
               </h2>
               <ul className="space-y-2">

@@ -110,7 +110,7 @@ export function ProgressView({
 
       <section className="surface p-4" aria-labelledby="consistency-title">
         <div className="flex items-center justify-between">
-          <h2 id="consistency-title" className="text-sm font-bold">
+          <h2 id="consistency-title" className="section-label">
             עקביות
           </h2>
           <span className="num text-sm font-extrabold text-accent">{stats.consistency}%</span>
@@ -181,7 +181,7 @@ export function ProgressView({
 
       {exerciseHistory.length > 0 && (
         <section className="surface p-4" aria-labelledby="exercise-compare-title">
-          <h2 id="exercise-compare-title" className="text-sm font-bold">
+          <h2 id="exercise-compare-title" className="section-label">
             השוואה לתוצאות הקודמות שלך
           </h2>
           <p className="mt-1 text-xs text-muted">
@@ -218,7 +218,7 @@ export function ProgressView({
       )}
 
       <section aria-labelledby="records-title" className="space-y-2">
-        <h2 id="records-title" className="text-sm font-bold">
+        <h2 id="records-title" className="section-label">
           שיאים אישיים
         </h2>
         {records.length === 0 ? (
@@ -246,7 +246,7 @@ export function ProgressView({
       </section>
 
       <section aria-labelledby="notes-title" className="space-y-2">
-        <h2 id="notes-title" className="text-sm font-bold">
+        <h2 id="notes-title" className="section-label">
           הערות מאימונים קודמים
         </h2>
         {notes.length === 0 ? (

@@ -128,7 +128,7 @@ export function ExerciseLibrary({ exercises }: { exercises: Exercise[] }) {
                       href={exercise.media_url}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="inline-block text-xs font-bold text-accent hover:underline"
+                      className="inline-block text-xs font-bold text-ink/80 transition-colors hover:text-ink"
                     >
                       צפייה בהדגמה
                     </a>
