@@ -89,7 +89,14 @@ export async function resolveInvite(
   const { data: statusRows, error: statusError } = await supabase.rpc('public_invite_status', {
     p_token: token,
   });
-  if (statusError) return { status: 'invalid' };
+
+  if (statusError) {
+    // public_invite_status ships in a later migration than the rest of the
+    // schema. If a deployment has not applied it yet, fall back to the schedule
+    // function alone: the token is still validated inside the database, we just
+    // cannot tell an expired link from a revoked one.
+    return resolveWithoutStatusFunction(supabase, token, fromIso, toIso);
+  }
 
   const invite = (statusRows as { status: string; label: string; organization_name: string }[] | null)?.[0];
   if (!invite || invite.status === 'invalid') return { status: 'invalid' };
@@ -108,6 +115,48 @@ export async function resolveInvite(
     label: invite.label,
     organizationName: invite.organization_name || 'GLoW',
     classes: ((classes ?? []) as PublicClass[]).map((row) => ({
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      category: row.category,
+      difficulty: row.difficulty,
+      trainer_name: row.trainer_name,
+      location: row.location,
+      capacity: row.capacity,
+      starts_at: row.starts_at,
+      ends_at: row.ends_at,
+      spots_left: row.spots_left,
+    })),
+  };
+}
+
+/**
+ * Fallback for deployments that have not applied the public_invite_status
+ * migration. public_schedule already enforces the token rules - it returns no
+ * rows for a token that is unknown, revoked, expired or used up - so an
+ * invitation still works; only the specific reason for a dead link is lost.
+ */
+async function resolveWithoutStatusFunction(
+  supabase: NonNullable<Awaited<ReturnType<typeof createServerSupabase>>>,
+  token: string,
+  fromIso: string,
+  toIso: string,
+): Promise<InviteState> {
+  const { data, error } = await supabase.rpc('public_schedule', {
+    p_token: token,
+    p_from: fromIso,
+    p_to: toIso,
+  });
+  if (error) return { status: 'invalid' };
+
+  const rows = (data ?? []) as PublicClass[];
+  if (rows.length === 0) return { status: 'invalid' };
+
+  return {
+    status: 'valid',
+    label: '',
+    organizationName: 'GLoW',
+    classes: rows.map((row) => ({
       id: row.id,
       title: row.title,
       description: row.description,

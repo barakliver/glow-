@@ -192,3 +192,15 @@ where profile_id = (select id from public.profiles where email = 'you@example.co
 
 כדי שהמשימה תרוץ צריך להגדיר ב-Vercel משתנה סביבה בשם `CRON_SECRET` עם
 מחרוזת אקראית כלשהי.
+
+
+---
+
+## שדרוג מסד נתונים שכבר הוקם
+
+אם הרצת את `setup.sql` לפני שנוספה הפונקציה `public_invite_status`, האפליקציה
+תמשיך לעבוד כרגיל — כולל דפי הזמנה. ההבדל היחיד: כשקישור הזמנה מת, ההודעה
+תהיה כללית במקום להסביר אם הוא בוטל, פג או נוצל.
+
+כדי לקבל את ההודעות המדויקות, הרץ ב-SQL Editor רק את הקובץ
+`supabase/migrations/20260101000003_public_invite_status.sql`.

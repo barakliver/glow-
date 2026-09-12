@@ -190,3 +190,31 @@ begin
   end if;
   raise notice 'anonymous access to the public functions confirmed';
 end $$;
+
+-- 14. The app falls back to public_schedule alone when public_invite_status has
+-- not been applied yet. That fallback is only sound if public_schedule itself
+-- returns rows for a live token and nothing for a dead one.
+do $$
+declare
+  v_token text := 'glow-fallback-check';
+  v_count integer;
+begin
+  insert into invite_links (organization_id, token, label, created_by)
+  values ('00000000-0000-4000-8000-000000000001', v_token, 'בדיקת נפילה לאחור',
+          '00000000-0000-4000-8000-100000000001')
+  on conflict (token) do update set revoked = false, expires_at = null, max_uses = null, uses = 0;
+
+  select count(*) into v_count from public_schedule(v_token, now(), now() + interval '7 days');
+  if v_count = 0 then raise exception 'a live token must return classes without the status function'; end if;
+
+  update invite_links set revoked = true where token = v_token;
+  select count(*) into v_count from public_schedule(v_token, now(), now() + interval '7 days');
+  if v_count <> 0 then raise exception 'a revoked token leaked % classes via the fallback', v_count; end if;
+
+  update invite_links set revoked = false, max_uses = 1, uses = 5 where token = v_token;
+  select count(*) into v_count from public_schedule(v_token, now(), now() + interval '7 days');
+  if v_count <> 0 then raise exception 'an exhausted token leaked % classes via the fallback', v_count; end if;
+
+  delete from invite_links where token = v_token;
+  raise notice 'invitation fallback path is safe without the status function';
+end $$;
