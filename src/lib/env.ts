@@ -24,11 +24,30 @@ function read(...names: string[]): string {
   return '';
 }
 
-export const APP_URL =
-  read('APP_URL', 'NEXT_PUBLIC_APP_URL').replace(/\/$/, '') ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+function isLoopback(url: string): boolean {
+  return /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i.test(url);
+}
+
+/**
+ * Public URL of this deployment. Sign-in links, invitations, ICS files and the
+ * check-in QR codes are all built from it.
+ *
+ * A loopback address is never right for a hosted deployment, and it arrives by
+ * accident: importing a project on Vercel copies the names and values out of
+ * the repository's example file, `APP_URL=http://localhost:3000` among them.
+ * Left alone it would mail members a sign-in link pointing at their own
+ * machine. Where the platform tells us the real host, that wins.
+ */
+function resolveAppUrl(): string {
+  const configured = read('APP_URL', 'NEXT_PUBLIC_APP_URL').replace(/\/$/, '');
+  const platform = process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'http://localhost:3000');
+    : '';
+  if (configured && !(platform && isLoopback(configured))) return configured;
+  return platform || 'http://localhost:3000';
+}
+
+export const APP_URL = resolveAppUrl();
 
 export const SUPABASE_URL = read('SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL');
 
