@@ -12,8 +12,19 @@ import type { ActionResult } from '@/app/actions/booking';
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
-/** Passwordless email sign-in. In demo mode it creates/uses a local profile. */
+/**
+ * Demo-mode sign-in by email address.
+ *
+ * The club itself is Google-only. This exists so the app is usable with no
+ * Supabase behind it, and it refuses to run anywhere else - a server action is
+ * reachable directly, so leaving a second way in would be a way around the one
+ * the club actually chose.
+ */
 export async function signInWithEmailAction(formData: FormData): Promise<ActionResult> {
+  if (!isDemoMode()) {
+    return { ok: false, message: 'הכניסה למועדון נעשית עם חשבון Google.' };
+  }
+
   const parsed = signInSchema.safeParse({
     email: formData.get('email'),
     returnTo: formData.get('returnTo') ?? undefined,

@@ -1,0 +1,55 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="g2-rind" cx="48%" cy="44%" r="64%">
+      <stop offset="0%" stop-color="#2A450B"/>
+      <stop offset="62%" stop-color="#2A450B"/>
+      <stop offset="100%" stop-color="#6E9A22"/>
+    </radialGradient>
+    <linearGradient id="g2-flesh" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#FDFFF7"/>
+      <stop offset="100%" stop-color="#EAFDB4"/>
+    </linearGradient>
+  </defs>
+
+  <g id="icon">
+    <rect x="0" y="0" width="512" height="512" fill="#0D100F"/>
+
+    <path d="M 256 56
+             C 318 118, 396 224, 396 314
+             C 396 396, 334 458, 256 458
+             C 178 458, 116 396, 116 314
+             C 116 224, 194 118, 256 56 Z"
+          fill="url(#g2-rind)"/>
+
+    <path d="M 130 306 C 133 234, 178 162, 228 118"
+          fill="none" stroke="#C7FF4A" stroke-width="12" stroke-linecap="round"/>
+
+    <ellipse cx="306" cy="352" rx="62" ry="58" fill="#54330F"/>
+
+    <path d="M 204 222
+             C 196 240, 208 266, 216 292
+             C 226 314, 196 318, 192 348
+             C 186 378, 200 402, 210 424
+             C 214 434, 214 440, 216 446
+             L 228 440
+             C 238 424, 243 404, 246 388
+             C 252 404, 262 420, 270 434
+             L 280 428
+             C 289 400, 294 368, 292 338
+             C 290 314, 268 310, 266 288
+             C 264 264, 282 242, 290 220
+             C 276 206, 218 206, 204 222 Z"
+          fill="url(#g2-flesh)"/>
+
+    <path d="M 204 222 C 176 250, 172 292, 190 330"
+          fill="none" stroke="url(#g2-flesh)" stroke-width="20" stroke-linecap="round"/>
+
+    <path d="M 286 214 C 300 176, 288 132, 258 102"
+          fill="none" stroke="url(#g2-flesh)" stroke-width="22" stroke-linecap="round"/>
+
+    <path d="M 234 166 L 248 214"
+          fill="none" stroke="url(#g2-flesh)" stroke-width="18" stroke-linecap="round"/>
+
+    <circle cx="232" cy="150" r="24" fill="url(#g2-flesh)"/>
+  </g>
+</svg>

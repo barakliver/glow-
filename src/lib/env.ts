@@ -57,9 +57,6 @@ export const SUPABASE_ANON_KEY = read(
   'NEXT_PUBLIC_SUPABASE_ANON_KEY',
 );
 
-export const GOOGLE_AUTH_ENABLED =
-  read('ENABLE_GOOGLE_AUTH', 'NEXT_PUBLIC_ENABLE_GOOGLE_AUTH') === 'true';
-
 /**
  * Demo mode is on when explicitly forced, or whenever Supabase credentials are
  * missing. It keeps every flow working without any external service.

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getCurrentUser, getRepository } from '@/lib/auth';
-import { isDemoMode, GOOGLE_AUTH_ENABLED } from '@/lib/env';
+import { isDemoMode } from '@/lib/env';
 import { DEMO_ACCOUNTS } from '@/lib/data/seed';
 import { SignInForm } from './sign-in-form';
 
@@ -37,7 +37,6 @@ export default async function SignInPage({
   return (
     <SignInForm
       demoMode={demo}
-      googleEnabled={GOOGLE_AUTH_ENABLED && !demo}
       accounts={accounts}
       returnTo={params.returnTo ?? null}
     />

@@ -24,14 +24,23 @@ interface DemoAccount {
   email: string;
 }
 
+function GoogleMark() {
+  return (
+    <svg viewBox="0 0 48 48" className="size-5" aria-hidden focusable="false">
+      <path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.8-2 5.1-4.4 6.7v5.5h7.1c4.1-3.8 6.6-9.4 6.6-16.2z" />
+      <path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.5-3.8-12.2-9H4.5v5.7C8.1 41.1 15.4 46 24 46z" />
+      <path fill="#FBBC05" d="M11.8 28.3c-.4-1.3-.7-2.7-.7-4.3s.3-2.9.7-4.3v-5.7H4.5A22 22 0 0 0 2 24c0 3.6.9 6.9 2.5 9.9l7.3-5.6z" />
+      <path fill="#EA4335" d="M24 10.7c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.1 29.9 2 24 2 15.4 2 8.1 6.9 4.5 14.1l7.3 5.7c1.7-5.2 6.5-9.1 12.2-9.1z" />
+    </svg>
+  );
+}
+
 export function SignInForm({
   demoMode,
-  googleEnabled,
   accounts,
   returnTo,
 }: {
   demoMode: boolean;
-  googleEnabled: boolean;
   accounts: DemoAccount[];
   returnTo: string | null;
 }) {
@@ -95,7 +104,20 @@ export function SignInForm({
         <p className="mt-3 text-sm text-muted">מועדון אימונים פרטי · בהזמנה בלבד</p>
       </div>
 
-      {sent ? (
+      {!demoMode ? (
+        <div className="surface space-y-4 p-6">
+          <div className="text-center">
+            <h1 className="text-lg font-bold">כניסה למועדון</h1>
+            <p className="mt-1 text-sm text-muted">
+              הכניסה נעשית עם חשבון Google. אין סיסמה לזכור.
+            </p>
+          </div>
+          <Button type="button" variant="secondary" block size="lg" onClick={signInGoogle} loading={pending}>
+            <GoogleMark />
+            המשך עם Google
+          </Button>
+        </div>
+      ) : sent ? (
         <div className="surface space-y-3 p-6 text-center">
           <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-accent/12">
             <Mail className="size-6 text-accent" aria-hidden />
@@ -142,22 +164,9 @@ export function SignInForm({
           {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
 
           <Button type="submit" block size="lg" loading={pending}>
-            {demoMode ? 'כניסה' : 'שליחת קישור כניסה'}
+            כניסה
             <ArrowLeft className="size-4" aria-hidden />
           </Button>
-
-          {googleEnabled && (
-            <>
-              <div className="flex items-center gap-3 py-1">
-                <span className="h-px flex-1 bg-line" />
-                <span className="text-xs text-muted">או</span>
-                <span className="h-px flex-1 bg-line" />
-              </div>
-              <Button type="button" variant="secondary" block size="lg" onClick={signInGoogle} loading={pending}>
-                המשך עם Google
-              </Button>
-            </>
-          )}
         </form>
       )}
 

@@ -97,11 +97,17 @@ and it never touches a production database.
    npx supabase db reset     # runs migrations, then supabase/seed.sql
    ```
 
-5. **Auth configuration** in the Supabase dashboard:
-   - Email → enable magic links, add `http://localhost:3000/auth/callback` and
-     your production callback to the redirect allow list.
-   - Google → optional. Configure the provider, then set
-     `NEXT_PUBLIC_ENABLE_GOOGLE_AUTH=true` to show the button.
+5. **Auth configuration** in the Supabase dashboard. The club signs in with
+   Google and nothing else, so this step is required, not optional:
+   - Authentication → Providers → Google → enable it and fill in the client id
+     and secret from a Google Cloud OAuth client.
+   - Authentication → URL Configuration → set the Site URL to the deployment
+     and add `<deployment>/auth/callback` plus
+     `http://localhost:3000/auth/callback` to the redirect allow list.
+
+   Demo mode is the exception: with no Supabase credentials the app signs in by
+   email address against its own in-memory data, so it runs with no provider
+   configured at all.
 
 6. **Name the owners.** Addresses listed in `public.owner_emails` become owners
    automatically, whether they have signed up already or do so later. The table
