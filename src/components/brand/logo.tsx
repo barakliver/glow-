@@ -36,7 +36,7 @@ export function Logo({
           src="/brand/mark.svg"
           alt=""
           aria-hidden
-          className={cn('w-auto drop-shadow-[0_0_18px_rgba(199,255,74,0.35)]', scale.mark)}
+          className={cn('w-auto drop-shadow-[0_6px_18px_rgba(0,0,0,0.55)]', scale.mark)}
         />
       )}
       <span
