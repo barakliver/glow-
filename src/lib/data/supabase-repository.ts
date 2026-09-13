@@ -55,6 +55,28 @@ function unwrap<T>(result: { data: T | null; error: { message: string } | null }
   return result.data as T;
 }
 
+/**
+ * True when the error means "this part of the schema is not installed yet".
+ *
+ * A deployment reaches the club the moment it is pushed; the SQL that goes with
+ * it is pasted by hand into the Supabase editor, which can be minutes or a day
+ * later. In that window the workout tables do not exist. The club should see a
+ * schedule with no workouts attached, not a page that refuses to load - so a
+ * missing table degrades to "nothing planned" and every other error still
+ * throws.
+ */
+function isMissingWorkoutSchema(error: { code?: string; message?: string } | null): boolean {
+  if (!error) return false;
+  // 42P01 undefined_table, 42883 undefined_function, PGRST202 no such function.
+  if (error.code === '42P01' || error.code === '42883' || error.code === 'PGRST202') return true;
+  const message = error.message ?? '';
+  return (
+    /relation .*(workouts|class_workouts|workout_logs).* does not exist/i.test(message) ||
+    /function .*class_workout_teasers.* does not exist/i.test(message) ||
+    /Could not find the function/i.test(message)
+  );
+}
+
 export class SupabaseRepository implements Repository {
   constructor(
     private readonly supabase: SupabaseClient,
@@ -1203,6 +1225,7 @@ export class SupabaseRepository implements Repository {
       );
     }
     const { data, error } = await query;
+    if (isMissingWorkoutSchema(error)) return [];
     if (error) throw new Error(error.message);
     return (data ?? []) as Workout[];
   }
@@ -1217,6 +1240,7 @@ export class SupabaseRepository implements Repository {
       .eq('organization_id', this.organizationId)
       .eq(column, idOrSlug)
       .maybeSingle();
+    if (isMissingWorkoutSchema(error)) return null;
     if (error) throw new Error(error.message);
     return (data as Workout) ?? null;
   }
@@ -1233,6 +1257,7 @@ export class SupabaseRepository implements Repository {
       .select('workout_id, notes, workouts(*)')
       .eq('class_id', classId)
       .maybeSingle();
+    if (isMissingWorkoutSchema(error)) return { state: 'none' };
     if (error && error.code !== 'PGRST116') throw new Error(error.message);
 
     const workout = (link as { workouts?: Workout } | null)?.workouts;
@@ -1253,6 +1278,7 @@ export class SupabaseRepository implements Repository {
       p_from: '1970-01-01T00:00:00Z',
       p_to: '2999-01-01T00:00:00Z',
     });
+    if (isMissingWorkoutSchema(error)) return { state: 'none' };
     if (error) throw new Error(error.message);
 
     const teaser = ((data ?? []) as {
@@ -1350,6 +1376,7 @@ export class SupabaseRepository implements Repository {
       .eq('profile_id', profileId)
       .order('performed_on', { ascending: false })
       .limit(limit);
+    if (isMissingWorkoutSchema(error)) return [];
     if (error) throw new Error(error.message);
 
     return ((data ?? []) as (WorkoutLog & { workouts: Workout | null })[]).flatMap((row) => {
@@ -1365,6 +1392,7 @@ export class SupabaseRepository implements Repository {
       .eq('profile_id', profileId)
       .eq('workout_id', workoutId)
       .order('performed_on', { ascending: false });
+    if (isMissingWorkoutSchema(error)) return [];
     if (error) throw new Error(error.message);
     return (data ?? []) as WorkoutLog[];
   }
@@ -1381,6 +1409,7 @@ export class SupabaseRepository implements Repository {
       .eq('workout_id', workoutId)
       .eq('performed_on', performedOn)
       .maybeSingle();
+    if (isMissingWorkoutSchema(error)) return null;
     if (error) throw new Error(error.message);
     return (data as WorkoutLog) ?? null;
   }
