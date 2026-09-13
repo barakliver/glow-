@@ -236,3 +236,55 @@ export const classWorkoutSchema = z.object({
   notes: z.string().trim().max(500, 'ההערה ארוכה מדי').optional().or(z.literal('')),
 });
 export type ClassWorkoutInput = z.infer<typeof classWorkoutSchema>;
+
+export const bodyMetricSchema = z
+  .object({
+    height_cm: z.coerce.number().min(80, 'גובה לא תקין').max(260, 'גובה לא תקין').optional(),
+    weight_kg: z.coerce.number().min(20, 'משקל לא תקין').max(400, 'משקל לא תקין').optional(),
+    note: z.string().trim().max(280, 'ההערה ארוכה מדי').optional().or(z.literal('')),
+  })
+  .refine((value) => value.height_cm !== undefined || value.weight_kg !== undefined, {
+    message: 'נדרש גובה או משקל',
+    path: ['weight_kg'],
+  });
+export type BodyMetricInput = z.infer<typeof bodyMetricSchema>;
+
+const liftSchema = z.object({
+  exercise_id: z.string().optional().or(z.literal('')),
+  exercise_name: z.string().trim().min(1, 'נדרש שם תרגיל').max(60, 'השם ארוך מדי'),
+  sets: z.coerce.number().int().min(1, 'לפחות סט אחד').max(50, 'עד 50 סטים'),
+  reps: z.coerce.number().int().min(1, 'לפחות חזרה אחת').max(500, 'עד 500 חזרות').optional(),
+  weight_kg: z.coerce.number().min(0, 'מספר שלילי').max(500, 'עד 500 ק״ג').optional(),
+});
+
+/**
+ * A logged activity.
+ *
+ * Almost everything is optional on purpose: the point of this screen is that a
+ * member can write down whatever they actually did, in whatever detail they
+ * feel like, without the form arguing with them. Only the date, the kind and a
+ * title are required.
+ */
+export const activityLogSchema = z
+  .object({
+    performed_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'תאריך לא תקין'),
+    kind: z.enum(['strength', 'run', 'class', 'mobility', 'other']),
+    title: z.string().trim().min(2, 'נדרשת כותרת').max(80, 'הכותרת ארוכה מדי'),
+    notes: z.string().trim().max(4000, 'הטקסט ארוך מדי').optional().or(z.literal('')),
+    duration_minutes: z.coerce.number().int().min(0).max(1440, 'עד 24 שעות').optional(),
+    rpe: z.coerce.number().int().min(1).max(10).optional(),
+    distance_km: z.coerce.number().min(0).max(200, 'עד 200 ק״מ').optional(),
+    incline_percent: z.coerce.number().min(0).max(40, 'עד 40 אחוז').optional(),
+    class_id: z.string().optional().or(z.literal('')),
+    lifts: z.array(liftSchema).max(30, 'עד 30 תרגילים').default([]),
+  })
+  .superRefine((value, ctx) => {
+    if (value.kind === 'run' && !value.distance_km && !value.duration_minutes) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['distance_km'],
+        message: 'בריצה נדרש מרחק או משך',
+      });
+    }
+  });
+export type ActivityLogInput = z.infer<typeof activityLogSchema>;

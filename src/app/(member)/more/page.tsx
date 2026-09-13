@@ -3,6 +3,8 @@ import Link from 'next/link';
 import {
   Bell,
   BookOpen,
+  Library,
+  LineChart,
   CalendarCheck,
   ChevronLeft,
   Info,
@@ -32,6 +34,8 @@ const LINKS = [
     icon: Bell,
     description: 'איזה עדכונים לקבל',
   },
+  { href: '/tracking', label: 'המעקב שלי', icon: LineChart, description: 'גובה, משקל, שיאים ורישום אימונים' },
+  { href: '/workout/wods', label: 'מאגר האימונים', icon: Library, description: 'קרוספיט, פונקציונלי, פילאטיס ויוגה' },
   { href: '/workout/library', label: 'ספריית תרגילים', icon: BookOpen, description: 'הוראות ודגשי בטיחות' },
   { href: '/timer', label: 'טיימר אינטרוולים', icon: Timer, description: 'טבאטה, EMOM ותבניות' },
 ];

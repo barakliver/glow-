@@ -553,3 +553,71 @@ export interface WorkoutLogWithWorkout {
   log: WorkoutLog;
   workout: Workout;
 }
+
+// --- personal tracking --------------------------------------------------------
+
+export type ActivityKind = 'strength' | 'run' | 'class' | 'mobility' | 'other';
+
+/** Height and weight on one day. Either number may stand alone. */
+export interface BodyMetric {
+  id: string;
+  organization_id: string;
+  profile_id: string;
+  /** yyyy-MM-dd in gym time. */
+  measured_on: string;
+  height_cm: number | null;
+  weight_kg: number | null;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** One weight moved, inside one session. */
+export interface ActivityLift {
+  id: string;
+  activity_id: string;
+  profile_id: string;
+  position: number;
+  /** Null when the member typed a name the library does not have. */
+  exercise_id: string | null;
+  exercise_name: string;
+  sets: number;
+  reps: number | null;
+  weight_kg: number | null;
+  created_at: string;
+}
+
+/** Anything a member did, written however they wanted to write it. */
+export interface ActivityLog {
+  id: string;
+  organization_id: string;
+  profile_id: string;
+  /** yyyy-MM-dd in gym time. */
+  performed_on: string;
+  kind: ActivityKind;
+  title: string;
+  notes: string | null;
+  duration_seconds: number | null;
+  rpe: number | null;
+  /** Runs only. */
+  distance_meters: number | null;
+  incline_percent: number | null;
+  class_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ActivityWithLifts {
+  activity: ActivityLog;
+  lifts: ActivityLift[];
+}
+
+/** The heaviest a member has moved on one exercise, and when. */
+export interface LiftRecord {
+  exercise_name: string;
+  weight_kg: number;
+  reps: number | null;
+  performed_on: string;
+  /** How many separate days this exercise has been logged. */
+  sessions: number;
+}

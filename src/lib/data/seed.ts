@@ -18,6 +18,9 @@ import type {
   Organization,
   Profile,
   ReadinessLog,
+  ActivityLift,
+  ActivityLog,
+  BodyMetric,
   ClassWorkout,
   TimerPreset,
   Trainer,
@@ -50,6 +53,9 @@ export interface SeedData {
   workouts: Workout[];
   classWorkouts: ClassWorkout[];
   workoutLogs: WorkoutLog[];
+  bodyMetrics: BodyMetric[];
+  activities: ActivityLog[];
+  activityLifts: ActivityLift[];
 }
 
 /**
@@ -1244,6 +1250,90 @@ export function buildSeed(anchor: Date = new Date()): SeedData {
     };
   });
 
+  // --- personal tracking -----------------------------------------------------
+  // A short history for one member so the tracking screen has a line to draw
+  // rather than an empty chart on first open.
+  const bodyMetrics: BodyMetric[] = Array.from({ length: 8 }, (_, index) => {
+    const day = addDays(anchor, -(7 - index) * 7);
+    return {
+      id: id(index + 1, '994'),
+      organization_id: ORG_ID,
+      profile_id: PROFILE_IDS.member1,
+      measured_on: format(toGymTime(day), 'yyyy-MM-dd'),
+      height_cm: 178,
+      weight_kg: Number((79.4 - index * 0.35).toFixed(1)),
+      note: null,
+      created_at: TS,
+      updated_at: TS,
+    };
+  });
+
+  const LIFT_SEED = [
+    { name: 'Back Squat', start: 70, step: 2.5, reps: 5 },
+    { name: 'Deadlift', start: 90, step: 5, reps: 3 },
+    { name: 'Bench Press', start: 55, step: 2.5, reps: 5 },
+    { name: 'Hip Thrust', start: 60, step: 5, reps: 8 },
+  ];
+
+  const activities: ActivityLog[] = [];
+  const activityLifts: ActivityLift[] = [];
+  let liftCounter = 0;
+
+  for (let week = 0; week < 6; week += 1) {
+    const day = addDays(anchor, -(6 - week) * 7 + 1);
+    const activityId = id(week + 1, '995');
+    activities.push({
+      id: activityId,
+      organization_id: ORG_ID,
+      profile_id: PROFILE_IDS.member1,
+      performed_on: format(toGymTime(day), 'yyyy-MM-dd'),
+      kind: 'strength',
+      title: 'אימון כוח אישי',
+      notes: week === 5 ? 'הרגשתי חזק. הסקוואט עלה בלי מאמץ.' : null,
+      duration_seconds: 55 * 60,
+      rpe: 6 + (week % 3),
+      distance_meters: null,
+      incline_percent: null,
+      class_id: null,
+      created_at: TS,
+      updated_at: TS,
+    });
+
+    LIFT_SEED.forEach((lift, position) => {
+      liftCounter += 1;
+      activityLifts.push({
+        id: id(liftCounter, '996'),
+        activity_id: activityId,
+        profile_id: PROFILE_IDS.member1,
+        position,
+        exercise_id: byName(lift.name),
+        exercise_name: lift.name,
+        sets: 5,
+        reps: lift.reps,
+        weight_kg: lift.start + week * lift.step,
+        created_at: TS,
+      });
+    });
+  }
+
+  // One run, so the run fields are not a screen nobody has ever filled in.
+  activities.push({
+    id: id(90, '995'),
+    organization_id: ORG_ID,
+    profile_id: PROFILE_IDS.member1,
+    performed_on: format(toGymTime(addDays(anchor, -3)), 'yyyy-MM-dd'),
+    kind: 'run',
+    title: 'ריצה על ההליכון',
+    notes: 'קצב נוח, נשימה טובה לאורך כל הדרך.',
+    duration_seconds: 32 * 60,
+    rpe: 6,
+    distance_meters: 6000,
+    incline_percent: 2,
+    class_id: null,
+    created_at: TS,
+    updated_at: TS,
+  });
+
   return {
     organization,
     profiles,
@@ -1265,6 +1355,9 @@ export function buildSeed(anchor: Date = new Date()): SeedData {
     workouts,
     classWorkouts,
     workoutLogs,
+    bodyMetrics,
+    activities,
+    activityLifts,
   };
 }
 

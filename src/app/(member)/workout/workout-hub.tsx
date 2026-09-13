@@ -9,6 +9,7 @@ import {
   Dumbbell,
   Filter,
   Library,
+  LineChart,
   Play,
   RefreshCw,
   Sparkles,
@@ -334,6 +335,12 @@ export function WorkoutHub({
           <Link href="/workout/results">
             <Trophy className="size-4" aria-hidden />
             התוצאות שלי
+          </Link>
+        </Button>
+        <Button variant="secondary" size="lg" block asChild>
+          <Link href="/tracking">
+            <LineChart className="size-4" aria-hidden />
+            המעקב שלי
           </Link>
         </Button>
         <Button variant="secondary" size="lg" block asChild>

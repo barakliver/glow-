@@ -51,13 +51,51 @@ export function VolumeBarChart({
   );
 }
 
-export function TrendLineChart({ data }: { data: { label: string; value: number }[] }) {
+export function TrendLineChart({
+  data,
+  /**
+   * Fit the axis to the data instead of starting at zero.
+   *
+   * A body weight moving from 79 to 77 is a real change and a real month of
+   * work, and on a 0-80 axis it is a flat line. Anything measured as a level
+   * rather than a count wants this; a volume total does not.
+   */
+  fitToData = false,
+}: {
+  data: { label: string; value: number }[];
+  fitToData?: boolean;
+}) {
+  const values = data.map((row) => row.value);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  // A flat series would otherwise collapse to a zero-height domain.
+  const pad = Math.max((max - min) * 0.25, 0.5);
+
   return (
     <ResponsiveContainer width="100%" height={180}>
       <LineChart data={data} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} vertical={false} />
-        <XAxis dataKey="label" tick={AXIS} tickLine={false} axisLine={{ stroke: GRID }} reversed />
-        <YAxis tick={AXIS} tickLine={false} axisLine={false} width={46} orientation="right" />
+        <XAxis
+          dataKey="label"
+          tick={AXIS}
+          tickLine={false}
+          axisLine={{ stroke: GRID }}
+          reversed
+          minTickGap={24}
+        />
+        <YAxis
+          tick={AXIS}
+          tickLine={false}
+          axisLine={false}
+          width={46}
+          orientation="right"
+          domain={
+            fitToData && values.length > 0
+              ? [Number((min - pad).toFixed(1)), Number((max + pad).toFixed(1))]
+              : undefined
+          }
+          allowDecimals={fitToData}
+        />
         <Tooltip
           contentStyle={{
             background: '#151A17',

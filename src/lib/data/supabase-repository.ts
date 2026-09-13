@@ -20,6 +20,12 @@ import {
 } from '@/lib/data/repository';
 import type {
   AccessState,
+  ActivityKind,
+  ActivityLift,
+  ActivityLog,
+  ActivityWithLifts,
+  BodyMetric,
+  LiftRecord,
   AppNotification,
   Attendance,
   Booking,
@@ -1421,6 +1427,219 @@ export class SupabaseRepository implements Repository {
       .eq('id', logId)
       .eq('profile_id', profileId);
     if (error) throw new Error(error.message);
+  }
+
+  // --- personal tracking -------------------------------------------------
+
+  async upsertBodyMetric(input: {
+    profileId: string;
+    measuredOn: string;
+    heightCm: number | null;
+    weightKg: number | null;
+    note: string | null;
+  }): Promise<BodyMetric> {
+    // A height typed once should not have to be retyped to correct a weight,
+    // so an omitted number keeps whatever the row already had.
+    const { data: existing } = await this.supabase
+      .from('body_metrics')
+      .select('*')
+      .eq('profile_id', input.profileId)
+      .eq('measured_on', input.measuredOn)
+      .maybeSingle();
+    const previous = existing as BodyMetric | null;
+
+    const { data, error } = await this.supabase
+      .from('body_metrics')
+      .upsert(
+        {
+          organization_id: this.organizationId,
+          profile_id: input.profileId,
+          measured_on: input.measuredOn,
+          height_cm: input.heightCm ?? previous?.height_cm ?? null,
+          weight_kg: input.weightKg ?? previous?.weight_kg ?? null,
+          note: input.note,
+        },
+        { onConflict: 'profile_id,measured_on' },
+      )
+      .select('*')
+      .single();
+    if (error) throw new Error(error.message);
+    return data as BodyMetric;
+  }
+
+  async listBodyMetrics(profileId: string, limit = 180): Promise<BodyMetric[]> {
+    const { data, error } = await this.supabase
+      .from('body_metrics')
+      .select('*')
+      .eq('profile_id', profileId)
+      .order('measured_on', { ascending: false })
+      .limit(limit);
+    if (isMissingWorkoutSchema(error)) return [];
+    if (error) throw new Error(error.message);
+    return (data ?? []) as BodyMetric[];
+  }
+
+  async latestBodyMetric(profileId: string): Promise<BodyMetric | null> {
+    const rows = await this.listBodyMetrics(profileId, 400);
+    if (rows.length === 0) return null;
+    const height = rows.find((row) => row.height_cm !== null)?.height_cm ?? null;
+    return { ...rows[0], height_cm: rows[0].height_cm ?? height };
+  }
+
+  async logActivity(input: {
+    profileId: string;
+    performedOn: string;
+    kind: ActivityKind;
+    title: string;
+    notes: string | null;
+    durationSeconds: number | null;
+    rpe: number | null;
+    distanceMeters: number | null;
+    inclinePercent: number | null;
+    classId: string | null;
+    lifts: {
+      exerciseId: string | null;
+      exerciseName: string;
+      sets: number;
+      reps: number | null;
+      weightKg: number | null;
+    }[];
+  }): Promise<ActivityWithLifts> {
+    const { data, error } = await this.supabase
+      .from('activity_logs')
+      .insert({
+        organization_id: this.organizationId,
+        profile_id: input.profileId,
+        performed_on: input.performedOn,
+        kind: input.kind,
+        title: input.title,
+        notes: input.notes,
+        duration_seconds: input.durationSeconds,
+        rpe: input.rpe,
+        distance_meters: input.distanceMeters,
+        incline_percent: input.inclinePercent,
+        class_id: input.classId,
+      })
+      .select('*')
+      .single();
+    if (error) throw new Error(error.message);
+    const activity = data as ActivityLog;
+
+    if (input.lifts.length === 0) return { activity, lifts: [] };
+
+    const { data: lifts, error: liftError } = await this.supabase
+      .from('activity_lifts')
+      .insert(
+        input.lifts.map((lift, position) => ({
+          activity_id: activity.id,
+          profile_id: input.profileId,
+          position,
+          exercise_id: lift.exerciseId,
+          exercise_name: lift.exerciseName,
+          sets: lift.sets,
+          reps: lift.reps,
+          weight_kg: lift.weightKg,
+        })),
+      )
+      .select('*');
+    if (liftError) throw new Error(liftError.message);
+    return { activity, lifts: (lifts ?? []) as ActivityLift[] };
+  }
+
+  async listActivities(profileId: string, limit = 60): Promise<ActivityWithLifts[]> {
+    const { data, error } = await this.supabase
+      .from('activity_logs')
+      .select('*, activity_lifts(*)')
+      .eq('profile_id', profileId)
+      .order('performed_on', { ascending: false })
+      .limit(limit);
+    if (isMissingWorkoutSchema(error)) return [];
+    if (error) throw new Error(error.message);
+
+    return ((data ?? []) as (ActivityLog & { activity_lifts: ActivityLift[] })[]).map((row) => {
+      const { activity_lifts: lifts, ...activity } = row;
+      return {
+        activity: activity as ActivityLog,
+        lifts: (lifts ?? []).slice().sort((a, b) => a.position - b.position),
+      };
+    });
+  }
+
+  async getActivity(activityId: string, profileId: string): Promise<ActivityWithLifts | null> {
+    const { data, error } = await this.supabase
+      .from('activity_logs')
+      .select('*, activity_lifts(*)')
+      .eq('id', activityId)
+      .eq('profile_id', profileId)
+      .maybeSingle();
+    if (isMissingWorkoutSchema(error)) return null;
+    if (error) throw new Error(error.message);
+    if (!data) return null;
+
+    const { activity_lifts: lifts, ...activity } = data as ActivityLog & {
+      activity_lifts: ActivityLift[];
+    };
+    return {
+      activity: activity as ActivityLog,
+      lifts: (lifts ?? []).slice().sort((a, b) => a.position - b.position),
+    };
+  }
+
+  async deleteActivity(activityId: string, profileId: string): Promise<void> {
+    const { error } = await this.supabase
+      .from('activity_logs')
+      .delete()
+      .eq('id', activityId)
+      .eq('profile_id', profileId);
+    if (error) throw new Error(error.message);
+  }
+
+  async listLiftRecords(profileId: string): Promise<LiftRecord[]> {
+    const activities = await this.listActivities(profileId, 400);
+    const byDate = new Map(activities.map((row) => [row.activity.id, row.activity.performed_on]));
+    const best = new Map<string, LiftRecord>();
+    const days = new Map<string, Set<string>>();
+
+    for (const { lifts } of activities) {
+      for (const lift of lifts) {
+        if (lift.weight_kg === null) continue;
+        const performedOn = byDate.get(lift.activity_id);
+        if (!performedOn) continue;
+
+        const seen = days.get(lift.exercise_name) ?? new Set<string>();
+        seen.add(performedOn);
+        days.set(lift.exercise_name, seen);
+
+        const current = best.get(lift.exercise_name);
+        if (!current || lift.weight_kg > current.weight_kg) {
+          best.set(lift.exercise_name, {
+            exercise_name: lift.exercise_name,
+            weight_kg: lift.weight_kg,
+            reps: lift.reps,
+            performed_on: performedOn,
+            sessions: 0,
+          });
+        }
+      }
+    }
+
+    return [...best.values()]
+      .map((record) => ({ ...record, sessions: days.get(record.exercise_name)?.size ?? 0 }))
+      .sort((a, b) => b.weight_kg - a.weight_kg);
+  }
+
+  async listLiftHistory(
+    profileId: string,
+    exerciseName: string,
+  ): Promise<(ActivityLift & { performed_on: string })[]> {
+    const activities = await this.listActivities(profileId, 400);
+    return activities
+      .flatMap(({ activity, lifts }) =>
+        lifts
+          .filter((lift) => lift.exercise_name === exerciseName)
+          .map((lift) => ({ ...lift, performed_on: activity.performed_on })),
+      )
+      .sort((a, b) => a.performed_on.localeCompare(b.performed_on));
   }
 
   async getAdminStats(fromIso: string, toIso: string): Promise<AdminStats> {

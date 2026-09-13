@@ -31,6 +31,12 @@ import {
 } from '@/lib/data/repository';
 import type {
   AccessState,
+  ActivityKind,
+  ActivityLift,
+  ActivityLog,
+  ActivityWithLifts,
+  BodyMetric,
+  LiftRecord,
   AppNotification,
   Attendance,
   Booking,
@@ -1351,6 +1357,201 @@ export class DemoRepository implements Repository {
       (log) => log.id === logId && log.profile_id === profileId,
     );
     if (index >= 0) database.workoutLogs.splice(index, 1);
+  }
+
+  // --- personal tracking -------------------------------------------------
+
+  async upsertBodyMetric(input: {
+    profileId: string;
+    measuredOn: string;
+    heightCm: number | null;
+    weightKg: number | null;
+    note: string | null;
+  }): Promise<BodyMetric> {
+    const database = db();
+    const existing = database.bodyMetrics.find(
+      (row) => row.profile_id === input.profileId && row.measured_on === input.measuredOn,
+    );
+    if (existing) {
+      // A height typed once should not have to be typed again to correct a
+      // weight, so a null leaves what was already there alone.
+      if (input.heightCm !== null) existing.height_cm = input.heightCm;
+      if (input.weightKg !== null) existing.weight_kg = input.weightKg;
+      existing.note = input.note;
+      touch(existing);
+      return existing;
+    }
+    const row: BodyMetric = {
+      id: newId(),
+      organization_id: database.organization.id,
+      profile_id: input.profileId,
+      measured_on: input.measuredOn,
+      height_cm: input.heightCm,
+      weight_kg: input.weightKg,
+      note: input.note,
+      created_at: nowIso(),
+      updated_at: nowIso(),
+    };
+    database.bodyMetrics.push(row);
+    return row;
+  }
+
+  async listBodyMetrics(profileId: string, limit = 180): Promise<BodyMetric[]> {
+    return db()
+      .bodyMetrics.filter((row) => row.profile_id === profileId)
+      .sort((a, b) => b.measured_on.localeCompare(a.measured_on))
+      .slice(0, limit);
+  }
+
+  async latestBodyMetric(profileId: string): Promise<BodyMetric | null> {
+    const rows = await this.listBodyMetrics(profileId, 400);
+    if (rows.length === 0) return null;
+    // The newest row wins, but a height from an older one fills the gap: it
+    // rarely changes and nobody should retype it every week.
+    const height = rows.find((row) => row.height_cm !== null)?.height_cm ?? null;
+    return { ...rows[0], height_cm: rows[0].height_cm ?? height };
+  }
+
+  async logActivity(input: {
+    profileId: string;
+    performedOn: string;
+    kind: ActivityKind;
+    title: string;
+    notes: string | null;
+    durationSeconds: number | null;
+    rpe: number | null;
+    distanceMeters: number | null;
+    inclinePercent: number | null;
+    classId: string | null;
+    lifts: {
+      exerciseId: string | null;
+      exerciseName: string;
+      sets: number;
+      reps: number | null;
+      weightKg: number | null;
+    }[];
+  }): Promise<ActivityWithLifts> {
+    const database = db();
+    const activity: ActivityLog = {
+      id: newId(),
+      organization_id: database.organization.id,
+      profile_id: input.profileId,
+      performed_on: input.performedOn,
+      kind: input.kind,
+      title: input.title,
+      notes: input.notes,
+      duration_seconds: input.durationSeconds,
+      rpe: input.rpe,
+      distance_meters: input.distanceMeters,
+      incline_percent: input.inclinePercent,
+      class_id: input.classId,
+      created_at: nowIso(),
+      updated_at: nowIso(),
+    };
+    database.activities.push(activity);
+
+    const lifts: ActivityLift[] = input.lifts.map((lift, position) => ({
+      id: newId(),
+      activity_id: activity.id,
+      profile_id: input.profileId,
+      position,
+      exercise_id: lift.exerciseId,
+      exercise_name: lift.exerciseName,
+      sets: lift.sets,
+      reps: lift.reps,
+      weight_kg: lift.weightKg,
+      created_at: nowIso(),
+    }));
+    database.activityLifts.push(...lifts);
+
+    return { activity, lifts };
+  }
+
+  async listActivities(profileId: string, limit = 60): Promise<ActivityWithLifts[]> {
+    const database = db();
+    return database.activities
+      .filter((row) => row.profile_id === profileId)
+      .sort((a, b) => b.performed_on.localeCompare(a.performed_on))
+      .slice(0, limit)
+      .map((activity) => ({
+        activity,
+        lifts: database.activityLifts
+          .filter((lift) => lift.activity_id === activity.id)
+          .sort((a, b) => a.position - b.position),
+      }));
+  }
+
+  async getActivity(activityId: string, profileId: string): Promise<ActivityWithLifts | null> {
+    const database = db();
+    const activity = database.activities.find(
+      (row) => row.id === activityId && row.profile_id === profileId,
+    );
+    if (!activity) return null;
+    return {
+      activity,
+      lifts: database.activityLifts
+        .filter((lift) => lift.activity_id === activity.id)
+        .sort((a, b) => a.position - b.position),
+    };
+  }
+
+  async deleteActivity(activityId: string, profileId: string): Promise<void> {
+    const database = db();
+    const index = database.activities.findIndex(
+      (row) => row.id === activityId && row.profile_id === profileId,
+    );
+    if (index < 0) return;
+    database.activities.splice(index, 1);
+    database.activityLifts = database.activityLifts.filter(
+      (lift) => lift.activity_id !== activityId,
+    );
+  }
+
+  async listLiftRecords(profileId: string): Promise<LiftRecord[]> {
+    const database = db();
+    const byDate = new Map(database.activities.map((a) => [a.id, a.performed_on]));
+    const best = new Map<string, LiftRecord>();
+    const days = new Map<string, Set<string>>();
+
+    for (const lift of database.activityLifts) {
+      if (lift.profile_id !== profileId || lift.weight_kg === null) continue;
+      const performedOn = byDate.get(lift.activity_id);
+      if (!performedOn) continue;
+
+      const seen = days.get(lift.exercise_name) ?? new Set<string>();
+      seen.add(performedOn);
+      days.set(lift.exercise_name, seen);
+
+      const current = best.get(lift.exercise_name);
+      if (!current || lift.weight_kg > current.weight_kg) {
+        best.set(lift.exercise_name, {
+          exercise_name: lift.exercise_name,
+          weight_kg: lift.weight_kg,
+          reps: lift.reps,
+          performed_on: performedOn,
+          sessions: 0,
+        });
+      }
+    }
+
+    return [...best.values()]
+      .map((record) => ({ ...record, sessions: days.get(record.exercise_name)?.size ?? 0 }))
+      .sort((a, b) => b.weight_kg - a.weight_kg);
+  }
+
+  async listLiftHistory(
+    profileId: string,
+    exerciseName: string,
+  ): Promise<(ActivityLift & { performed_on: string })[]> {
+    const database = db();
+    const byDate = new Map(database.activities.map((a) => [a.id, a.performed_on]));
+    return database.activityLifts
+      .filter((lift) => lift.profile_id === profileId && lift.exercise_name === exerciseName)
+      .flatMap((lift) => {
+        const performedOn = byDate.get(lift.activity_id);
+        return performedOn ? [{ ...lift, performed_on: performedOn }] : [];
+      })
+      .sort((a, b) => a.performed_on.localeCompare(b.performed_on));
   }
 
   async getAdminStats(fromIso: string, toIso: string): Promise<AdminStats> {

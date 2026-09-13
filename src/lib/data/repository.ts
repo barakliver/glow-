@@ -1,5 +1,11 @@
 import type {
   AccessState,
+  ActivityKind,
+  ActivityLift,
+  ActivityLog,
+  ActivityWithLifts,
+  BodyMetric,
+  LiftRecord,
   AppNotification,
   Attendance,
   Booking,
@@ -229,6 +235,47 @@ export interface Repository {
   listWorkoutHistory(profileId: string, workoutId: string): Promise<WorkoutLog[]>;
   getWorkoutLog(profileId: string, workoutId: string, performedOn: string): Promise<WorkoutLog | null>;
   deleteWorkoutLog(logId: string, profileId: string): Promise<void>;
+
+  // --- personal tracking -------------------------------------------------
+  /** Records or corrects the member's height and weight for one day. */
+  upsertBodyMetric(input: {
+    profileId: string;
+    measuredOn: string;
+    heightCm: number | null;
+    weightKg: number | null;
+    note: string | null;
+  }): Promise<BodyMetric>;
+  listBodyMetrics(profileId: string, limit?: number): Promise<BodyMetric[]>;
+  /** The most recent row that carries a height, so the form can prefill it. */
+  latestBodyMetric(profileId: string): Promise<BodyMetric | null>;
+
+  /** Anything the member did, with the weights they moved inside it. */
+  logActivity(input: {
+    profileId: string;
+    performedOn: string;
+    kind: ActivityKind;
+    title: string;
+    notes: string | null;
+    durationSeconds: number | null;
+    rpe: number | null;
+    distanceMeters: number | null;
+    inclinePercent: number | null;
+    classId: string | null;
+    lifts: {
+      exerciseId: string | null;
+      exerciseName: string;
+      sets: number;
+      reps: number | null;
+      weightKg: number | null;
+    }[];
+  }): Promise<ActivityWithLifts>;
+  listActivities(profileId: string, limit?: number): Promise<ActivityWithLifts[]>;
+  getActivity(activityId: string, profileId: string): Promise<ActivityWithLifts | null>;
+  deleteActivity(activityId: string, profileId: string): Promise<void>;
+  /** Heaviest lift per exercise, for this member only. */
+  listLiftRecords(profileId: string): Promise<LiftRecord[]>;
+  /** Every logged weight for one exercise, oldest first, for a chart. */
+  listLiftHistory(profileId: string, exerciseName: string): Promise<(ActivityLift & { performed_on: string })[]>;
 
   // --- analytics --------------------------------------------------------
   getAdminStats(fromIso: string, toIso: string): Promise<AdminStats>;

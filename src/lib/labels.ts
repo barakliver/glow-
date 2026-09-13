@@ -1,4 +1,5 @@
 import type {
+  ActivityKind,
   BodyArea,
   ScoreType,
   WorkoutCategory,
@@ -179,6 +180,18 @@ export const WORKOUT_CATEGORY_OPTIONS = Object.entries(WORKOUT_CATEGORY_LABELS).
 
 export const WORKOUT_FORMAT_OPTIONS = Object.entries(WORKOUT_FORMAT_LABELS).map(
   ([value, label]) => ({ value: value as WorkoutFormat, label }),
+);
+
+export const ACTIVITY_KIND_LABELS: Record<ActivityKind, string> = {
+  strength: 'אימון כוח',
+  run: 'ריצה',
+  class: 'שיעור',
+  mobility: 'מוביליטי',
+  other: 'אחר',
+};
+
+export const ACTIVITY_KIND_OPTIONS = Object.entries(ACTIVITY_KIND_LABELS).map(
+  ([value, label]) => ({ value: value as ActivityKind, label }),
 );
 
 /** Hebrew plural helper for small counts. */
