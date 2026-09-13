@@ -1,6 +1,7 @@
 import type { Workout, WorkoutCategory } from '@/lib/domain/types';
 import { CROSSFIT_WORKOUTS } from './crossfit';
 import { FUNCTIONAL_WORKOUTS } from './functional';
+import { HOUSE_WORKOUTS } from './house';
 import { PILATES_WORKOUTS } from './pilates';
 import { YOGA_WORKOUTS } from './yoga';
 import { toWorkout, type LibraryWorkout } from './types';
@@ -20,13 +21,19 @@ export const WORKOUT_LIBRARY: LibraryWorkout[] = [
   ...FUNCTIONAL_WORKOUTS,
   ...PILATES_WORKOUTS,
   ...YOGA_WORKOUTS,
+  ...HOUSE_WORKOUTS,
 ];
 
+/**
+ * The house sessions are filed under the family they actually belong to, so a
+ * member browsing CrossFit finds "הורה" next to "Fran". The joke is in the
+ * name, not in a category of its own.
+ */
 export const WORKOUTS_BY_CATEGORY: Record<WorkoutCategory, LibraryWorkout[]> = {
-  crossfit: CROSSFIT_WORKOUTS,
-  functional: FUNCTIONAL_WORKOUTS,
-  pilates: PILATES_WORKOUTS,
-  yoga: YOGA_WORKOUTS,
+  crossfit: [...CROSSFIT_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'crossfit')],
+  functional: [...FUNCTIONAL_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'functional')],
+  pilates: [...PILATES_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'pilates')],
+  yoga: [...YOGA_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'yoga')],
 };
 
 function hash32(input: string, seed: number): number {

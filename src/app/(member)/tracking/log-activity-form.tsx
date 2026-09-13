@@ -3,16 +3,32 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Save, Trash2 } from 'lucide-react';
+import { AvocadoGlyph } from '@/components/brand/avocado-glyph';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/toast';
 import { logActivityAction } from '@/app/actions/tracking';
+import { avocadoBrag } from '@/lib/domain/avocado';
 import { ACTIVITY_KIND_OPTIONS } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import type { ActivityKind, Exercise } from '@/lib/domain/types';
 
 type LiftRow = { key: string; name: string; sets: string; reps: string; weight: string };
+
+/**
+ * The row's total tonnage, in the club's own unit.
+ *
+ * Sets times reps times weight is what the row actually moved, which is a
+ * bigger and much funnier number than the one on the bar.
+ */
+function liftInAvocados(row: LiftRow): string | null {
+  const sets = Number(row.sets) || 1;
+  const reps = Number(row.reps) || 1;
+  const weight = Number(row.weight);
+  if (!Number.isFinite(weight) || weight <= 0) return null;
+  return avocadoBrag(sets * reps * weight);
+}
 
 const emptyLift = (): LiftRow => ({
   key: Math.random().toString(36).slice(2),
@@ -299,6 +315,14 @@ export function LogActivityForm({
                     onChange={(event) => patchLift(row.key, { weight: event.target.value })}
                   />
                 </div>
+                {/* The same lift, in fruit. Appears as you type and is only
+                    ever an aside - the kilograms are what you train by. */}
+                {liftInAvocados(row) && (
+                  <p className="mt-1.5 flex items-center gap-1.5 text-[11px] font-semibold text-champagne/80">
+                    <AvocadoGlyph size={12} filled className="text-champagne/80" />
+                    הרמת {liftInAvocados(row)}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

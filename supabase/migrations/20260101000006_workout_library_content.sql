@@ -5,7 +5,7 @@
 -- Source: src/lib/data/workouts/*.ts
 -- Rebuild with: npm run build:workout-sql
 --
--- 111 workouts: 41 crossfit, 33 functional, 20 pilates, 17 yoga.
+-- 127 workouts: 49 crossfit, 39 functional, 21 pilates, 18 yoga.
 --
 -- The library is installed per club rather than inline, because this migration
 -- runs before any organization exists: on a fresh database the schema is
@@ -1264,6 +1264,182 @@ begin
     '[{"label":"שכיבה ונשימה שקטה","detail":"3 דקות"}]'::jsonb, '[{"label":"רצף נתמך","detail":"5 דקות בכל תנוחה, עם כרית או שמיכה מקופלת","items":[{"label":"Supported Child’s Pose","detail":"תנוחת ילד נתמכת"},{"label":"Supported Bridge","detail":"גשר נתמך"},{"label":"Reclined Butterfly","detail":"פרפר בשכיבה"},{"label":"Supported Twist","detail":"פיתול נתמך, לכל צד"},{"label":"Legs up the Wall","detail":"רגליים על הקיר"}]}]'::jsonb,
     '[{"label":"Savasana עם שמיכה","detail":"8 דקות"}]'::jsonb, '[{"level":"beginner","detail":"3 דקות בכל תנוחה."},{"level":"intermediate","detail":"5 דקות בכל תנוחה."},{"level":"advanced","detail":"7 דקות בכל תנוחה."}]'::jsonb,
     'completion'::public.score_type, null
+  ),
+  (
+    '9e8047e9-cc5f-43cb-a280-d3a750dabe55'::uuid, 'save-the-date', 'סייב דה דייט',
+    'התאריך נקבע. מכאן זה רק מתקרב.', 'functional'::public.workout_category,
+    'emom'::public.workout_format,
+    'beginner'::public.difficulty_level,
+    60, null,
+    array['kettlebell', 'treadmill', 'mat']::text[], 'הכול עוד רגוע, וזאת בדיוק הנקודה. EMOM של עשרים דקות שבו כל דקה מגיעה בין אם התכוננתם ובין אם לא. אל תרוצו בדקה הראשונה - יש עוד תשע עשרה, והן לא מזיזות את עצמן.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"}]'::jsonb, '[{"label":"כוח","detail":"4 סטים של 8, מנוחה 90 שניות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Goblet Squat","detail":"8 חזרות"},{"label":"Bent-over Row","detail":"8 חזרות"}]},{"label":"מטקון","detail":"EMOM 20 דקות, מחזור של ארבע דקות","items":[{"label":"דקה 1","detail":"Kettlebell Swings, 12 חזרות"},{"label":"דקה 2","detail":"Push-ups, 10 חזרות"},{"label":"דקה 3","detail":"Air Squats, 15 חזרות"},{"label":"דקה 4","detail":"מנוחה"}]}]'::jsonb,
+    '[{"label":"תנוחת יונה","detail":"90 שניות לכל צד"},{"label":"מתיחת כופפי ירך בכריעה","detail":"60 שניות לכל צד"},{"label":"פרפר בישיבה","detail":"60 שניות"},{"label":"סיבוב עמוד שדרה בשכיבה","detail":"60 שניות לכל צד"}]'::jsonb, '[{"level":"beginner","detail":"קטלבל קל, שכיבות סמיכה מהספסל, 10 דקות בלבד."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"קטלבל כבד, 24 דקות, שכיבות סמיכה עם עצירה למטה."}]'::jsonb,
+    'rounds_and_reps'::public.score_type, null
+  ),
+  (
+    'd1a8e2a1-4a89-45b7-9440-91db55b81b95'::uuid, 'seating-chart', 'סידורי הישיבה',
+    'כולם צריכים מקום, ואף אחד לא ליד מי שהוא רוצה.', 'crossfit'::public.workout_category,
+    'amrap'::public.workout_format,
+    'intermediate'::public.difficulty_level,
+    60, 18,
+    array['dumbbell', 'bench', 'pullup_bar', 'treadmill']::text[], 'ארבע תחנות שצריך לסדר ביניהן, וכמו בסידורי ישיבה אמיתיים - הסדר שבחרתם בהתחלה יתפרק באמצע. תכננו איפה אתם עוצרים לפני שאתם מגיעים לשם.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"תלייה פסיבית במתח","detail":"30 שניות, 2 סבבים"},{"label":"משיכת שכמות בתלייה","detail":"8 חזרות, 2 סבבים"},{"label":"שכיבות סמיכה על הספסל","detail":"10 חזרות, 2 סבבים"}]'::jsonb, '[{"label":"כוח","detail":"5 סטים של 5, מנוחה 2 דקות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Bench Press","detail":"5 חזרות"}]},{"label":"מטקון","detail":"AMRAP 18 דקות","items":[{"label":"Dumbbell Row","detail":"10 לכל יד"},{"label":"Bench Step-ups","detail":"12 לכל רגל"},{"label":"Pull-ups","detail":"6 חזרות"},{"label":"הליכון","detail":"200 מטר"}]}]'::jsonb,
+    '[{"label":"מתיחת כתף צולבת","detail":"45 שניות לכל צד"},{"label":"מתיחת תלת ראשי מעל הראש","detail":"45 שניות לכל צד"},{"label":"פתיחת חזה בשכיבה על הספסל","detail":"90 שניות"},{"label":"נשימות עמוקות בישיבה","detail":"2 דקות"}]'::jsonb, '[{"level":"beginner","detail":"משיכות בגומייה, מדרגה נמוכה, 12 דקות."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"משקולות כבדות, 24 דקות."}]'::jsonb,
+    'rounds_and_reps'::public.score_type, null
+  ),
+  (
+    '623c05db-293d-4be1-9a45-269db5444277'::uuid, 'the-hora', 'הורה',
+    'מעגל שלא נגמר, ואסור לעצור באמצע.', 'crossfit'::public.workout_category,
+    'for_time'::public.workout_format,
+    'advanced'::public.difficulty_level,
+    60, 20,
+    array['kettlebell', 'barbell', 'treadmill', 'mat']::text[], 'חמישה סבבים במעגל אחד רצוף. אין תחנה שבה נוח - זה העניין בהורה. מי שיוצא מהר מדי בסבב הראשון מגלה את זה בסבב השלישי, וכולם בסוף שם.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"מוט ריק: דדליפט, משיכה, דחיפה מעל הראש","detail":"5 מכל תרגיל, 2 סבבים"},{"label":"העלאה הדרגתית","detail":"3 סטים של 3, עולים עד המשקל שתעבדו בו"}]'::jsonb, '[{"label":"כוח","detail":"5 סטים של 3, מנוחה 2-3 דקות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Deadlift","detail":"3 חזרות"}]},{"label":"מטקון","detail":"5 סבבים, למהירות","items":[{"label":"הליכון","detail":"400 מטר"},{"label":"Kettlebell Swings","detail":"20 חזרות"},{"label":"Burpees","detail":"12 חזרות"},{"label":"Sit-ups","detail":"20 חזרות"}]}]'::jsonb,
+    '[{"label":"הליכה קלה על ההליכון","detail":"3 דקות עד שהדופק יורד"},{"label":"נשימת קופסה בשכיבה","detail":"4 שניות פנימה, 4 החזקה, 4 החוצה, 8 סבבים"},{"label":"מתיחת ארבע ראשי בעמידה","detail":"45 שניות לכל צד"},{"label":"מתיחת חזה במשקוף","detail":"45 שניות"}]'::jsonb, '[{"level":"beginner","detail":"3 סבבים, 200 מטר בלבד, קטלבל קל."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"7 סבבים, קטלבל כבד, בלי לעצור בין תחנות."}]'::jsonb,
+    'time'::public.score_type, null
+  ),
+  (
+    'b7dc142b-e74a-4981-9207-2f6501cd916f'::uuid, 'first-dance', 'ריקוד ראשון',
+    'איטי, כולם מסתכלים, ואי אפשר לזייף.', 'functional'::public.workout_category,
+    'strength'::public.workout_format,
+    'intermediate'::public.difficulty_level,
+    60, null,
+    array['barbell', 'bench', 'hip_thrust', 'treadmill']::text[], 'אימון טמפו. כל חזרה יורדת בשלוש שניות ועולה בשליטה, בלי תנופה ובלי לזייף את התחתית. זה האימון שבו מתגלה מי באמת שולט במשקל שלו - וכמו בריקוד ראשון, הכול פה במעבר בין הצעדים.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"מוט ריק: דדליפט, משיכה, דחיפה מעל הראש","detail":"5 מכל תרגיל, 2 סבבים"},{"label":"העלאה הדרגתית","detail":"3 סטים של 3, עולים עד המשקל שתעבדו בו"}]'::jsonb, '[{"label":"כוח","detail":"4 סטים של 6, טמפו 3 שניות בירידה. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Back Squat","detail":"6 חזרות"},{"label":"Romanian Deadlift","detail":"6 חזרות"}]},{"label":"מטקון","detail":"3 סבבים, לא לזמן","items":[{"label":"Hip Thrust","detail":"12 חזרות"},{"label":"Bench Press","detail":"10 חזרות"},{"label":"Plank","detail":"45 שניות"}]}]'::jsonb,
+    '[{"label":"מתיחת מיתרי ברך בישיבה","detail":"60 שניות לכל צד"},{"label":"מתיחת שוקיים בקיר","detail":"45 שניות לכל צד"},{"label":"תנוחת ילד עם הושטה לצדדים","detail":"90 שניות"},{"label":"פתיחת גב עליון על הספסל","detail":"60 שניות"}]'::jsonb, '[{"level":"beginner","detail":"משקל גוף בטמפו, 3 סטים."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"טמפו 4 שניות בירידה, שנייה עצירה בתחתית."}]'::jsonb,
+    'weight'::public.score_type, null
+  ),
+  (
+    '57209c15-ed33-402b-9586-99e73edbe821'::uuid, 'seven-blessings', 'שבע ברכות',
+    'שבעה סבבים, ואחרי כל אחד עוד אחד.', 'crossfit'::public.workout_category,
+    'for_time'::public.workout_format,
+    'advanced'::public.difficulty_level,
+    60, 25,
+    array['pullup_bar', 'dumbbell', 'treadmill', 'mat']::text[], 'שבעה סבבים של שבע חזרות. הכמות נראית קטנה על הדף וגדולה בסבב החמישי. המשקל צריך להיות כזה שהסבב האחרון עדיין נראה כמו הראשון.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"תלייה פסיבית במתח","detail":"30 שניות, 2 סבבים"},{"label":"משיכת שכמות בתלייה","detail":"8 חזרות, 2 סבבים"},{"label":"שכיבות סמיכה על הספסל","detail":"10 חזרות, 2 סבבים"}]'::jsonb, '[{"label":"כוח","detail":"לעבוד עד סינגל כבד ליום, בלי לכשול. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Strict Press","detail":"סינגל כבד"}]},{"label":"מטקון","detail":"7 סבבים של 7 חזרות, למהירות","items":[{"label":"Dumbbell Thrusters","detail":"7 חזרות"},{"label":"Pull-ups","detail":"7 חזרות"},{"label":"Burpees","detail":"7 חזרות"}]}]'::jsonb,
+    '[{"label":"מתיחת כתף צולבת","detail":"45 שניות לכל צד"},{"label":"מתיחת תלת ראשי מעל הראש","detail":"45 שניות לכל צד"},{"label":"פתיחת חזה בשכיבה על הספסל","detail":"90 שניות"},{"label":"נשימות עמוקות בישיבה","detail":"2 דקות"}]'::jsonb, '[{"level":"beginner","detail":"5 סבבים, משקולות קלות, משיכות בגומייה."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"7 סבבים בלי לרדת מהמוט."}]'::jsonb,
+    'time'::public.score_type, null
+  ),
+  (
+    '53290e39-433d-482f-ba73-32db32a4e625'::uuid, 'open-bar', 'בר פתוח',
+    'המוט זמין כל הערב. זאת לא בהכרח בשורה טובה.', 'crossfit'::public.workout_category,
+    'strength'::public.workout_format,
+    'advanced'::public.difficulty_level,
+    60, null,
+    array['barbell', 'treadmill']::text[], 'הכול על המוט, מההתחלה ועד הסוף. חמישה מקטעי כוח רצופים עם מנוחות אמיתיות ביניהם. אין פה מטקון להתחבא בו - האימון הוא הטכניקה, וזה בדיוק מה שמקשה.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"מוט ריק: דדליפט, משיכה, דחיפה מעל הראש","detail":"5 מכל תרגיל, 2 סבבים"},{"label":"העלאה הדרגתית","detail":"3 סטים של 3, עולים עד המשקל שתעבדו בו"}]'::jsonb, '[{"label":"כוח","detail":"5 סטים של 3 בכל תרגיל, מנוחה 2 דקות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Power Clean","detail":"3 חזרות"},{"label":"Front Squat","detail":"3 חזרות"},{"label":"Push Press","detail":"3 חזרות"}]},{"label":"מטקון","detail":"10 דקות, קצב נוח","items":[{"label":"הליכון","detail":"10 דקות בעלייה קלה"}]}]'::jsonb,
+    '[{"label":"הליכה קלה על ההליכון","detail":"3 דקות עד שהדופק יורד"},{"label":"נשימת קופסה בשכיבה","detail":"4 שניות פנימה, 4 החזקה, 4 החוצה, 8 סבבים"},{"label":"מתיחת ארבע ראשי בעמידה","detail":"45 שניות לכל צד"},{"label":"מתיחת חזה במשקוף","detail":"45 שניות"}]'::jsonb, '[{"level":"beginner","detail":"מוט ריק לאורך כל האימון, עבודה על מסלול."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"לעלות במשקל בכל סט עד סינגל כבד."}]'::jsonb,
+    'weight'::public.score_type, null
+  ),
+  (
+    '4a6bfa5d-d97d-4d53-bf63-9477998e6dc1'::uuid, 'last-song', 'השיר האחרון',
+    'כולם עייפים, אף אחד לא הולך.', 'crossfit'::public.workout_category,
+    'amrap'::public.workout_format,
+    'intermediate'::public.difficulty_level,
+    60, 12,
+    array['kettlebell', 'mat', 'treadmill']::text[], 'שתים עשרה דקות אחרונות שבהן כבר אין מה לחסוך. קצב אחד לכל האורך, ומי שנשבר בדקה השמינית מסיים עם פחות סבבים ממי שיצא לאט.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"}]'::jsonb, '[{"label":"כוח","detail":"3 סטים של 10, מנוחה 90 שניות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Goblet Squat","detail":"10 חזרות"}]},{"label":"מטקון","detail":"AMRAP 12 דקות","items":[{"label":"Kettlebell Swings","detail":"15 חזרות"},{"label":"Sit-ups","detail":"15 חזרות"},{"label":"הליכון","detail":"200 מטר"}]}]'::jsonb,
+    '[{"label":"הליכה קלה על ההליכון","detail":"3 דקות עד שהדופק יורד"},{"label":"נשימת קופסה בשכיבה","detail":"4 שניות פנימה, 4 החזקה, 4 החוצה, 8 סבבים"},{"label":"מתיחת ארבע ראשי בעמידה","detail":"45 שניות לכל צד"},{"label":"מתיחת חזה במשקוף","detail":"45 שניות"}]'::jsonb, '[{"level":"beginner","detail":"8 דקות, קטלבל קל, 100 מטר בהליכון."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"16 דקות, קטלבל כבד, 400 מטר בהליכון."}]'::jsonb,
+    'rounds_and_reps'::public.score_type, null
+  ),
+  (
+    '3ac8f5b1-cb7c-4087-84a4-8323d403168d'::uuid, 'krantz', 'קראנצ''',
+    'קלוע, מגולגל, ובסוף תמיד קצת יותר ממה שהתכוונתם.', 'functional'::public.workout_category,
+    'circuit'::public.workout_format,
+    'intermediate'::public.difficulty_level,
+    60, null,
+    array['mat', 'pullup_bar', 'kettlebell']::text[], 'האימון של דני, ולכן כולו בטן. קראנץ׳ נקלע שכבה על שכבה, וכך גם זה: כל סבב מוסיף עוד קיפול על מה שכבר עייף. שומרים על הגב התחתון צמוד לרצפה - ברגע שהוא מתרומם, הסט נגמר.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"Dead Bug","detail":"8 לכל צד"},{"label":"Bird Dog","detail":"8 לכל צד"},{"label":"Hollow Hold","detail":"20 שניות, 2 סבבים"}]'::jsonb, '[{"label":"כוח","detail":"4 סטים, מנוחה 90 שניות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Farmer Carry","detail":"40 מטר"},{"label":"Suitcase Carry","detail":"20 מטר לכל צד"}]},{"label":"מטקון","detail":"5 סבבים, מנוחה דקה בין סבבים","items":[{"label":"Hanging Knee Raises","detail":"10 חזרות"},{"label":"Hollow Hold","detail":"30 שניות"},{"label":"Russian Twist","detail":"20 חזרות"},{"label":"Side Plank","detail":"30 שניות לכל צד"}]}]'::jsonb,
+    '[{"label":"מתיחת מיתרי ברך בישיבה","detail":"60 שניות לכל צד"},{"label":"מתיחת שוקיים בקיר","detail":"45 שניות לכל צד"},{"label":"תנוחת ילד עם הושטה לצדדים","detail":"90 שניות"},{"label":"פתיחת גב עליון על הספסל","detail":"60 שניות"}]'::jsonb, '[{"level":"beginner","detail":"הרמות ברך בשכיבה, פלאנק צד מהברכיים, 3 סבבים."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"אצבעות למוט, הולו הולד 45 שניות, 6 סבבים."}]'::jsonb,
+    'rounds_and_reps'::public.score_type, null
+  ),
+  (
+    '93f5d17b-9704-45a5-8c21-36d1ed05b517'::uuid, 'croissant', 'קרואסון',
+    'שלוש קיפולים, הרבה סבלנות, ואסור למהר.', 'pilates'::public.workout_category,
+    'circuit'::public.workout_format,
+    'beginner'::public.difficulty_level,
+    60, null,
+    array['mat', 'bands']::text[], 'בצק עלים נבנה מקיפול, מנוחה, וקיפול נוסף - וזה בדיוק המבנה כאן. כל תרגיל מגלגל את עמוד השדרה חוליה אחר חוליה, והאיטיות היא העבודה ולא ההפסקה ממנה.',
+    '[{"label":"נשימה צידית בשכיבה","detail":"10 נשימות"},{"label":"הטיית אגן","detail":"10 חזרות"},{"label":"Cat-Cow","detail":"8 חזרות"},{"label":"גשר ירך איטי","detail":"10 חזרות"}]'::jsonb, '[{"label":"כוח","detail":"3 סבבים, בשליטה מלאה","items":[{"label":"Roll Up","detail":"8 חזרות"},{"label":"Spine Stretch Forward","detail":"6 חזרות"},{"label":"Swan","detail":"8 חזרות"}]},{"label":"מטקון","detail":"3 סבבים, בלי מנוחה בין תרגילים","items":[{"label":"The Hundred","detail":"סדרה מלאה"},{"label":"Single Leg Stretch","detail":"10 לכל צד"},{"label":"Side Kick Series","detail":"10 לכל צד"}]}]'::jsonb,
+    '[{"label":"תנוחת יונה","detail":"90 שניות לכל צד"},{"label":"מתיחת כופפי ירך בכריעה","detail":"60 שניות לכל צד"},{"label":"פרפר בישיבה","detail":"60 שניות"},{"label":"סיבוב עמוד שדרה בשכיבה","detail":"60 שניות לכל צד"}]'::jsonb, '[{"level":"beginner","detail":"ברכיים כפופות, סבב אחד של כל תרגיל."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"רגליים ישרות, גומייה, 4 סבבים."}]'::jsonb,
+    'completion'::public.score_type, null
+  ),
+  (
+    '86e07269-1161-4997-acb2-44837657d815'::uuid, 'mille-feuille', 'מיל פיי',
+    'אלף שכבות. נספור רק חלק מהן.', 'crossfit'::public.workout_category,
+    'for_time'::public.workout_format,
+    'advanced'::public.difficulty_level,
+    60, 22,
+    array['barbell', 'pullup_bar', 'mat', 'treadmill']::text[], 'סולם יורד: 21-15-9 על שלושה תרגילים, שכבה על שכבה. הסט של 21 הוא זה שקובע את כל השאר, אז חלקו אותו מראש ואל תחכו שהוא יחלק אתכם.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"מוט ריק: דדליפט, משיכה, דחיפה מעל הראש","detail":"5 מכל תרגיל, 2 סבבים"},{"label":"העלאה הדרגתית","detail":"3 סטים של 3, עולים עד המשקל שתעבדו בו"}]'::jsonb, '[{"label":"כוח","detail":"4 סטים של 5, מנוחה 2 דקות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Front Squat","detail":"5 חזרות"}]},{"label":"מטקון","detail":"21-15-9 חזרות, למהירות","items":[{"label":"Thrusters","detail":"מוט"},{"label":"Pull-ups","detail":"משיכות מתח"},{"label":"Sit-ups","detail":"כפיפות בטן"}]}]'::jsonb,
+    '[{"label":"מתיחת כתף צולבת","detail":"45 שניות לכל צד"},{"label":"מתיחת תלת ראשי מעל הראש","detail":"45 שניות לכל צד"},{"label":"פתיחת חזה בשכיבה על הספסל","detail":"90 שניות"},{"label":"נשימות עמוקות בישיבה","detail":"2 דקות"}]'::jsonb, '[{"level":"beginner","detail":"15-12-9, מוט ריק, משיכות בגומייה."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"27-21-15, בלי לרדת מהמוט באמצע סט."}]'::jsonb,
+    'time'::public.score_type, null
+  ),
+  (
+    '4726e9b6-aca3-4320-a4a2-92acb9360db2'::uuid, 'macaron', 'מקרון',
+    'קטן, מדויק, ומתפרק אם ממהרים.', 'functional'::public.workout_category,
+    'tabata'::public.workout_format,
+    'beginner'::public.difficulty_level,
+    60, null,
+    array['mat', 'kettlebell']::text[], 'עשרים שניות עבודה, עשר מנוחה, ארבעה בלוקים. הניקוד הוא סך החזרות - מה שמתגמל קצב אחיד ולא התפרצות בסבב הראשון. מקרון נשבר בדיוק מאותה סיבה.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"}]'::jsonb, '[{"label":"כוח","detail":"3 סטים של 12, מנוחה דקה. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Goblet Squat","detail":"12 חזרות"}]},{"label":"מטקון","detail":"4 × טבאטה, 8 סבבים של 20/10, דקה בין בלוקים","items":[{"label":"בלוק 1","detail":"Kettlebell Swings"},{"label":"בלוק 2","detail":"Air Squats"},{"label":"בלוק 3","detail":"Push-ups"},{"label":"בלוק 4","detail":"Sit-ups"}]}]'::jsonb,
+    '[{"label":"הליכה קלה על ההליכון","detail":"3 דקות עד שהדופק יורד"},{"label":"נשימת קופסה בשכיבה","detail":"4 שניות פנימה, 4 החזקה, 4 החוצה, 8 סבבים"},{"label":"מתיחת ארבע ראשי בעמידה","detail":"45 שניות לכל צד"},{"label":"מתיחת חזה במשקוף","detail":"45 שניות"}]'::jsonb, '[{"level":"beginner","detail":"2 בלוקים, קטלבל קל, שכיבות מהספסל."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"6 בלוקים, קטלבל כבד."}]'::jsonb,
+    'reps'::public.score_type, null
+  ),
+  (
+    'd1dbc524-ad49-4382-9f99-9d3ef7cceab0'::uuid, 'proving-drawer', 'תפיחה',
+    'שום דבר לא קורה, ואז הכול קורה.', 'yoga'::public.workout_category,
+    'circuit'::public.workout_format,
+    'beginner'::public.difficulty_level,
+    60, null,
+    array['mat']::text[], 'שיעור ארוך ואיטי שכולו החזקות. בצק תופח כשמניחים לו, וגם ניידות. אין פה מה למהר אליו - התנוחה עושה את העבודה בדקה השנייה שלה, לא בראשונה.',
+    '[{"label":"נשימת סרעפת בשכיבה","detail":"10 נשימות"},{"label":"Cat-Cow","detail":"10 חזרות"},{"label":"ברכת שמש א׳","detail":"3 סבבים"}]'::jsonb, '[{"label":"כוח","detail":"מחזיקים 90 שניות בכל תנוחה, סבב אחד","items":[{"label":"Virabhadrasana II","detail":"90 שניות לכל צד"},{"label":"Utkatasana","detail":"90 שניות"},{"label":"Vasisthasana","detail":"60 שניות לכל צד"}]},{"label":"מטקון","detail":"מחזיקים 2-3 דקות בכל תנוחה","items":[{"label":"Pigeon","detail":"3 דקות לכל צד"},{"label":"Supta Matsyendrasana","detail":"2 דקות לכל צד"},{"label":"Uttanasana","detail":"2 דקות"}]}]'::jsonb,
+    '[{"label":"Savasana","detail":"6 דקות"}]'::jsonb, '[{"level":"beginner","detail":"החזקות של 45 שניות, תמיכה בגליל או בשמיכה."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"החזקות של 4 דקות בתנוחות הארוכות."}]'::jsonb,
+    'completion'::public.score_type, null
+  ),
+  (
+    '164ade7e-d710-4c98-908f-c3f440856b9a'::uuid, 'lemon-tart', 'טארט לימון',
+    'חמוץ בהתחלה, ואחר כך עוד יותר.', 'crossfit'::public.workout_category,
+    'emom'::public.workout_format,
+    'intermediate'::public.difficulty_level,
+    60, null,
+    array['dumbbell', 'pullup_bar', 'treadmill']::text[], 'EMOM של 24 דקות. הדקה הראשונה תמיד מרגישה קלה מדי וזאת המלכודת - בדקה השתים עשרה המנוחה מצטמצמת לבד, בלי שאף אחד שינה את הכללים.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"},{"label":"תלייה פסיבית במתח","detail":"30 שניות, 2 סבבים"},{"label":"משיכת שכמות בתלייה","detail":"8 חזרות, 2 סבבים"},{"label":"שכיבות סמיכה על הספסל","detail":"10 חזרות, 2 סבבים"}]'::jsonb, '[{"label":"כוח","detail":"5 סטים של 5, מנוחה 2 דקות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Bent-over Row","detail":"5 חזרות"}]},{"label":"מטקון","detail":"EMOM 24 דקות, מחזור של שלוש דקות","items":[{"label":"דקה 1","detail":"Dumbbell Snatch, 12 חזרות"},{"label":"דקה 2","detail":"Pull-ups, 8 חזרות"},{"label":"דקה 3","detail":"הליכון, 200 מטר"}]}]'::jsonb,
+    '[{"label":"מתיחת כתף צולבת","detail":"45 שניות לכל צד"},{"label":"מתיחת תלת ראשי מעל הראש","detail":"45 שניות לכל צד"},{"label":"פתיחת חזה בשכיבה על הספסל","detail":"90 שניות"},{"label":"נשימות עמוקות בישיבה","detail":"2 דקות"}]'::jsonb, '[{"level":"beginner","detail":"12 דקות, משקולת קלה, משיכות בגומייה."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"30 דקות, משקולת כבדה."}]'::jsonb,
+    'completion'::public.score_type, null
+  ),
+  (
+    'd2a5df76-8de9-430c-94c0-2830c62ed0fa'::uuid, 'babka', 'בבקה',
+    'מגולגל פעמיים, ואז חותכים לאורך.', 'functional'::public.workout_category,
+    'circuit'::public.workout_format,
+    'intermediate'::public.difficulty_level,
+    60, null,
+    array['kettlebell', 'dumbbell', 'bench', 'mat']::text[], 'שני סבבים שנכרכים זה בזה - כל תרגיל דוחף וכל תרגיל שאחריו מושך. זה אימון שמרגיש מאוזן בסוף ולא בהתחלה, וזאת המטרה.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"}]'::jsonb, '[{"label":"כוח","detail":"4 סבבים, מנוחה 90 שניות. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Dumbbell Bench Press","detail":"8 חזרות"},{"label":"Dumbbell Row","detail":"8 לכל יד"}]},{"label":"מטקון","detail":"4 סבבים, מנוחה דקה","items":[{"label":"Kettlebell Swings","detail":"15 חזרות"},{"label":"Renegade Rows","detail":"8 לכל צד"},{"label":"Bench Step-ups","detail":"10 לכל רגל"},{"label":"Plank Shoulder Taps","detail":"20 חזרות"}]}]'::jsonb,
+    '[{"label":"מתיחת מיתרי ברך בישיבה","detail":"60 שניות לכל צד"},{"label":"מתיחת שוקיים בקיר","detail":"45 שניות לכל צד"},{"label":"תנוחת ילד עם הושטה לצדדים","detail":"90 שניות"},{"label":"פתיחת גב עליון על הספסל","detail":"60 שניות"}]'::jsonb, '[{"level":"beginner","detail":"3 סבבים, משקולות קלות, רנגייד מהברכיים."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"5 סבבים, משקולות כבדות."}]'::jsonb,
+    'rounds_and_reps'::public.score_type, null
+  ),
+  (
+    'cc604411-a788-45bf-a0e9-8deb1ff37acd'::uuid, 'eclair', 'אקלר',
+    'ארוך, ישר, ובפנים זה רך.', 'functional'::public.workout_category,
+    'for_time'::public.workout_format,
+    'beginner'::public.difficulty_level,
+    60, null,
+    array['treadmill', 'mat', 'bench']::text[], 'אימון אירובי ארוך עם עצירות קצרות. הקצב על ההליכון צריך להיות כזה שאפשר לדבר בו - אם אי אפשר, הורידו. האורך הוא העבודה, לא המהירות.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"}]'::jsonb, '[{"label":"כוח","detail":"3 סבבים, לא לזמן","items":[{"label":"Bench Step-ups","detail":"15 לכל רגל"},{"label":"Push-ups","detail":"12 חזרות"}]},{"label":"מטקון","detail":"4 סבבים, למהירות","items":[{"label":"הליכון","detail":"800 מטר"},{"label":"Sit-ups","detail":"20 חזרות"},{"label":"Air Squats","detail":"20 חזרות"}]}]'::jsonb,
+    '[{"label":"הליכה קלה על ההליכון","detail":"3 דקות עד שהדופק יורד"},{"label":"נשימת קופסה בשכיבה","detail":"4 שניות פנימה, 4 החזקה, 4 החוצה, 8 סבבים"},{"label":"מתיחת ארבע ראשי בעמידה","detail":"45 שניות לכל צד"},{"label":"מתיחת חזה במשקוף","detail":"45 שניות"}]'::jsonb, '[{"level":"beginner","detail":"3 סבבים של 400 מטר."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"5 סבבים, קצב מרוץ."}]'::jsonb,
+    'time'::public.score_type, null
+  ),
+  (
+    'e0036194-4616-413e-ac0f-7d6ad96c6b50'::uuid, 'rugelach', 'רוגלך',
+    'קטנים, ואי אפשר לאכול רק אחד.', 'crossfit'::public.workout_category,
+    'amrap'::public.workout_format,
+    'beginner'::public.difficulty_level,
+    60, null,
+    array['kettlebell', 'mat', 'bench']::text[], 'סבבים קצרצרים שנערמים. כל סבב לוקח פחות מדקה, ובדיוק בגלל זה קשה לעצור - וזאת בדיוק הבעיה בדקה החמש עשרה.',
+    '[{"label":"הליכון","detail":"4 דקות בעלייה קלה, מסיימים בקצב נשימה מהיר"},{"label":"סיבובי כתפיים, ירך וקרסול","detail":"10 לכל כיוון"},{"label":"סקוואט משקל גוף","detail":"15 חזרות"},{"label":"גשר ירך","detail":"15 חזרות"}]'::jsonb, '[{"label":"כוח","detail":"4 סטים של 10, מנוחה דקה. המשקל שלכם. עולים כל עוד החזרה האחרונה נראית כמו הראשונה.","items":[{"label":"Kettlebell Deadlift","detail":"10 חזרות"}]},{"label":"מטקון","detail":"AMRAP 15 דקות","items":[{"label":"Kettlebell Swings","detail":"10 חזרות"},{"label":"Push-ups","detail":"5 חזרות"},{"label":"Air Squats","detail":"10 חזרות"}]}]'::jsonb,
+    '[{"label":"תנוחת יונה","detail":"90 שניות לכל צד"},{"label":"מתיחת כופפי ירך בכריעה","detail":"60 שניות לכל צד"},{"label":"פרפר בישיבה","detail":"60 שניות"},{"label":"סיבוב עמוד שדרה בשכיבה","detail":"60 שניות לכל צד"}]'::jsonb, '[{"level":"beginner","detail":"10 דקות, קטלבל קל."},{"level":"intermediate","detail":"לפי הפרוטוקול."},{"level":"advanced","detail":"20 דקות, קטלבל כבד."}]'::jsonb,
+    'rounds_and_reps'::public.score_type, null
   )
   ) as v (
     id, slug, title, subtitle, category, format, difficulty,

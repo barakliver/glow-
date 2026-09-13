@@ -31,6 +31,8 @@ import {
   VolumeBarChart,
 } from '@/components/charts/progress-charts';
 import { PR_LABELS, type PersonalRecord } from '@/lib/domain/progress';
+import { avocadoBrag } from '@/lib/domain/avocado';
+import { AvocadoGlyph } from '@/components/brand/avocado-glyph';
 import { formatHebrewFullDate } from '@/lib/time';
 import { cn, num } from '@/lib/utils';
 import { RipenessDetail } from '@/components/score/ripeness-detail';
@@ -140,7 +142,13 @@ export function ProgressView({
           href="/schedule"
         />
         <StatCard icon={Timer} label="דקות אימון" value={num(stats.minutes)} href="/tracking" />
-        <StatCard icon={TrendingUp} label='נפח אימון (ק"ג)' value={num(stats.volume)} href="#charts" />
+        <StatCard
+          icon={TrendingUp}
+          label='נפח אימון (ק"ג)'
+          value={num(stats.volume)}
+          aside={avocadoBrag(stats.volume)}
+          href="#charts"
+        />
         <StatCard
           icon={Gauge}
           label="מאמץ ממוצע"
@@ -338,11 +346,14 @@ function StatCard({
   label,
   value,
   href,
+  aside,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
   href?: string;
+  /** The same figure in the club's own unit. Never instead of the figure. */
+  aside?: string | null;
 }) {
   const body = (
     <>
@@ -352,6 +363,12 @@ function StatCard({
       </div>
       <p className="stat-value mt-1.5">{value}</p>
       <p className="label-muted">{label}</p>
+      {aside && (
+        <p className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-champagne/80">
+          <AvocadoGlyph size={11} filled className="text-champagne/80" />
+          {aside}
+        </p>
+      )}
     </>
   );
 
