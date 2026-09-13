@@ -12,7 +12,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-accent text-white hover:bg-accent-pressed active:bg-accent-pressed',
+          'bg-accent text-primary-foreground hover:bg-accent-pressed active:bg-accent-pressed',
         secondary: 'bg-raised text-ink border border-line hover:border-accent/40 hover:bg-raised/80',
         ghost: 'text-ink hover:bg-raised',
         outline: 'border border-line bg-transparent text-ink hover:bg-raised',

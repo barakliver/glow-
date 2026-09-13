@@ -32,7 +32,7 @@ export function VolumeBarChart({
         <XAxis dataKey="label" tick={AXIS} tickLine={false} axisLine={{ stroke: GRID }} reversed />
         <YAxis tick={AXIS} tickLine={false} axisLine={false} width={46} orientation="right" />
         <Tooltip
-          cursor={{ fill: 'rgba(91,132,255,0.08)' }}
+          cursor={{ fill: 'rgba(217,198,140,0.10)' }}
           contentStyle={{
             background: '#151A17',
             border: '1px solid #29322D',
@@ -43,7 +43,7 @@ export function VolumeBarChart({
         />
         <Bar dataKey="value" radius={[6, 6, 0, 0]}>
           {data.map((entry, index) => (
-            <Cell key={index} fill={entry.value > 0 ? '#5B84FF' : '#2A2C26'} />
+            <Cell key={index} fill={entry.value > 0 ? '#D9C68C' : '#2A2C26'} />
           ))}
         </Bar>
       </BarChart>
@@ -108,9 +108,9 @@ export function TrendLineChart({
         <Line
           type="monotone"
           dataKey="value"
-          stroke="#5B84FF"
+          stroke="#D9C68C"
           strokeWidth={2.5}
-          dot={{ r: 3, fill: '#5B84FF', strokeWidth: 0 }}
+          dot={{ r: 3, fill: '#D9C68C', strokeWidth: 0 }}
           activeDot={{ r: 5 }}
         />
       </LineChart>
@@ -124,7 +124,7 @@ export function BalanceRadarChart({ data }: { data: { label: string; value: numb
       <RadarChart data={data} outerRadius="72%">
         <PolarGrid stroke={GRID} />
         <PolarAngleAxis dataKey="label" tick={{ fill: '#ADB7B0', fontSize: 11 }} />
-        <Radar dataKey="value" stroke="#5B84FF" fill="#5B84FF" fillOpacity={0.25} />
+        <Radar dataKey="value" stroke="#D9C68C" fill="#D9C68C" fillOpacity={0.25} />
       </RadarChart>
     </ResponsiveContainer>
   );

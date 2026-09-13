@@ -29,15 +29,19 @@ const config: Config = {
         /* Lifted from #A6A79B: secondary text was the weakest thing on screen. */
         muted: '#9FA396',
         accent: {
-          /* True royal blue for fills. */
-          DEFAULT: '#4169E1',
-          pressed: '#3355C6',
           /*
-           * Royal blue is too dark to use as text on a near-black surface -
-           * it lands at 3.7:1, under the 4.5:1 a body-sized label needs. This
-           * lighter tint is the same blue for reading, at 7:1.
+           * The club's own warm gold, taken from the logo.
+           *
+           * Royal blue was the one thing on screen with nothing to do with the
+           * mark - a cold accent under a warm slate line drawing reads as two
+           * brands sharing a page. Gold on near-black lands around 11:1, so it
+           * carries text and fills alike, and a fill takes dark ink rather
+           * than white.
            */
-          ink: '#7CA0FF',
+          DEFAULT: '#D9C68C',
+          pressed: '#C0A85F',
+          /* A shade up, for long runs of accent-coloured text. */
+          ink: '#E7D9AC',
         },
         /* Reserved for moments worth marking: a record, a streak, a milestone. */
         champagne: '#D9C68C',
@@ -51,10 +55,10 @@ const config: Config = {
         /* shadcn tokens mapped onto the GLoW palette */
         border: '#262A24',
         input: '#262A24',
-        ring: '#7CA0FF',
+        ring: '#E7D9AC',
         background: '#0E100E',
         foreground: '#F4F2EC',
-        primary: { DEFAULT: '#4169E1', foreground: '#FFFFFF' },
+        primary: { DEFAULT: '#D9C68C', foreground: '#0E100E' },
         secondary: { DEFAULT: '#1F2320', foreground: '#F4F2EC' },
         destructive: { DEFAULT: '#FF776D', foreground: '#0E100E' },
         popover: { DEFAULT: '#161917', foreground: '#F4F2EC' },
@@ -88,7 +92,7 @@ const config: Config = {
          * surface and a soft drop, and the accent is left to the one control
          * that actually wants the eye.
          */
-        glow: '0 0 0 1px rgba(124,160,255,0.32)',
+        glow: '0 0 0 1px rgba(217,198,140,0.32)',
         'glow-soft': '0 8px 24px -14px rgba(0,0,0,0.9)',
         card: '0 1px 0 0 rgba(255,255,255,0.028), 0 18px 44px -28px rgba(0,0,0,0.9)',
         /* For the one element that should feel like it is floating. */
@@ -104,8 +108,8 @@ const config: Config = {
           to: { height: '0' },
         },
         pulseGlow: {
-          '0%,100%': { boxShadow: '0 0 0 1px rgba(124,160,255,0.30), 0 0 20px -8px rgba(124,160,255,0.35)' },
-          '50%': { boxShadow: '0 0 0 1px rgba(124,160,255,0.55), 0 0 34px -4px rgba(124,160,255,0.60)' },
+          '0%,100%': { boxShadow: '0 0 0 1px rgba(217,198,140,0.30), 0 0 20px -8px rgba(217,198,140,0.35)' },
+          '50%': { boxShadow: '0 0 0 1px rgba(217,198,140,0.55), 0 0 34px -4px rgba(217,198,140,0.60)' },
         },
         shimmer: {
           '100%': { transform: 'translateX(-100%)' },

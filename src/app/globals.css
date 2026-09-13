@@ -52,7 +52,7 @@
   }
 
   ::selection {
-    background: rgba(91, 132, 255, 0.24);
+    background: rgba(217,198,140, 0.28);
     color: #f6f3eb;
   }
 
@@ -85,7 +85,7 @@
 
   /* Marks the one thing on screen that is live or chosen. Nothing else. */
   .glow-ring {
-    box-shadow: 0 0 0 1px rgba(91, 132, 255, 0.34);
+    box-shadow: 0 0 0 1px rgba(217,198,140, 0.34);
   }
 
   /*

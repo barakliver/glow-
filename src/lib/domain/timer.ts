@@ -186,9 +186,9 @@ export function seekPhase(
 
 export const PHASE_TONE: Record<TimerPhaseKind, { color: string; ring: string }> = {
   prepare: { color: '#F4C45E', ring: 'rgba(244,196,94,0.45)' },
-  work: { color: '#5B84FF', ring: 'rgba(91,132,255,0.5)' },
+  work: { color: '#D9C68C', ring: 'rgba(217,198,140,0.5)' },
   rest: { color: '#70E1A3', ring: 'rgba(112,225,163,0.45)' },
   rest_set: { color: '#70E1A3', ring: 'rgba(112,225,163,0.35)' },
   cooldown: { color: '#A6A79B', ring: 'rgba(166,167,155,0.35)' },
-  done: { color: '#5B84FF', ring: 'rgba(91,132,255,0.55)' },
+  done: { color: '#D9C68C', ring: 'rgba(217,198,140,0.55)' },
 };
