@@ -48,7 +48,7 @@ export function CheckInScreen({
       id="main"
       className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-5 px-5 py-10"
     >
-      <Logo size="lg" className="justify-center" />
+      <Logo size="lg" stacked className="justify-center" />
 
       <section className="surface p-5 text-center">
         <h1 className="text-xl font-extrabold">{title}</h1>

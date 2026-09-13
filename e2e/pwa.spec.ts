@@ -34,6 +34,76 @@ test.describe('installable app', () => {
     }
   });
 
+  /*
+   * The icons the manifest lists are not the only ones the app claims. The
+   * favicon, the Apple touch icon and the link-preview card are declared in
+   * the document head, and a path there that points at nothing fails silently:
+   * the browser just shows its default and nobody notices for a year.
+   */
+  test('every icon the page declares is actually served', async ({ page, request }) => {
+    await page.goto('/auth/sign-in');
+
+    const declared = await page.evaluate(() => [
+      ...[...document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]')].map(
+        (node) => (node as HTMLLinkElement).getAttribute('href') ?? '',
+      ),
+      ...[...document.querySelectorAll('meta[property="og:image"], meta[name="twitter:image"]')].map(
+        (node) => node.getAttribute('content') ?? '',
+      ),
+    ]);
+
+    expect(declared.length).toBeGreaterThanOrEqual(4);
+    for (const url of declared) {
+      expect(url, 'an icon was declared with no URL').not.toBe('');
+      /* Social scrapers do not resolve relative URLs, so the preview card has
+       * to be absolute - but the test server is not on the configured host,
+       * so fetch it back by path. */
+      const path = url.startsWith('http') ? new URL(url).pathname : url;
+      const response = await request.get(path);
+      expect(response.ok(), `${url} should be served`).toBe(true);
+      expect(Number(response.headers()['content-length'] ?? '1')).toBeGreaterThan(0);
+    }
+
+    for (const selector of ['meta[property="og:image"]', 'meta[name="twitter:image"]']) {
+      const value = await page.locator(selector).getAttribute('content');
+      expect(value, `${selector} must be absolute`).toMatch(/^https?:\/\//);
+    }
+
+    // iOS only probes the site root when a page declares no Apple icon of its
+    // own, so an icon parked under /icons/ and never referenced is invisible.
+    await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+      'href',
+      '/apple-touch-icon.png',
+    );
+    expect((await request.get('/apple-touch-icon.png')).ok()).toBe(true);
+  });
+
+  /*
+   * Invite links get pasted into WhatsApp, which unfurls them into a card. The
+   * card has to be the club's, not the invitee's: nothing about who was
+   * invited, who invited them, or what is on the schedule.
+   */
+  test('a shared invite link previews as the club, not as the member', async ({ page }) => {
+    await page.goto('/auth/sign-in');
+    const brandCard = await page
+      .locator('meta[property="og:image"]')
+      .getAttribute('content');
+
+    await page.goto('/invite/not-a-real-token');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      'content',
+      String(brandCard),
+    );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+
+    const card = await page.evaluate(() =>
+      [...document.querySelectorAll('meta[property^="og:"], meta[name^="twitter:"]')]
+        .map((node) => node.getAttribute('content') ?? '')
+        .join(' '),
+    );
+    expect(card).not.toContain('not-a-real-token');
+  });
+
   test('service worker is served uncached and scoped to the whole app', async ({ request }) => {
     const response = await request.get('/sw.js');
     expect(response.ok()).toBe(true);

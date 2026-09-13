@@ -25,7 +25,7 @@ export default async function WaitingPage() {
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-6 px-4 py-10">
-      <Logo size="lg" className="justify-center" />
+      <Logo size="lg" stacked className="justify-center" />
 
       <div className="surface space-y-3 p-5 text-center">
         <span

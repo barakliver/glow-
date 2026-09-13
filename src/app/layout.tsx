@@ -4,6 +4,7 @@ import { ToastProvider } from '@/components/ui/toast';
 import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
 import { OfflineSync } from '@/components/pwa/offline-sync';
 import { buildId } from '@/lib/build-id';
+import { APP_URL } from '@/lib/env';
 import './globals.css';
 
 const heebo = Heebo({
@@ -33,12 +34,17 @@ const manrope = Manrope({
   weight: ['400', '600', '700', '800'],
 });
 
+const TITLE = 'GLoW · מועדון אימונים פרטי';
+const DESCRIPTION = 'לוח אימונים שבועי, רישום לשיעורים, מעקב ביצועים וטיימר אינטרוולים.';
+
 export const metadata: Metadata = {
+  /* Social scrapers need absolute URLs; this is what Next resolves them against. */
+  metadataBase: new URL(APP_URL),
   title: {
-    default: 'GLoW · מועדון אימונים פרטי',
+    default: TITLE,
     template: '%s · GLoW',
   },
-  description: 'לוח אימונים שבועי, רישום לשיעורים, מעקב ביצועים וטיימר אינטרוולים.',
+  description: DESCRIPTION,
   applicationName: 'GLoW',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
@@ -47,14 +53,29 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
   },
   icons: {
-    icon: [{ url: '/icons/icon.svg', type: 'image/svg+xml' }],
-    apple: [{ url: '/icons/icon-192.png', sizes: '192x192' }],
+    icon: [{ url: '/icons/favicon.png', type: 'image/png', sizes: '64x64' }],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
+  /*
+   * Invite links are pasted into WhatsApp, so every one of them unfurls into a
+   * card. The card is the same for every link: the mark, the club's name and
+   * one line about the app. It never carries the inviter, the member or
+   * anything about who the link was meant for.
+   */
+  openGraph: {
+    type: 'website',
+    siteName: 'GLoW',
+    locale: 'he_IL',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'GLoW' }],
+  },
+  twitter: { card: 'summary_large_image', title: TITLE, description: DESCRIPTION, images: ['/og.png'] },
   formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0D100F',
+  themeColor: '#0E100E',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',

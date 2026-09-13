@@ -68,7 +68,7 @@ export function OnboardingForm({
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
       <div className="mb-7 text-center">
-        <Logo size="lg" className="justify-center" />
+        <Logo size="lg" stacked className="justify-center" />
         <h1 className="mt-4 text-xl font-extrabold">כמה פרטים ונתחיל</h1>
         <p className="mt-1 text-sm text-muted">
           השם והטלפון משמשים את המאמן בלבד ואינם מוצגים במקומות ציבוריים.

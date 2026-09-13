@@ -111,7 +111,7 @@ export function SignInForm({
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
       <div className="mb-8 text-center">
-        <Logo size="xl" className="justify-center" />
+        <Logo size="xl" stacked className="justify-center" />
         <p className="mt-3 text-sm text-muted">מועדון אימונים פרטי · בהזמנה בלבד</p>
       </div>
 

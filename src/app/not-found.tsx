@@ -9,7 +9,7 @@ export default function NotFound() {
       id="main"
       className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center gap-4 px-5 text-center"
     >
-      <Logo size="lg" />
+      <Logo size="lg" stacked />
       <div className="flex size-14 items-center justify-center rounded-full bg-raised">
         <SearchX className="size-7 text-muted" aria-hidden />
       </div>

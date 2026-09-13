@@ -13,7 +13,7 @@ const SHELL_CACHE = `${VERSION}-shell`;
 const ASSET_CACHE = `${VERSION}-assets`;
 
 /* Routes that must survive a dead connection. */
-const PRECACHE_ROUTES = ['/offline', '/timer', '/workout', '/manifest.webmanifest', '/icons/icon.svg'];
+const PRECACHE_ROUTES = ['/offline', '/timer', '/workout', '/manifest.webmanifest', '/icons/icon-192.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

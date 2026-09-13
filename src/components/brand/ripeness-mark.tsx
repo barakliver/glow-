@@ -35,9 +35,15 @@ export function RipenessMark({
       aria-label={title ?? `בשלות ${Math.round(level * 100)} אחוז`}
     >
       <defs>
+        {/*
+          Warm light rather than lime. The club mark is a slate line drawing;
+          a neon avocado sitting under it in the same card was two brands on
+          one screen. Ripeness now reads as the fruit filling with the same
+          off-white the mark is drawn in, warming to champagne at the top.
+        */}
         <linearGradient id={`ripe-${id}`} x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stop-color="#C7FF4A" />
-          <stop offset="1" stop-color="#EAFFB4" />
+          <stop offset="0" stop-color="#F4F2EC" />
+          <stop offset="1" stop-color="#D9C68C" />
         </linearGradient>
         <clipPath id={`body-${id}`}>
           <path d="M64 18c-9 0-15 8-15 18 0 7-4 11-8 16-6 8-10 17-10 27 0 20 15 33 33 33s33-13 33-33c0-10-4-19-10-27-4-5-8-9-8-16 0-10-6-18-15-18z" />
@@ -46,7 +52,7 @@ export function RipenessMark({
 
       {/* unripe body */}
       <g clipPath={`url(#body-${id})`}>
-        <rect x="0" y="0" width="128" height="128" fill="#29322D" />
+        <rect x="0" y="0" width="128" height="128" fill="#1F2320" />
         <rect x="0" y={fillTop} width="128" height="128" fill={`url(#ripe-${id})`} />
       </g>
 
@@ -54,20 +60,20 @@ export function RipenessMark({
       <path
         d="M64 18c-9 0-15 8-15 18 0 7-4 11-8 16-6 8-10 17-10 27 0 20 15 33 33 33s33-13 33-33c0-10-4-19-10-27-4-5-8-9-8-16 0-10-6-18-15-18z"
         fill="none"
-        stroke="#A8DC32"
-        strokeOpacity={0.55}
-        strokeWidth="4"
+        stroke="#F4F2EC"
+        strokeOpacity={0.7}
+        strokeWidth="3.5"
       />
 
-      {/* stone */}
-      <circle cx="64" cy="84" r="17" fill="#3F2610" />
-      <circle cx="64" cy="84" r="17" fill="none" stroke="#0D100F" strokeOpacity={0.5} strokeWidth="2" />
+      {/* The stone, drawn rather than filled - the mark outlines it too. */}
+      <circle cx="64" cy="84" r="17" fill="#1F2320" fillOpacity={0.55} />
+      <circle cx="64" cy="84" r="17" fill="none" stroke="#F4F2EC" strokeOpacity={0.75} strokeWidth="3" />
       <path
         d="M54 76a14 14 0 0 1 9-5"
         fill="none"
-        stroke="#FFFFFF"
-        strokeOpacity={0.25}
-        strokeWidth="3"
+        stroke="#F4F2EC"
+        strokeOpacity={0.5}
+        strokeWidth="2.5"
         strokeLinecap="round"
       />
     </svg>

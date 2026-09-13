@@ -8,18 +8,45 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0D100F",
-  "theme_color": "#0D100F",
-  "categories": ["health", "fitness", "lifestyle"],
+  "background_color": "#0E100E",
+  "theme_color": "#0E100E",
+  "categories": [
+    "health",
+    "fitness",
+    "lifestyle"
+  ],
   "icons": [
-    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
-    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "לוח שבועי", "url": "/schedule" },
-    { "name": "טיימר טבאטה", "url": "/timer" },
-    { "name": "אימון", "url": "/workout" }
+    {
+      "name": "לוח שבועי",
+      "url": "/schedule"
+    },
+    {
+      "name": "טיימר טבאטה",
+      "url": "/timer"
+    },
+    {
+      "name": "אימון",
+      "url": "/workout"
+    }
   ]
 }

@@ -69,7 +69,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
     const error = ERRORS[state.status];
     return (
       <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-5 px-5 py-10">
-        <Logo size="lg" className="justify-center" />
+        <Logo size="lg" stacked className="justify-center" />
         <EmptyState icon={CalendarOff} title={error.title} description={error.description} />
         <Button variant="secondary" block asChild>
           <Link href="/auth/sign-in">כניסה לחשבון קיים</Link>
@@ -90,7 +90,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
   return (
     <main id="main" className="mx-auto w-full max-w-2xl px-4 py-8">
       <header className="text-center">
-        <Logo size="xl" className="justify-center" />
+        <Logo size="xl" stacked className="justify-center" />
         <p className="mt-3 text-sm text-muted">{state.label}</p>
         <h1 className="mt-1 display text-2xl tracking-tight">
           הוזמנתם ללוח האימונים של {state.organizationName}
