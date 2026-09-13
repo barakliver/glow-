@@ -103,7 +103,7 @@ export default async function TemplatePage({ params }: { params: Promise<{ id: s
                 </div>
                 {item.trainer_notes && (
                   <p className="mt-2 flex items-start gap-1.5 rounded-md border border-line bg-raised p-2.5 text-xs text-muted">
-                    <Info className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />
+                    <Info className="mt-0.5 size-3.5 shrink-0 text-accent-ink" aria-hidden />
                     {item.trainer_notes}
                   </p>
                 )}

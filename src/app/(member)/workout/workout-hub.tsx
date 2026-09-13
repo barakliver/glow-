@@ -134,7 +134,7 @@ export function WorkoutHub({
 
       {activeSession && (
         <section className="rounded-lg border border-accent bg-accent/10 p-4 shadow-glow-soft">
-          <p className="text-xs font-bold text-accent">יש לך אימון פעיל</p>
+          <p className="text-xs font-bold text-accent-ink">יש לך אימון פעיל</p>
           <h2 className="mt-0.5 text-lg font-extrabold">{activeSession.title}</h2>
           <p className="mt-1 text-xs text-muted">
             האימון נשמר אוטומטית. אפשר להמשיך בדיוק מאיפה שעצרתם.
@@ -208,7 +208,7 @@ export function WorkoutHub({
                   className={cn(
                     'h-10 flex-1 rounded-md border text-xs font-bold transition-all',
                     minutes === 'auto'
-                      ? 'border-accent bg-accent/12 text-accent'
+                      ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
                   )}
                 >
@@ -223,7 +223,7 @@ export function WorkoutHub({
                     className={cn(
                       'num h-10 flex-1 rounded-md border text-xs font-bold transition-all',
                       minutes === value
-                        ? 'border-accent bg-accent/12 text-accent'
+                        ? 'border-accent bg-accent/12 text-accent-ink'
                         : 'border-line bg-raised text-muted',
                     )}
                   >

@@ -31,7 +31,7 @@ const TONE_ICON: Record<ToastTone, React.ReactNode> = {
   success: <CheckCircle2 className="size-5 text-success" aria-hidden />,
   error: <XCircle className="size-5 text-danger" aria-hidden />,
   warning: <AlertTriangle className="size-5 text-warning" aria-hidden />,
-  info: <Info className="size-5 text-accent" aria-hidden />,
+  info: <Info className="size-5 text-accent-ink" aria-hidden />,
 };
 
 const TONE_BORDER: Record<ToastTone, string> = {

@@ -52,7 +52,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-bold">{formatHebrewDate(gymClass.starts_at)}</p>
-            <p className="num mt-0.5 display text-2xl tracking-tight text-accent">
+            <p className="num mt-0.5 display text-2xl tracking-tight text-accent-ink">
               {formatTime(gymClass.starts_at)}–{formatTime(gymClass.ends_at)}
             </p>
           </div>

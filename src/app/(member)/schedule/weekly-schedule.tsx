@@ -240,7 +240,7 @@ export function WeeklySchedule({
                   className={cn(
                     'flex min-h-[68px] w-[52px] shrink-0 flex-col items-center justify-center gap-0.5 rounded-md border px-1 py-2 transition-all',
                     active
-                      ? 'border-accent bg-accent/12 text-accent shadow-glow-soft'
+                      ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                       : 'border-line bg-surface text-muted hover:text-ink',
                   )}
                 >
@@ -253,7 +253,7 @@ export function WeeklySchedule({
                   <span
                     className={cn(
                       'num text-[10px] font-semibold',
-                      today && !active && 'text-accent',
+                      today && !active && 'text-accent-ink',
                     )}
                   >
                     {today ? 'היום' : count > 0 ? `${count}` : '·'}
@@ -337,7 +337,7 @@ export function WeeklySchedule({
                         )}
                       >
                         <Link href={`/classes/${gymClass.id}`} className="block px-2.5 pb-1.5 pt-2">
-                          <span className="num block text-xs font-bold text-accent">
+                          <span className="num block text-xs font-bold text-accent-ink">
                             {new Date(gymClass.starts_at).toLocaleTimeString('he-IL', {
                               hour: '2-digit',
                               minute: '2-digit',

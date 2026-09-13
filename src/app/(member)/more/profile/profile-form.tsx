@@ -107,7 +107,7 @@ export function ProfileForm({
                 className={cn(
                   'min-h-[48px] rounded-md border px-2 text-sm font-semibold transition-all',
                   selectedLevel === option.value
-                    ? 'border-accent bg-accent/12 text-accent shadow-glow-soft'
+                    ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                     : 'border-line bg-raised text-muted',
                 )}
               >

@@ -13,17 +13,15 @@ import type { ActionResult } from '@/app/actions/booking';
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
 /**
- * Demo-mode sign-in by email address.
+ * Sign-in by email address: a one-time link, no password.
  *
- * The club itself is Google-only. This exists so the app is usable with no
- * Supabase behind it, and it refuses to run anywhere else - a server action is
- * reachable directly, so leaving a second way in would be a way around the one
- * the club actually chose.
+ * Kept alongside Google deliberately. Google depends on a provider
+ * configuration that can be wrong in ways the club cannot see from inside the
+ * app, and a private club with one way in has no way in at all on the day that
+ * breaks. Both paths land on the same callback and the same approval rules, so
+ * neither is a way around the other.
  */
 export async function signInWithEmailAction(formData: FormData): Promise<ActionResult> {
-  if (!isDemoMode()) {
-    return { ok: false, message: 'הכניסה למועדון נעשית עם חשבון Google.' };
-  }
 
   const parsed = signInSchema.safeParse({
     email: formData.get('email'),

@@ -45,7 +45,7 @@ export default async function MorePage() {
       <PageHeader title="עוד" />
 
       <section className="surface flex items-center gap-3 p-4">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent/12 text-lg font-extrabold text-accent">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent/12 text-lg font-extrabold text-accent-ink">
           {user.profile.full_name.charAt(0)}
         </div>
         <div className="min-w-0 flex-1">
@@ -64,7 +64,7 @@ export default async function MorePage() {
           href="/admin"
           className="flex items-center gap-3 rounded-lg border border-accent/45 bg-surface p-4 shadow-glow-soft transition-colors hover:bg-raised"
         >
-          <Shield className="size-5 text-accent" aria-hidden />
+          <Shield className="size-5 text-accent-ink" aria-hidden />
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold">אזור ניהול</p>
             <p className="text-xs text-muted">לוח שבועי, מתאמנים, תבניות והזמנות</p>

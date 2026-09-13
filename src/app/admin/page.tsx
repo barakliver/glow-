@@ -69,7 +69,7 @@ export default async function AdminDashboard({
               aria-current={days === value ? 'page' : undefined}
               className={`num rounded-md border px-3 py-2 text-xs font-bold transition-colors ${
                 days === value
-                  ? 'border-accent bg-accent/12 text-accent'
+                  ? 'border-accent bg-accent/12 text-accent-ink'
                   : 'border-line bg-surface text-muted hover:text-ink'
               }`}
             >

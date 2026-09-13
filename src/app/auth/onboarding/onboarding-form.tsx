@@ -117,7 +117,7 @@ export function OnboardingForm({
                 className={cn(
                   'min-h-[48px] rounded-md border px-2 py-2 text-sm font-semibold transition-all',
                   level === option.value
-                    ? 'border-accent bg-accent/12 text-accent shadow-glow-soft'
+                    ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                     : 'border-line bg-raised text-muted hover:text-ink',
                 )}
               >

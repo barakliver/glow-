@@ -187,7 +187,7 @@ export function ClassForm({
                   className={cn(
                     'h-11 rounded-md border text-xs font-bold transition-all',
                     values.weekdays.includes(day)
-                      ? 'border-accent bg-accent/12 text-accent'
+                      ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
                   )}
                 >
@@ -285,7 +285,7 @@ export function ClassForm({
                 className={cn(
                   'rounded-md border px-2 py-2 text-xs font-semibold transition-all',
                   values.equipment.includes(option.value)
-                    ? 'border-accent bg-accent/12 text-accent'
+                    ? 'border-accent bg-accent/12 text-accent-ink'
                     : 'border-line bg-raised text-muted',
                 )}
               >

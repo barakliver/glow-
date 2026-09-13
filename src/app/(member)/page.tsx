@@ -115,7 +115,7 @@ export default async function HomePage() {
           <div className="surface glow-ring p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-accent">
+                <p className="text-xs font-semibold text-accent-ink">
                   {relativeHebrew(nextClass.starts_at, reference)}
                 </p>
                 <h3 className="display mt-1 truncate text-xl">{nextClass.title}</h3>

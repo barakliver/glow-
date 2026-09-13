@@ -31,7 +31,7 @@ export default async function WaitingPage() {
         <span
           className={
             pending
-              ? 'mx-auto flex size-12 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent'
+              ? 'mx-auto flex size-12 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent-ink'
               : 'mx-auto flex size-12 items-center justify-center rounded-full border border-warning/40 bg-warning/10 text-warning'
           }
         >

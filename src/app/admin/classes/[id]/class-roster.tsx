@@ -127,7 +127,7 @@ export function ClassRoster({
                     {row.phone && (
                       <a
                         href={`tel:${row.phone}`}
-                        className="num mt-0.5 inline-flex items-center gap-1 text-xs text-muted hover:text-accent"
+                        className="num mt-0.5 inline-flex items-center gap-1 text-xs text-muted hover:text-accent-ink"
                         dir="ltr"
                       >
                         <Phone className="size-3" aria-hidden />
@@ -239,7 +239,7 @@ export function ClassRoster({
                   {row.phone && (
                     <a
                       href={`tel:${row.phone}`}
-                      className="num text-xs text-muted hover:text-accent"
+                      className="num text-xs text-muted hover:text-accent-ink"
                       dir="ltr"
                     >
                       {row.phone}

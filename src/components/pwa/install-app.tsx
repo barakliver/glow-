@@ -123,13 +123,13 @@ export function InstallApp() {
           <ol className="space-y-3">
             <Step
               index={1}
-              icon={<Share className="size-4 text-accent" aria-hidden />}
+              icon={<Share className="size-4 text-accent-ink" aria-hidden />}
               title="פתחו את תפריט השיתוף"
               body="לחצו על אייקון השיתוף בתחתית המסך ב-Safari."
             />
             <Step
               index={2}
-              icon={<SquarePlus className="size-4 text-accent" aria-hidden />}
+              icon={<SquarePlus className="size-4 text-accent-ink" aria-hidden />}
               title='בחרו "הוספה למסך הבית"'
               body='גללו ברשימה, בחרו "Add to Home Screen" ואשרו. האייקון של GLoW יופיע במסך הבית.'
             />
@@ -153,7 +153,7 @@ function Step({
 }) {
   return (
     <li className="flex items-start gap-3 rounded-md border border-line bg-raised p-3">
-      <span className="num flex size-7 shrink-0 items-center justify-center rounded-full bg-accent/12 text-xs font-extrabold text-accent">
+      <span className="num flex size-7 shrink-0 items-center justify-center rounded-full bg-accent/12 text-xs font-extrabold text-accent-ink">
         {index}
       </span>
       <div className="min-w-0">

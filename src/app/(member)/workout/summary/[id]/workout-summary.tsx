@@ -29,7 +29,7 @@ export function WorkoutSummary({
     <div className="space-y-4 py-4">
       <header className="text-center">
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-accent/15 shadow-glow-soft">
-          <Check className="size-8 text-accent" aria-hidden />
+          <Check className="size-8 text-accent-ink" aria-hidden />
         </div>
         <h1 className="mt-3 text-2xl font-extrabold">האימון הושלם</h1>
         <p className="mt-1 text-sm text-muted">{title}</p>
@@ -48,7 +48,7 @@ export function WorkoutSummary({
 
       {records.length > 0 && (
         <section className="surface p-4" aria-labelledby="records-title">
-          <h2 id="records-title" className="mb-2 flex items-center gap-1.5 text-sm font-bold text-accent">
+          <h2 id="records-title" className="mb-2 flex items-center gap-1.5 text-sm font-bold text-accent-ink">
             <Award className="size-4" aria-hidden />
             שיאים אישיים חדשים
           </h2>

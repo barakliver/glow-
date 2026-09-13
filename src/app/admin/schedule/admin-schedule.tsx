@@ -376,7 +376,7 @@ export function AdminSchedule({
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="num text-sm font-extrabold text-accent">
+                            <span className="num text-sm font-extrabold text-accent-ink">
                               {formatTime(gymClass.starts_at)}
                             </span>
                             <h3 className="truncate text-sm font-bold">{gymClass.title}</h3>
@@ -556,7 +556,7 @@ export function AdminSchedule({
                   className={cn(
                     'rounded-md border px-3 py-2.5 text-xs font-bold transition-all',
                     scope === 'one'
-                      ? 'border-accent bg-accent/12 text-accent'
+                      ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
                   )}
                 >
@@ -569,7 +569,7 @@ export function AdminSchedule({
                   className={cn(
                     'rounded-md border px-3 py-2.5 text-xs font-bold transition-all',
                     scope === 'all'
-                      ? 'border-accent bg-accent/12 text-accent'
+                      ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
                   )}
                 >

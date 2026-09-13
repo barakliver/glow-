@@ -50,7 +50,7 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
               </p>
             </>
           ) : (
-            <p className="mt-2 text-[11px] font-semibold text-accent">
+            <p className="mt-2 text-[11px] font-semibold text-accent-ink">
               הגעת לרמה הגבוהה ביותר. נשאר רק לשמור עליה.
             </p>
           )}

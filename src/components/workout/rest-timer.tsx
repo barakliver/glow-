@@ -80,7 +80,7 @@ export function RestTimer({
           <p
             className={cn(
               'num text-3xl font-extrabold tabular-nums',
-              finished ? 'text-success' : 'text-accent',
+              finished ? 'text-success' : 'text-accent-ink',
             )}
           >
             {formatClock(remaining)}

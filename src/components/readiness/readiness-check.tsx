@@ -119,7 +119,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
                     className={cn(
                       'num h-11 flex-1 rounded-md border text-sm font-bold transition-all',
                       current === value
-                        ? 'border-accent bg-accent/12 text-accent shadow-glow-soft'
+                        ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                         : 'border-line bg-raised text-muted hover:text-ink',
                     )}
                   >
@@ -147,7 +147,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
                 className={cn(
                   'num h-11 flex-1 rounded-md border text-sm font-bold transition-all',
                   values.available_minutes === minutes
-                    ? 'border-accent bg-accent/12 text-accent shadow-glow-soft'
+                    ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                     : 'border-line bg-raised text-muted hover:text-ink',
                 )}
               >

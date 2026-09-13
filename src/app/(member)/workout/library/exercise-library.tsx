@@ -159,7 +159,7 @@ function Chip({
       aria-pressed={active}
       className={cn(
         'shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
-        active ? 'border-accent bg-accent/12 text-accent' : 'border-line bg-raised text-muted',
+        active ? 'border-accent bg-accent/12 text-accent-ink' : 'border-line bg-raised text-muted',
       )}
     >
       {children}

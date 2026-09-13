@@ -46,7 +46,7 @@ export function Logo({
           scale.text,
         )}
       >
-        GL<span className="text-accent">o</span>W
+        GL<span className="text-accent-ink">o</span>W
       </span>
     </span>
   );

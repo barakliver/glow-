@@ -328,7 +328,7 @@ export function TemplateManager({
                     aria-label={`הצעה אוטומטית של ${template.title}`}
                   />
                   <span className="inline-flex items-center gap-1">
-                    <Sparkles className="size-3.5 text-accent" aria-hidden />
+                    <Sparkles className="size-3.5 text-accent-ink" aria-hidden />
                     זמין למנוע ההמלצות
                   </span>
                 </label>
@@ -508,7 +508,7 @@ export function TemplateManager({
                             className={cn(
                               'rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors',
                               item.block === block
-                                ? 'border-accent bg-accent/12 text-accent'
+                                ? 'border-accent bg-accent/12 text-accent-ink'
                                 : 'border-line bg-surface text-muted',
                             )}
                           >

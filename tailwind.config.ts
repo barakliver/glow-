@@ -23,22 +23,31 @@ const config: Config = {
         ink: '#F6F3EB',
         muted: '#A6A79B',
         accent: {
-          DEFAULT: '#5B84FF',
-          pressed: '#4169E1',
+          /* True royal blue for fills. */
+          DEFAULT: '#4169E1',
+          pressed: '#3355C6',
+          /*
+           * Royal blue is too dark to use as text on a near-black surface -
+           * it lands at 3.7:1, under the 4.5:1 a body-sized label needs. This
+           * lighter tint is the same blue for reading, at 7:1.
+           */
+          ink: '#7CA0FF',
         },
         /* Reserved for moments worth marking: a record, a streak, a milestone. */
         champagne: '#D9C68C',
         success: '#70E1A3',
-        warning: '#F4C45E',
+        /* Red, not amber. It sits lighter than `danger` so the two stay
+           apart, and every place that uses either also carries its own icon. */
+        warning: '#F0433A',
         danger: '#FF776D',
         line: '#2A2C26',
         /* shadcn tokens mapped onto the GLoW palette */
         border: '#2A2C26',
         input: '#2A2C26',
-        ring: '#5B84FF',
+        ring: '#7CA0FF',
         background: '#0F100D',
         foreground: '#F6F3EB',
-        primary: { DEFAULT: '#5B84FF', foreground: '#0F100D' },
+        primary: { DEFAULT: '#4169E1', foreground: '#FFFFFF' },
         secondary: { DEFAULT: '#212420', foreground: '#F6F3EB' },
         destructive: { DEFAULT: '#FF776D', foreground: '#0F100D' },
         popover: { DEFAULT: '#171916', foreground: '#F6F3EB' },
@@ -61,7 +70,7 @@ const config: Config = {
          * surface and a soft drop, and the accent is left to the one control
          * that actually wants the eye.
          */
-        glow: '0 0 0 1px rgba(91,132,255,0.32)',
+        glow: '0 0 0 1px rgba(124,160,255,0.32)',
         'glow-soft': '0 8px 24px -14px rgba(0,0,0,0.9)',
         card: '0 1px 0 0 rgba(255,255,255,0.025), 0 12px 32px -20px rgba(0,0,0,0.95)',
       },
@@ -75,8 +84,8 @@ const config: Config = {
           to: { height: '0' },
         },
         pulseGlow: {
-          '0%,100%': { boxShadow: '0 0 0 1px rgba(91,132,255,0.30), 0 0 20px -8px rgba(91,132,255,0.35)' },
-          '50%': { boxShadow: '0 0 0 1px rgba(91,132,255,0.55), 0 0 34px -4px rgba(91,132,255,0.60)' },
+          '0%,100%': { boxShadow: '0 0 0 1px rgba(124,160,255,0.30), 0 0 20px -8px rgba(124,160,255,0.35)' },
+          '50%': { boxShadow: '0 0 0 1px rgba(124,160,255,0.55), 0 0 34px -4px rgba(124,160,255,0.60)' },
         },
         shimmer: {
           '100%': { transform: 'translateX(-100%)' },

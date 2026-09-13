@@ -86,7 +86,7 @@ export function ProgressView({
             className={cn(
               'flex-1 rounded-md border px-3 py-2.5 text-center text-sm font-bold transition-all',
               range === key
-                ? 'border-accent bg-accent/12 text-accent shadow-glow-soft'
+                ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                 : 'border-line bg-surface text-muted hover:text-ink',
             )}
           >
@@ -113,7 +113,7 @@ export function ProgressView({
           <h2 id="consistency-title" className="section-label">
             עקביות
           </h2>
-          <span className="num text-sm font-extrabold text-accent">{stats.consistency}%</span>
+          <span className="num text-sm font-extrabold text-accent-ink">{stats.consistency}%</span>
         </div>
         <Progress
           value={stats.consistency}

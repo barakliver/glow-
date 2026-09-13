@@ -40,7 +40,7 @@ export function AppHeader({
           >
             <Bell className="size-5" aria-hidden />
             {unreadCount > 0 && (
-              <span className="absolute end-1.5 top-1.5 flex min-w-4 items-center justify-center rounded-full bg-accent px-1 font-num text-[10px] font-bold leading-4 text-bg">
+              <span className="absolute end-1.5 top-1.5 flex min-w-4 items-center justify-center rounded-full bg-accent px-1 font-num text-[10px] font-bold leading-4 text-white">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}

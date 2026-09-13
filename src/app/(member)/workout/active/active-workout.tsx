@@ -315,7 +315,7 @@ export function ActiveWorkout({
     <div className="space-y-4">
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-accent">אימון פעיל</p>
+          <p className="text-xs font-semibold text-accent-ink">אימון פעיל</p>
           <h1 className="truncate display text-xl tracking-tight">{session.title}</h1>
           <p className="num mt-0.5 text-xs text-muted">
             {formatClock(elapsed)} · {totalSets} סטים נרשמו
@@ -418,7 +418,7 @@ export function ActiveWorkout({
               </div>
             </div>
 
-            <p className="num mt-2 text-xs font-semibold text-accent">
+            <p className="num mt-2 text-xs font-semibold text-accent-ink">
               {[
                 current.target_sets && `${current.target_sets} סטים`,
                 current.target_reps && `${current.target_reps} חזרות`,
@@ -433,7 +433,7 @@ export function ActiveWorkout({
 
             {current.notes && (
               <p className="mt-2 flex items-start gap-1.5 rounded-md border border-line bg-raised p-2.5 text-xs text-muted">
-                <Info className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />
+                <Info className="mt-0.5 size-3.5 shrink-0 text-accent-ink" aria-hidden />
                 {current.notes}
               </p>
             )}
@@ -542,7 +542,7 @@ export function ActiveWorkout({
                     className={cn(
                       'num size-9 shrink-0 rounded-md border text-xs font-bold transition-all',
                       draft.effort === String(value)
-                        ? 'border-accent bg-accent/12 text-accent'
+                        ? 'border-accent bg-accent/12 text-accent-ink'
                         : 'border-line bg-raised text-muted',
                     )}
                   >
@@ -583,7 +583,7 @@ export function ActiveWorkout({
                     className="flex items-center justify-between gap-2 rounded-md border border-line bg-raised px-3 py-2"
                   >
                     <span className="num text-xs font-semibold">
-                      <span className="text-accent">#{i + 1}</span>{' '}
+                      <span className="text-accent-ink">#{i + 1}</span>{' '}
                       {[
                         set.reps && `${set.reps} חזרות`,
                         set.load_kg && `${set.load_kg} ק"ג`,
@@ -648,7 +648,7 @@ export function ActiveWorkout({
                 className={cn(
                   'w-full rounded-md border px-3 py-3 text-start text-sm font-semibold transition-colors',
                   replaceReason === reason.value
-                    ? 'border-accent bg-accent/12 text-accent'
+                    ? 'border-accent bg-accent/12 text-accent-ink'
                     : 'border-line bg-raised text-muted',
                 )}
               >

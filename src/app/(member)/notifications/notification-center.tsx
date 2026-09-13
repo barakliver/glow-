@@ -104,7 +104,7 @@ export function NotificationCenter({
                 <span
                   className={cn(
                     'mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-md',
-                    unreadItem ? 'bg-accent/12 text-accent' : 'bg-raised text-muted',
+                    unreadItem ? 'bg-accent/12 text-accent-ink' : 'bg-raised text-muted',
                   )}
                 >
                   <Icon className="size-4" aria-hidden />

@@ -36,7 +36,7 @@ export function BottomNav() {
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex min-h-[64px] flex-col items-center justify-center gap-1 px-1 py-2 text-[11px] font-semibold transition-colors',
-                  active ? 'text-accent' : 'text-muted hover:text-ink',
+                  active ? 'text-accent-ink' : 'text-muted hover:text-ink',
                 )}
               >
                 <span

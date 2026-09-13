@@ -30,7 +30,7 @@ export function AccessibleChart({
       <p className="mt-3 text-xs leading-relaxed text-muted">{summary}</p>
       {table && (
         <details className="mt-2">
-          <summary className="cursor-pointer text-[11px] font-semibold text-accent">
+          <summary className="cursor-pointer text-[11px] font-semibold text-accent-ink">
             הצגת הנתונים כטבלה
           </summary>
           <div className="mt-2 overflow-x-auto">

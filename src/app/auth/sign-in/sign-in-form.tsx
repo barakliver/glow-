@@ -107,16 +107,6 @@ export function SignInForm({
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
   }, []);
 
-  const signInGoogle = () => {
-    startTransition(async () => {
-      const result = await signInWithGoogleAction(returnTo ?? undefined);
-      if (!result.ok || !result.data) {
-        toast({ title: result.message, tone: 'error' });
-        return;
-      }
-      window.location.href = result.data.url;
-    });
-  };
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
@@ -143,15 +133,49 @@ export function SignInForm({
               הכניסה נעשית עם חשבון Google. אין סיסמה לזכור.
             </p>
           </div>
-          <Button type="button" variant="secondary" block size="lg" onClick={signInGoogle} loading={pending}>
-            <GoogleMark />
-            המשך עם Google
+          <Button variant="secondary" block size="lg" asChild>
+            <a href={`/auth/google${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ''}`}>
+              <GoogleMark />
+              המשך עם Google
+            </a>
           </Button>
+
+          <div className="flex items-center gap-3 py-0.5">
+            <span className="h-px flex-1 bg-line" />
+            <span className="text-xs text-muted">או</span>
+            <span className="h-px flex-1 bg-line" />
+          </div>
+
+          <form action={submitEmail} className="space-y-2.5">
+            <Label htmlFor="email-alt">כתובת אימייל</Label>
+            <Input
+              id="email-alt"
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              dir="ltr"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              aria-invalid={Boolean(emailError)}
+              required
+            />
+            {emailError && (
+              <p role="alert" className="text-xs font-semibold text-danger">
+                {emailError}
+              </p>
+            )}
+            {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
+            <Button type="submit" variant="ghost" block loading={pending}>
+              שליחת קישור כניסה
+            </Button>
+          </form>
         </div>
       ) : sent ? (
         <div className="surface space-y-3 p-6 text-center">
           <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-accent/12">
-            <Mail className="size-6 text-accent" aria-hidden />
+            <Mail className="size-6 text-accent-ink" aria-hidden />
           </div>
           <h1 className="text-lg font-bold">שלחנו לכם קישור כניסה</h1>
           <p className="text-sm text-muted">

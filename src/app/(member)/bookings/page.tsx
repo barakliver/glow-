@@ -133,7 +133,7 @@ function UpcomingRow({ row, reference }: { row: Row; reference: Date }) {
     <article className="rounded-lg border border-accent/40 bg-surface p-3.5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-accent">
+          <p className="text-xs font-semibold text-accent-ink">
             {relativeHebrew(row.gymClass.starts_at, reference)}
           </p>
           <h3 className="mt-0.5 truncate text-base font-bold">{row.gymClass.title}</h3>
