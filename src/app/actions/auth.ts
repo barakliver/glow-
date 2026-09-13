@@ -66,7 +66,12 @@ export async function signInWithEmailAction(formData: FormData): Promise<ActionR
     email,
     options: { emailRedirectTo: callback.toString() },
   });
-  if (error) return { ok: false, message: 'שליחת הקישור נכשלה. נסו שוב בעוד רגע.' };
+  if (error) {
+    // Pass Supabase's own wording through. A generic "try again in a moment"
+    // hides the one sentence that says what is actually misconfigured, and
+    // nobody can fix a club they cannot see the error from.
+    return { ok: false, message: `שליחת הקישור נכשלה: ${error.message}` };
+  }
 
   return { ok: true, message: 'שלחנו קישור כניסה לאימייל שלכם.' };
 }
