@@ -7,16 +7,22 @@ import { Button } from '@/components/ui/button';
 /**
  * What a member sees when a page throws.
  *
- * One cause is common enough here to be worth naming out loud: the club runs
- * its own Supabase and its owner applies the schema by hand, so the database
- * falls behind the code every time a feature ships and supabase/setup.sql is
- * not re-run. The page then throws on a column that does not exist yet, and
- * "something went wrong" sends everybody hunting. So the boundary asks the
- * database whether that is what happened, and says so when it is.
+ * Next hands the boundary a digest - a hash that is a handle on a server log.
+ * That is no use at all to the person actually holding the phone, which is who
+ * is looking at this screen. So instead of printing the digest and hoping
+ * somebody has log access, the boundary asks the running app two questions:
+ * is the database behind the code, and which of the calls this page makes is
+ * failing. Whichever answers, answers here, in the screenshot.
  *
- * The check reports names, never data, and the digest below is the handle the
- * server log is filed under - enough to report a fault, useless to anyone else.
+ * The endpoints behind those questions report names, never member data, and
+ * spell a database error out only for staff.
  */
+
+type SelfTest = {
+  signedIn?: boolean;
+  steps?: { step: string; ok: boolean; detail?: string }[];
+};
+
 export default function GlobalError({
   error,
   reset,
@@ -25,6 +31,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   const [schemaBehind, setSchemaBehind] = useState(false);
+  const [failing, setFailing] = useState<{ step: string; detail?: string }[]>([]);
 
   useEffect(() => {
     console.error('GLoW error boundary:', error);
@@ -32,12 +39,24 @@ export default function GlobalError({
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/health/schema', { cache: 'no-store' })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((report: { migrationsBehind?: string[] } | null) => {
-        if (!cancelled && (report?.migrationsBehind?.length ?? 0) > 0) setSchemaBehind(true);
-      })
-      .catch(() => undefined);
+    const json = (path: string) =>
+      fetch(path, { cache: 'no-store' })
+        .then((response) => (response.ok ? response.json() : null))
+        .catch(() => null);
+
+    json('/api/health/schema').then((report: { migrationsBehind?: string[] } | null) => {
+      if (!cancelled && (report?.migrationsBehind?.length ?? 0) > 0) setSchemaBehind(true);
+    });
+
+    json('/api/health/self-test').then((report: SelfTest | null) => {
+      if (cancelled || !report?.steps) return;
+      setFailing(
+        report.steps
+          .filter((row) => !row.ok)
+          .map((row) => ({ step: row.step, detail: row.detail })),
+      );
+    });
+
     return () => {
       cancelled = true;
     };
@@ -71,10 +90,22 @@ export default function GlobalError({
         ניסיון נוסף
       </Button>
 
-      {error.digest && (
-        <p className="num text-[11px] text-muted/70" dir="ltr">
-          {error.digest}
-        </p>
+      {/* The technical half, for whoever is reporting the fault. Deliberately
+          quiet, deliberately last, and deliberately on screen rather than in a
+          log nobody can reach from a phone. */}
+      {(failing.length > 0 || error.digest) && (
+        <div
+          dir="ltr"
+          className="mt-2 w-full rounded-md border border-line bg-surface p-3 text-start text-[11px] leading-relaxed text-muted/80"
+        >
+          {failing.map((row) => (
+            <p key={row.step}>
+              <span className="font-bold text-danger">✕</span> {row.step}
+              {row.detail ? `: ${row.detail}` : ''}
+            </p>
+          ))}
+          {error.digest && <p className="num opacity-70">digest {error.digest}</p>}
+        </div>
       )}
     </main>
   );
