@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AccessibleChart } from '@/components/charts/accessible-chart';
 import { VolumeBarChart } from '@/components/charts/progress-charts';
+import { ROLE_LABELS } from '@/lib/labels';
 import { addDays, gymWeekStart, now } from '@/lib/time';
 import { num } from '@/lib/utils';
 
@@ -26,7 +27,7 @@ export default async function AdminDashboard({
   searchParams: Promise<{ range?: string }>;
 }) {
   const params = await searchParams;
-  await requireStaff();
+  const user = await requireStaff();
   const repository = await getRepository();
 
   const days = Number.parseInt(params.range ?? '30', 10) || 30;
@@ -60,6 +61,15 @@ export default async function AdminDashboard({
         <div>
           <h1 className="display text-2xl tracking-tight">סקירת המועדון</h1>
           <p className="text-sm text-muted">נתוני {days} הימים האחרונים והשבועיים הקרובים</p>
+          {/*
+            Which buttons this area shows depends entirely on this one word, so
+            it is written down rather than left to be inferred from what is
+            missing.
+          */}
+          <p className="mt-1 text-xs text-muted">
+            מחובר כ<span className="font-bold text-accent-ink">{ROLE_LABELS[user.membership.role]}</span>
+            {user.membership.role !== 'owner' && ' · יצירת שיעורים שמורה למנהל'}
+          </p>
         </div>
         <nav aria-label="טווח" className="flex gap-1.5">
           {[7, 30, 90].map((value) => (

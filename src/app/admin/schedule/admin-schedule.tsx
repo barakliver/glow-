@@ -287,6 +287,16 @@ export function AdminSchedule({
             {formatHebrewFullDate(parseISO(`${weekDays[6]}T12:00:00`))}
           </p>
         </div>
+        {/*
+          A trainer sees this screen but cannot create classes. Saying so beats
+          hiding the buttons and leaving them to wonder whether the app is
+          broken or they are.
+        */}
+        {!isOwner && (
+          <p className="text-xs text-muted">
+            יצירה ועריכה של שיעורים שמורות למנהל. אפשר לנהל נרשמים ונוכחות בכל שיעור.
+          </p>
+        )}
         {isOwner && (
           <div className="flex gap-2">
             <Button size="sm" onClick={() => openCreate(false)}>

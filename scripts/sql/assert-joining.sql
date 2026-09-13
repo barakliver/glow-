@@ -118,3 +118,60 @@ begin
 
   raise notice 'the owner allowlist is hidden from members';
 end $$;
+
+-- 6. The allowlist heals itself.
+--
+-- This reproduces the trap: the address is already on the list, so a second
+-- `insert ... on conflict do nothing` is a no-op and the after-insert trigger
+-- never fires. Someone who signed in before that first insert - or whose row
+-- was changed since - stays a plain member with no way to tell why the admin
+-- area is missing its buttons.
+do $$
+declare
+  v_id uuid := gen_random_uuid();
+  v_role public.member_role;
+  v_approved timestamptz;
+  v_fixed integer;
+begin
+  -- Sign up first, with the allowlist empty of this address.
+  insert into auth.users (id, email) values (v_id, 'latecomer@example.test');
+
+  select role into v_role from memberships where profile_id = v_id;
+  if v_role is distinct from 'member' then
+    raise exception 'expected a plain member before allowlisting, got %', v_role;
+  end if;
+
+  -- Now allowlist them. The trigger promotes them.
+  insert into owner_emails (email) values ('latecomer@example.test');
+
+  -- Knock them back down, standing in for any path that leaves the row stale.
+  update memberships set role = 'member', approved_at = null where profile_id = v_id;
+
+  -- The no-op insert: looks like it worked, changes nothing.
+  insert into owner_emails (email) values ('latecomer@example.test')
+  on conflict (email) do nothing;
+
+  select role into v_role from memberships where profile_id = v_id;
+  if v_role <> 'member' then
+    raise exception 'the no-op insert somehow fired the trigger - rewrite this test';
+  end if;
+
+  -- The repair, which every setup.sql run now performs.
+  select public.sync_owner_roles() into v_fixed;
+
+  select role, approved_at into v_role, v_approved from memberships where profile_id = v_id;
+  if v_role <> 'owner' or v_approved is null then
+    raise exception 'sync_owner_roles left them as % (approved: %)', v_role, v_approved;
+  end if;
+  if v_fixed < 1 then
+    raise exception 'sync_owner_roles reported % rows repaired', v_fixed;
+  end if;
+
+  -- And it is quiet when there is nothing to repair.
+  select public.sync_owner_roles() into v_fixed;
+  if v_fixed <> 0 then
+    raise exception 'a second sync touched % rows', v_fixed;
+  end if;
+
+  raise notice 'the owner allowlist repairs itself when the insert is a no-op';
+end $$;
