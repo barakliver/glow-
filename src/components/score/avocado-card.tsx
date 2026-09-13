@@ -40,7 +40,7 @@ export function AvocadoCard({
             {chosen ? chosen.name : 'האבוקדו שלך'}
           </h2>
           <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-            <p className="display text-xl leading-tight">{score.level.name}</p>
+            <p className="text-xl font-extrabold leading-tight tracking-tight">{score.level.name}</p>
             {score.streakWeeks > 1 && (
               <Badge tone="accent">
                 <Flame className="size-3" aria-hidden />

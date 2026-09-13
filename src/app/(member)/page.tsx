@@ -132,7 +132,7 @@ export default async function HomePage() {
                 <p className="text-xs font-semibold text-accent-ink">
                   {relativeHebrew(nextClass.starts_at, reference)}
                 </p>
-                <h3 className="display mt-1 truncate text-xl">{nextClass.title}</h3>
+                <h3 className="mt-1 truncate text-xl font-extrabold tracking-tight">{nextClass.title}</h3>
                 <p className="mt-1 text-xs text-muted">
                   {formatHebrewDate(nextClass.starts_at)} ·{' '}
                   <span className="num">{formatTime(nextClass.starts_at)}</span>

@@ -91,6 +91,12 @@
   /*
    * Display face for headings. Frank Ruhl Libre against Heebo is what gives a
    * screen a top line instead of a row of same-weight text.
+   *
+   * One rule, so the two faces read as a system rather than as an accident:
+   * the serif names the PAGE you are on and nothing else. A title inside a
+   * card is set in Heebo like the card around it - a serif there is a second
+   * top line competing with the first, which is what made the workout title
+   * look like it came from a different app.
    */
   .display {
     font-family: var(--font-frank), Georgia, serif;

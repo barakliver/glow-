@@ -2,7 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Award, CalendarCheck, Dumbbell, Gauge, NotebookPen, Timer, TrendingUp } from 'lucide-react';
+import {
+  Award,
+  CalendarCheck,
+  ChevronLeft,
+  Dumbbell,
+  Gauge,
+  NotebookPen,
+  Scale,
+  Timer,
+  TrendingUp,
+} from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -75,6 +85,27 @@ export function ProgressView({
     <div className="space-y-6">
       <PageHeader title="ההתקדמות שלך" subtitle="ביצועים, עקביות והתאוששות" backHref="/" />
 
+      {/*
+        First thing on the screen, because this is where a session ends. Every
+        other panel here reports; these two record. Without them the middle tab
+        is a wall of numbers you cannot add to, which is exactly how it felt.
+      */}
+      <section aria-labelledby="record-title" className="space-y-2.5">
+        <h2 id="record-title" className="section-label">
+          סיימת אימון?
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          <RecordCard
+            href="/tracking/new"
+            icon={NotebookPen}
+            title="רישום אימון"
+            hint="מה עשית, כמה הרמת, כמה זמן"
+            primary
+          />
+          <RecordCard href="/tracking" icon={Scale} title="המדדים שלי" hint="גובה, משקל, היסטוריה" />
+        </div>
+      </section>
+
       <RipenessDetail score={score} />
 
       <nav aria-label="טווח זמן" className="flex gap-1.5">
@@ -96,16 +127,31 @@ export function ProgressView({
       </nav>
 
       <section className="grid grid-cols-2 gap-3" aria-label="סיכום מספרי">
-        <StatCard icon={Dumbbell} label="אימונים שהושלמו" value={num(stats.workouts)} />
-        <StatCard icon={CalendarCheck} label="שיעורים שהשתתפת" value={num(stats.classes)} />
-        <StatCard icon={Timer} label="דקות אימון" value={num(stats.minutes)} />
-        <StatCard icon={TrendingUp} label='נפח אימון (ק"ג)' value={num(stats.volume)} />
+        <StatCard
+          icon={Dumbbell}
+          label="אימונים שהושלמו"
+          value={num(stats.workouts)}
+          href="/tracking"
+        />
+        <StatCard
+          icon={CalendarCheck}
+          label="שיעורים שהשתתפת"
+          value={num(stats.classes)}
+          href="/schedule"
+        />
+        <StatCard icon={Timer} label="דקות אימון" value={num(stats.minutes)} href="/tracking" />
+        <StatCard icon={TrendingUp} label='נפח אימון (ק"ג)' value={num(stats.volume)} href="#charts" />
         <StatCard
           icon={Gauge}
           label="מאמץ ממוצע"
           value={stats.averageEffort !== null ? `${stats.averageEffort}/10` : '—'}
         />
-        <StatCard icon={Award} label="שיאים אישיים" value={num(records.length)} />
+        <StatCard
+          icon={Award}
+          label="שיאים אישיים"
+          value={num(records.length)}
+          href="#records-title"
+        />
       </section>
 
       <section className="surface p-5" aria-labelledby="consistency-title">
@@ -127,6 +173,7 @@ export function ProgressView({
         </p>
       </section>
 
+      <div id="charts" className="scroll-mt-20" />
       {totalWorkoutsInWeeks === 0 ? (
         <EmptyState
           icon={Dumbbell}
@@ -218,7 +265,7 @@ export function ProgressView({
       )}
 
       <section aria-labelledby="records-title" className="space-y-2.5">
-        <h2 id="records-title" className="section-label">
+        <h2 id="records-title" className="section-label scroll-mt-20">
           שיאים אישיים
         </h2>
         {records.length === 0 ? (
@@ -278,20 +325,75 @@ export function ProgressView({
   );
 }
 
+/**
+ * A number, and where to go to change it.
+ *
+ * A card that looks pressable and is not reads as a broken button, and after
+ * enough of them people stop pressing anything. So every stat that has an
+ * answer to "and then what?" carries a link, and the ones that genuinely have
+ * nowhere to go stay visibly flat.
+ */
 function StatCard({
   icon: Icon,
   label,
   value,
+  href,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
+  href?: string;
 }) {
-  return (
-    <div className="surface p-3">
-      <Icon className="size-4 text-muted" aria-hidden />
+  const body = (
+    <>
+      <div className="flex items-center justify-between">
+        <Icon className="size-4 text-muted" aria-hidden />
+        {href && <ChevronLeft className="size-3.5 text-muted/50" aria-hidden />}
+      </div>
       <p className="stat-value mt-1.5">{value}</p>
       <p className="label-muted">{label}</p>
-    </div>
+    </>
+  );
+
+  if (!href) return <div className="surface p-3">{body}</div>;
+
+  return (
+    <Link
+      href={href}
+      className="surface block p-3 transition-colors hover:bg-raised active:bg-raised"
+    >
+      {body}
+    </Link>
+  );
+}
+
+/** The two things this screen is for: writing down what just happened. */
+function RecordCard({
+  href,
+  icon: Icon,
+  title,
+  hint,
+  primary,
+}: {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  hint: string;
+  primary?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        'flex flex-col gap-1 rounded-lg border p-4 transition-colors',
+        primary
+          ? 'border-accent/40 bg-accent/10 hover:bg-accent/15'
+          : 'border-line bg-surface hover:bg-raised',
+      )}
+    >
+      <Icon className={cn('size-5', primary ? 'text-accent-ink' : 'text-muted')} aria-hidden />
+      <p className="mt-1 text-sm font-bold">{title}</p>
+      <p className="text-[11px] leading-snug text-muted">{hint}</p>
+    </Link>
   );
 }

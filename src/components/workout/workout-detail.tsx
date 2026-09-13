@@ -107,7 +107,7 @@ export function WorkoutDetail({
   return (
     <div className="space-y-3">
       <section className="surface p-5">
-        <h2 className="display text-2xl leading-tight">{workout.title}</h2>
+        <h2 className="text-2xl font-extrabold leading-tight tracking-tight">{workout.title}</h2>
         {workout.subtitle && <p className="mt-1 text-sm text-muted">{workout.subtitle}</p>}
         <div className="mt-3">
           <WorkoutMeta

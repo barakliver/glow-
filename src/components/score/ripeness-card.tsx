@@ -24,7 +24,7 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
           {/* The level name is the headline here, so it wraps rather than
               clipping, and the streak badge drops below it when space is tight. */}
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <p className="display text-xl leading-tight">{score.level.name}</p>
+            <p className="text-xl font-extrabold leading-tight tracking-tight">{score.level.name}</p>
             {score.streakWeeks > 1 && (
               <Badge tone="accent">
                 <Flame className="size-3" aria-hidden />
