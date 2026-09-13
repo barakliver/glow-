@@ -249,4 +249,16 @@ describe('weeklyGoal', () => {
     expect(goal.met).toBe(true);
     expect(goal.progress).toBe(100);
   });
+
+  /* A deployment whose database is a migration behind returns a profile with
+   * no weekly_goal_sessions at all. NaN is not an error, so it would travel
+   * all the way to the screen and render as "NaN / NaN". */
+  it('falls back to a real target when the profile has none', () => {
+    for (const missing of [undefined, null, Number.NaN]) {
+      const goal = weeklyGoal(missing as unknown as number, [inWeek(3)], weekStart);
+      expect(goal.target, String(missing)).toBe(3);
+      expect(Number.isFinite(goal.progress), String(missing)).toBe(true);
+      expect(goal.done, String(missing)).toBe(1);
+    }
+  });
 });

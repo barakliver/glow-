@@ -71,16 +71,64 @@ function unwrap<T>(result: { data: T | null; error: { message: string } | null }
  * missing table degrades to "nothing planned" and every other error still
  * throws.
  */
-function isMissingWorkoutSchema(error: { code?: string; message?: string } | null): boolean {
+/**
+ * True when the database has not caught up with the code.
+ *
+ * The club applies its own schema by hand, so between a deploy and the owner
+ * re-running supabase/setup.sql the code asks for tables and columns that do
+ * not exist yet. A read in that window should come back empty - the feature is
+ * simply not there - rather than take the page down with it.
+ *
+ * Undefined *column* matters as much as undefined table: a migration that only
+ * adds a column to an existing table (avocado_style, weekly_goal_sessions) is
+ * exactly the kind that gets skipped, and PostgREST reports it as 42703 rather
+ * than as a missing relation.
+ */
+function isMissingSchema(error: { code?: string; message?: string } | null): boolean {
   if (!error) return false;
-  // 42P01 undefined_table, 42883 undefined_function, PGRST202 no such function.
-  if (error.code === '42P01' || error.code === '42883' || error.code === 'PGRST202') return true;
+  // 42P01 undefined_table, 42703 undefined_column, 42883 undefined_function,
+  // PGRST202 no such function, PGRST204 no such column in the schema cache.
+  if (
+    error.code === '42P01' ||
+    error.code === '42703' ||
+    error.code === '42883' ||
+    error.code === 'PGRST202' ||
+    error.code === 'PGRST204'
+  ) {
+    return true;
+  }
   const message = error.message ?? '';
   return (
-    /relation .*(workouts|class_workouts|workout_logs).* does not exist/i.test(message) ||
-    /function .*class_workout_teasers.* does not exist/i.test(message) ||
-    /Could not find the function/i.test(message)
+    /relation .* does not exist/i.test(message) ||
+    /column .* does not exist/i.test(message) ||
+    /function .* does not exist/i.test(message) ||
+    /Could not find the (function|column)/i.test(message)
   );
+}
+
+/**
+ * A profile row as the code expects it, whatever the table actually returned.
+ *
+ * `select('*')` does not fail on a table that is missing a column - it simply
+ * comes back without it. A deployment whose database is a migration behind
+ * therefore yields a profile with no avocado_style and no weekly_goal_sessions,
+ * and `undefined` propagates into arithmetic as NaN rather than as an error,
+ * which surfaces somewhere far away from the cause. The defaults here are the
+ * same ones the migration writes, so the app behaves as if the column existed
+ * and was never set.
+ */
+function asProfile(row: unknown): Profile | null {
+  if (!row) return null;
+  const profile = row as Profile;
+  return {
+    ...profile,
+    avocado_style: profile.avocado_style ?? null,
+    weekly_goal_sessions:
+      typeof profile.weekly_goal_sessions === 'number' &&
+      Number.isFinite(profile.weekly_goal_sessions)
+        ? profile.weekly_goal_sessions
+        : 3,
+  };
 }
 
 export class SupabaseRepository implements Repository {
@@ -143,7 +191,7 @@ export class SupabaseRepository implements Repository {
         .eq('organization_id', this.organizationId)
         .maybeSingle(),
     ]);
-    const profile = profileRes.data as Profile | null;
+    const profile = asProfile(profileRes.data);
     const membership = membershipRes.data as Membership | null;
     // A membership that is suspended or still waiting for approval yields no
     // session at all, so nothing about the club can leak to it.
@@ -1231,7 +1279,7 @@ export class SupabaseRepository implements Repository {
       );
     }
     const { data, error } = await query;
-    if (isMissingWorkoutSchema(error)) return [];
+    if (isMissingSchema(error)) return [];
     if (error) throw new Error(error.message);
     return (data ?? []) as Workout[];
   }
@@ -1246,7 +1294,7 @@ export class SupabaseRepository implements Repository {
       .eq('organization_id', this.organizationId)
       .eq(column, idOrSlug)
       .maybeSingle();
-    if (isMissingWorkoutSchema(error)) return null;
+    if (isMissingSchema(error)) return null;
     if (error) throw new Error(error.message);
     return (data as Workout) ?? null;
   }
@@ -1295,7 +1343,7 @@ export class SupabaseRepository implements Repository {
       .select('workout_id, notes, workouts(*)')
       .eq('class_id', classId)
       .maybeSingle();
-    if (isMissingWorkoutSchema(error)) return { state: 'none' };
+    if (isMissingSchema(error)) return { state: 'none' };
     if (error && error.code !== 'PGRST116') throw new Error(error.message);
 
     const workout = (link as { workouts?: Workout } | null)?.workouts;
@@ -1316,7 +1364,7 @@ export class SupabaseRepository implements Repository {
       p_from: '1970-01-01T00:00:00Z',
       p_to: '2999-01-01T00:00:00Z',
     });
-    if (isMissingWorkoutSchema(error)) return { state: 'none' };
+    if (isMissingSchema(error)) return { state: 'none' };
     if (error) throw new Error(error.message);
 
     const teaser = ((data ?? []) as {
@@ -1414,7 +1462,7 @@ export class SupabaseRepository implements Repository {
       .eq('profile_id', profileId)
       .order('performed_on', { ascending: false })
       .limit(limit);
-    if (isMissingWorkoutSchema(error)) return [];
+    if (isMissingSchema(error)) return [];
     if (error) throw new Error(error.message);
 
     return ((data ?? []) as (WorkoutLog & { workouts: Workout | null })[]).flatMap((row) => {
@@ -1430,7 +1478,7 @@ export class SupabaseRepository implements Repository {
       .eq('profile_id', profileId)
       .eq('workout_id', workoutId)
       .order('performed_on', { ascending: false });
-    if (isMissingWorkoutSchema(error)) return [];
+    if (isMissingSchema(error)) return [];
     if (error) throw new Error(error.message);
     return (data ?? []) as WorkoutLog[];
   }
@@ -1447,7 +1495,7 @@ export class SupabaseRepository implements Repository {
       .eq('workout_id', workoutId)
       .eq('performed_on', performedOn)
       .maybeSingle();
-    if (isMissingWorkoutSchema(error)) return null;
+    if (isMissingSchema(error)) return null;
     if (error) throw new Error(error.message);
     return (data as WorkoutLog) ?? null;
   }
@@ -1506,7 +1554,7 @@ export class SupabaseRepository implements Repository {
       .eq('profile_id', profileId)
       .order('measured_on', { ascending: false })
       .limit(limit);
-    if (isMissingWorkoutSchema(error)) return [];
+    if (isMissingSchema(error)) return [];
     if (error) throw new Error(error.message);
     return (data ?? []) as BodyMetric[];
   }
@@ -1585,7 +1633,7 @@ export class SupabaseRepository implements Repository {
       .eq('profile_id', profileId)
       .order('performed_on', { ascending: false })
       .limit(limit);
-    if (isMissingWorkoutSchema(error)) return [];
+    if (isMissingSchema(error)) return [];
     if (error) throw new Error(error.message);
 
     return ((data ?? []) as (ActivityLog & { activity_lifts: ActivityLift[] })[]).map((row) => {
@@ -1604,7 +1652,7 @@ export class SupabaseRepository implements Repository {
       .eq('id', activityId)
       .eq('profile_id', profileId)
       .maybeSingle();
-    if (isMissingWorkoutSchema(error)) return null;
+    if (isMissingSchema(error)) return null;
     if (error) throw new Error(error.message);
     if (!data) return null;
 

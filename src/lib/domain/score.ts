@@ -66,7 +66,11 @@ export interface WeeklyGoal {
 export function weeklyGoal(target: number, activity: string[], weekStart: Date): WeeklyGoal {
   const from = weekStart.getTime();
   const done = activity.filter((iso) => new Date(iso).getTime() >= from).length;
-  const safeTarget = Math.max(1, target);
+  /* A target that is not a number at all reaches here when the database is a
+   * migration behind and the column is simply absent. NaN would then travel
+   * all the way to the screen as a rendered "NaN", so it falls back to the
+   * same default the migration sets. */
+  const safeTarget = Number.isFinite(target) ? Math.max(1, target) : 3;
   return {
     target: safeTarget,
     done,
