@@ -38,9 +38,10 @@ describe('the workout stays hidden until a member holds a place', () => {
     if (reveal.state !== 'locked') return;
     expect(reveal.category).toBe('crossfit');
     expect(reveal.format).toBe('for_time');
-    expect(reveal.duration_minutes).toBe(20);
-    // Nothing in the locked payload names a movement or a load.
-    expect(JSON.stringify(reveal)).not.toMatch(/Thruster|Pull-up|43\/30/);
+    // Every session runs the hour: warm-up, strength, metcon, cool-down.
+    expect(reveal.duration_minutes).toBe(60);
+    // Nothing in the locked payload names a movement.
+    expect(JSON.stringify(reveal)).not.toMatch(/Thruster|Pull-up|Front Squat/);
   });
 
   it('reveals it the moment they book', async () => {
@@ -123,7 +124,7 @@ describe('the workout stays hidden until a member holds a place', () => {
     expect(decorated?.workout_teaser).toEqual({
       category: 'crossfit',
       format: 'for_time',
-      duration_minutes: 20,
+      duration_minutes: 60,
       difficulty: 'advanced',
     });
     expect(JSON.stringify(decorated)).not.toMatch(/Thruster/);
