@@ -22,6 +22,41 @@
 -- you want those gone too - their bookings go with them.)
 -- =============================================================================
 
+-- The preconditions, checked on their own first.
+--
+-- The block below declares variables of types that ship with the workout
+-- migration. PL/pgSQL compiles a block's declarations when it reaches it, so on
+-- a database that has not had setup.sql run yet the whole thing fails with
+-- `type "public.workout_category" does not exist` before any message of ours
+-- gets a chance to speak. This block touches no such type, so it runs first and
+-- says the useful thing.
+do $$
+begin
+  if to_regclass('public.classes') is null then
+    raise exception using
+      message = 'The club schema is not installed.',
+      hint = 'Run supabase/setup.sql in the SQL editor first, then this file.';
+  end if;
+
+  if to_regtype('public.workout_category') is null or to_regclass('public.workouts') is null then
+    raise exception using
+      message = 'The workout library is not installed.',
+      hint = 'Run the current supabase/setup.sql first - it creates the workout tables and the 103 workouts - then run this file again.';
+  end if;
+
+  if not exists (select 1 from public.organizations) then
+    raise exception using
+      message = 'There is no club yet.',
+      hint = 'Run supabase/setup.sql in the SQL editor first, then this file.';
+  end if;
+
+  if not exists (select 1 from public.workouts) then
+    raise exception using
+      message = 'The workout tables exist but carry no workouts.',
+      hint = 'Re-run supabase/setup.sql - it installs the library into the club.';
+  end if;
+end $$;
+
 do $$
 declare
   -- How far ahead to fill. Four weeks is enough to plan around without burying
@@ -75,13 +110,6 @@ declare
   v_created  integer := 0;
 begin
   select id into v_org from public.organizations order by created_at limit 1;
-  if v_org is null then
-    raise exception 'no club yet - run supabase/setup.sql first';
-  end if;
-
-  if not exists (select 1 from public.workouts where organization_id = v_org) then
-    raise exception 'the workout library is not installed - run supabase/setup.sql first';
-  end if;
 
   for v_day in
     select generate_series(current_date, current_date + (v_weeks * 7 - 1), interval '1 day')::date

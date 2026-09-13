@@ -63,6 +63,24 @@ apply() {
   fi
 }
 
+# Some files are meant to refuse. A message nobody can reach is not a message,
+# so the refusal is tested the same way the success is.
+refuses() {
+  local db="$1" file="$2" needle="$3" label="$4"
+  local out
+  if out=$("${PSQL[@]}" -d "$db" -f "$ROOT/$file" 2>&1); then
+    echo "    FAIL $label (it succeeded instead of refusing)" >&2
+    exit 1
+  fi
+  if ! echo "$out" | grep -qF "$needle"; then
+    echo "    FAIL $label" >&2
+    echo "      expected to see: $needle" >&2
+    echo "$out" | grep -E "ERROR|HINT" | head -4 >&2
+    exit 1
+  fi
+  echo "    ok   $label"
+}
+
 assert() {
   local db="$1" file="$2"
   local out
@@ -91,6 +109,21 @@ assert glow_migrations scripts/sql/assert-joining.sql
 
 echo "==> asserting the workout of the day stays hidden until booked"
 assert glow_migrations scripts/sql/assert-workouts.sql
+
+# The filler on a database that has the club but not the workout library - the
+# state anyone is in between running an older setup.sql and the current one.
+# Without a reachable guard it fails deep inside a PL/pgSQL block with
+# `type "public.workout_category" does not exist`, which tells nobody anything.
+echo "==> asserting the timetable filler explains itself when run too early"
+"${PSQL[@]}" -d postgres -c "create database glow_early;" >/dev/null
+apply glow_early scripts/sql/stub-supabase.sql "supabase stub"
+for migration in "$ROOT"/supabase/migrations/2026010100000[0-4]_*.sql; do
+  apply glow_early "supabase/migrations/$(basename "$migration")" "$(basename "$migration")"
+done
+apply glow_early supabase/seed.sql "seed.sql"
+refuses glow_early supabase/fill-schedule.sql \
+  "The workout library is not installed." \
+  "it names the missing piece instead of failing on a type"
 
 # The timetable filler is applied twice on purpose: it is meant to be re-run
 # weekly to roll the window forward, and a second run must not duplicate a day.
