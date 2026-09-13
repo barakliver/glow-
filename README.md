@@ -303,6 +303,25 @@ luminous ring.
 
 ---
 
+## Filling the calendar
+
+A new club starts with an empty week. `supabase/fill-schedule.sql` creates a
+class every hour from 07:00 to 23:00, every day, for the next four weeks — 476
+classes, each open for booking, holding five people, and with a workout already
+assigned from the library. Sessions vary by hour the way a real timetable does:
+strength first thing, open gym at midday, tabata in the evening, mobility last.
+
+Paste it into the Supabase SQL editor whenever you want the window rolled
+forward; it is keyed on date and hour, so a second run updates the same slots
+rather than duplicating them, and bookings members have already made survive.
+The file's own header carries the one statement that removes everything it
+created.
+
+It is a starting point to edit, not a fixed timetable: change a class, cancel
+one, or delete the lot from **ניהול → לוח שיעורים** once the real week is known.
+
+---
+
 ## Workout of the day
 
 Every class can carry one workout from a library of **103**: 33 CrossFit

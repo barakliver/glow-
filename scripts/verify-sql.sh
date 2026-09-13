@@ -92,6 +92,13 @@ assert glow_migrations scripts/sql/assert-joining.sql
 echo "==> asserting the workout of the day stays hidden until booked"
 assert glow_migrations scripts/sql/assert-workouts.sql
 
+# The timetable filler is applied twice on purpose: it is meant to be re-run
+# weekly to roll the window forward, and a second run must not duplicate a day.
+echo "==> asserting the hourly timetable filler"
+apply glow_migrations supabase/fill-schedule.sql "fill-schedule.sql"
+apply glow_migrations supabase/fill-schedule.sql "fill-schedule.sql, again"
+assert glow_migrations scripts/sql/assert-fill-schedule.sql
+
 # --- 2. setup.sql, the single file pasted into the Supabase SQL editor --------
 echo "==> applying setup.sql (the one-paste path)"
 "${PSQL[@]}" -d postgres -c "create database glow_setup;" >/dev/null
