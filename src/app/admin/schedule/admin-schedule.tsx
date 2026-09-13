@@ -298,7 +298,7 @@ export function AdminSchedule({
           </p>
         )}
         {isOwner && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button size="sm" onClick={() => openCreate(false)}>
               <CalendarPlus className="size-4" aria-hidden />
               שיעור חדש

@@ -137,9 +137,16 @@
     @apply animate-pulse rounded-md bg-raised;
   }
 
-  /* Safe area for the fixed bottom navigation. */
+  /*
+   * Room under the fixed bottom navigation.
+   *
+   * The bar is 80px, but the avocado in the middle of it stands 8px proud of
+   * the bar's own box and nothing clips it - so clearing the bar is not the
+   * same as clearing the navigation, and the last line of a page was landing
+   * under the fruit. This clears both, with room to spare.
+   */
   .pb-nav {
-    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   }
 
   .hide-scrollbar::-webkit-scrollbar {
