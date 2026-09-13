@@ -40,6 +40,7 @@ import type {
   Organization,
   Profile,
   ReadinessLog,
+  RosterEntry,
   SessionUser,
   TimerPreset,
   Trainer,
@@ -1624,6 +1625,22 @@ export class SupabaseRepository implements Repository {
       .select('*');
     if (liftError) throw new Error(liftError.message);
     return { activity, lifts: (lifts ?? []) as ActivityLift[] };
+  }
+
+  async listClassRoster(classId: string): Promise<RosterEntry[]> {
+    /*
+     * A function, not a join.
+     *
+     * RLS protects rows and not columns, so selecting profiles here would hand
+     * the client whole profile rows - full name, phone, email - and leave the
+     * narrowing to the UI, which is exactly the sort of thing that survives a
+     * refactor. public.class_roster runs as the definer and returns five
+     * columns; there is nothing else for the client to read.
+     */
+    const { data, error } = await this.supabase.rpc('class_roster', { p_class_id: classId });
+    if (isMissingSchema(error)) return [];
+    if (error) throw new Error(error.message);
+    return (data ?? []) as RosterEntry[];
   }
 
   async listActivities(profileId: string, limit = 60): Promise<ActivityWithLifts[]> {

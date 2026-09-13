@@ -98,9 +98,14 @@ export type AvocadoStyle = 'strong' | 'lean' | 'flow';
 export interface Profile {
   id: string;
   email: string;
+  /** The name on the club's records. Never shown to other members. */
   full_name: string;
+  /** What this member is called in the club. This is what others see. */
+  display_name: string | null;
   phone: string | null;
   avatar_url: string | null;
+  /** Key of a drawn avocado from `@/lib/domain/avatars`. */
+  avatar_preset: string | null;
   experience_level: Difficulty;
   avocado_style: AvocadoStyle | null;
   /** Sessions a week this member is aiming for. */
@@ -108,6 +113,22 @@ export interface Profile {
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * One person in a class, as other members are allowed to see them.
+ *
+ * Four fields and no more. There is no full name here, no phone, no email and
+ * nothing anyone has trained - a roster answers who is in the room, and the
+ * shape of this type is what stops it answering anything else.
+ */
+export interface RosterEntry {
+  profile_id: string;
+  /** The name they chose, or their first name. Never the full one. */
+  name: string;
+  avatar_preset: string | null;
+  status: BookingStatus;
+  waitlist_position: number | null;
 }
 
 export interface Membership {

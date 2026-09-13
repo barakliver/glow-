@@ -129,6 +129,8 @@ export async function completeOnboardingAction(formData: FormData): Promise<Acti
 
   const parsed = onboardingSchema.safeParse({
     full_name: formData.get('full_name'),
+    display_name: formData.get('display_name') ?? '',
+    avatar_preset: formData.get('avatar_preset') ?? '',
     phone: formData.get('phone'),
     experience_level: formData.get('experience_level'),
     avocado_style: formData.get('avocado_style'),
@@ -141,6 +143,8 @@ export async function completeOnboardingAction(formData: FormData): Promise<Acti
   const repository = await getRepository();
   await repository.updateProfile(user.profile.id, {
     full_name: parsed.data.full_name,
+    display_name: parsed.data.display_name,
+    avatar_preset: parsed.data.avatar_preset,
     phone: parsed.data.phone,
     experience_level: parsed.data.experience_level,
     avocado_style: parsed.data.avocado_style,

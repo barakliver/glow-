@@ -12,18 +12,26 @@ import { updateProfileAction } from '@/app/actions/auth';
 import { onboardingSchema, zodFieldErrors } from '@/lib/validation';
 import { AVOCADO_STYLE_OPTIONS, DIFFICULTY_OPTIONS } from '@/lib/labels';
 import { RipenessMark } from '@/components/brand/ripeness-mark';
+import { AvocadoAvatar } from '@/components/brand/avocado-avatar';
+import { AVATAR_PRESETS, DEFAULT_AVATAR } from '@/lib/domain/avatars';
 import { cn } from '@/lib/utils';
 import type { AvocadoStyle, Difficulty } from '@/lib/domain/types';
 
 export function ProfileForm({
+  profileId,
   fullName,
+  displayName,
+  avatarPreset,
   phone,
   email,
   level,
   style,
   weeklyGoal,
 }: {
+  profileId: string;
   fullName: string;
+  displayName: string;
+  avatarPreset: string | null;
   phone: string;
   email: string;
   level: Difficulty;
@@ -37,10 +45,13 @@ export function ProfileForm({
   const [selectedLevel, setSelectedLevel] = useState<Difficulty>(level);
   const [selectedStyle, setSelectedStyle] = useState<AvocadoStyle>(style ?? 'lean');
   const [selectedGoal, setSelectedGoal] = useState(weeklyGoal);
+  const [selectedAvatar, setSelectedAvatar] = useState(avatarPreset ?? DEFAULT_AVATAR.key);
 
   const submit = (formData: FormData) => {
     const parsed = onboardingSchema.safeParse({
       full_name: String(formData.get('full_name') ?? ''),
+      display_name: String(formData.get('display_name') ?? ''),
+      avatar_preset: selectedAvatar,
       phone: String(formData.get('phone') ?? ''),
       experience_level: selectedLevel,
       avocado_style: selectedStyle,
@@ -51,6 +62,7 @@ export function ProfileForm({
       return;
     }
     setErrors({});
+    formData.set('avatar_preset', selectedAvatar);
     formData.set('experience_level', selectedLevel);
     formData.set('avocado_style', selectedStyle);
     formData.set('weekly_goal_sessions', String(selectedGoal));
@@ -87,6 +99,61 @@ export function ProfileForm({
             </p>
           )}
         </div>
+
+        {/*
+          What the club calls you, as opposed to what the paperwork calls you.
+          Other members only ever see this and the avocado below it - never the
+          full name above, never the phone.
+        */}
+        <div className="space-y-1.5">
+          <Label htmlFor="display_name">איך קוראים לך במועדון</Label>
+          <Input
+            id="display_name"
+            name="display_name"
+            defaultValue={displayName}
+            maxLength={24}
+            placeholder={fullName.split(' ')[0] || 'הכינוי שלך'}
+            aria-invalid={Boolean(errors.display_name)}
+          />
+          <p className="text-xs text-muted">
+            זה מה שאחרים במועדון רואים. אם תשאירו ריק נשתמש בשם הפרטי שלכם.
+          </p>
+          {errors.display_name && (
+            <p role="alert" className="text-xs font-semibold text-danger">
+              {errors.display_name}
+            </p>
+          )}
+        </div>
+
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-semibold">האבוקדו שלך</legend>
+          <p className="text-xs text-muted">
+            מצויר, לא מצולם. אף תמונה שלכם לא נשמרת בשום מקום.
+          </p>
+          <div className="grid grid-cols-5 gap-2 pt-1">
+            {AVATAR_PRESETS.map((preset) => {
+              const chosen = selectedAvatar === preset.key;
+              return (
+                <button
+                  key={preset.key}
+                  type="button"
+                  onClick={() => setSelectedAvatar(preset.key)}
+                  aria-pressed={chosen}
+                  aria-label={preset.label}
+                  title={preset.label}
+                  className={cn(
+                    'flex aspect-square items-center justify-center rounded-lg border transition-all',
+                    chosen
+                      ? 'border-accent bg-accent/12 shadow-glow-soft'
+                      : 'border-line bg-raised hover:border-muted/40',
+                  )}
+                >
+                  <AvocadoAvatar profileId={profileId} preset={preset.key} size={34} />
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
 
         <div className="space-y-1.5">
           <Label htmlFor="phone">טלפון נייד</Label>

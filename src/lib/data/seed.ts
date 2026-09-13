@@ -122,8 +122,12 @@ function profile(
     id: pid,
     email,
     full_name: fullName,
+    /* A nickname, so a roster shows what a roster is meant to show from the
+       first open: the name people are called, not the name on the paperwork. */
+    display_name: fullName.split(' ')[0],
     phone,
     avatar_url: null,
+    avatar_preset: null,
     experience_level: level,
     // The demo people have each picked a lane, so the home screen has
     // something to say on first open.

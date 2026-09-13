@@ -51,6 +51,7 @@ import type {
   Organization,
   Profile,
   ReadinessLog,
+  RosterEntry,
   SessionUser,
   TimerPreset,
   Trainer,
@@ -181,6 +182,8 @@ export class DemoRepository implements Repository {
       phone: input.phone ?? null,
       avatar_url: null,
       experience_level: 'beginner',
+      display_name: null,
+      avatar_preset: null,
       avocado_style: null,
       weekly_goal_sessions: 3,
       onboarding_completed: Boolean(input.full_name && input.phone),
@@ -1509,6 +1512,40 @@ export class DemoRepository implements Repository {
     database.activityLifts.push(...lifts);
 
     return { activity, lifts };
+  }
+
+  async listClassRoster(classId: string): Promise<RosterEntry[]> {
+    const database = db();
+    const order: Record<string, number> = { confirmed: 0, attended: 0, waitlisted: 1 };
+    return database.bookings
+      .filter(
+        (booking) =>
+          booking.class_id === classId &&
+          (booking.status === 'confirmed' ||
+            booking.status === 'waitlisted' ||
+            booking.status === 'attended'),
+      )
+      .sort(
+        (a, b) =>
+          (order[a.status] ?? 2) - (order[b.status] ?? 2) ||
+          (a.waitlist_position ?? 0) - (b.waitlist_position ?? 0) ||
+          a.created_at.localeCompare(b.created_at),
+      )
+      .map((booking) => {
+        const profile = database.profiles.find((row) => row.id === booking.profile_id);
+        return {
+          profile_id: booking.profile_id,
+          // Same narrowing as public.member_public_name: the chosen name, or
+          // the first name, and never the whole one.
+          name:
+            profile?.display_name?.trim() ||
+            profile?.full_name.trim().split(' ')[0] ||
+            'מתאמן',
+          avatar_preset: profile?.avatar_preset ?? null,
+          status: booking.status,
+          waitlist_position: booking.waitlist_position,
+        };
+      });
   }
 
   async listActivities(profileId: string, limit = 60): Promise<ActivityWithLifts[]> {

@@ -8,7 +8,10 @@ export default async function ProfilePage() {
   const user = await requireUser('/more/profile');
   return (
     <ProfileForm
+      profileId={user.profile.id}
       fullName={user.profile.full_name}
+      displayName={user.profile.display_name ?? ''}
+      avatarPreset={user.profile.avatar_preset}
       phone={user.profile.phone ?? ''}
       email={user.profile.email}
       level={user.profile.experience_level}

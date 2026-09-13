@@ -12,6 +12,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { availabilityForClass } from '@/lib/domain/booking-rules';
 import { CATEGORY_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '@/lib/labels';
 import { dayKey, formatDuration, formatHebrewDate, formatTime, minutesUntil, now } from '@/lib/time';
+import { ClassRoster } from '@/components/classes/class-roster';
 import { APP_URL } from '@/lib/env';
 import type { Equipment } from '@/lib/domain/types';
 
@@ -31,10 +32,11 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
   const user = await requireUser(`/classes/${id}`);
   const repository = await getRepository();
 
-  const [gymClass, organization, reveal] = await Promise.all([
+  const [gymClass, organization, reveal, roster] = await Promise.all([
     repository.getClass(id, user.profile.id),
     repository.getOrganization(),
     repository.getClassWorkout(id, user.profile.id),
+    repository.listClassRoster(id),
   ]);
   if (!gymClass || (!gymClass.published && user.membership.role === 'member')) notFound();
 
@@ -115,6 +117,8 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
           />
         </div>
       </section>
+
+      <ClassRoster roster={roster} capacity={gymClass.capacity} />
 
       {reveal.state === 'locked' && (
         <WorkoutLocked

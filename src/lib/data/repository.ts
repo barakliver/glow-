@@ -20,6 +20,7 @@ import type {
   Organization,
   Profile,
   ReadinessLog,
+  RosterEntry,
   SessionUser,
   TimerPreset,
   Trainer,
@@ -290,6 +291,15 @@ export interface Repository {
     }[];
   }): Promise<ActivityWithLifts>;
   listActivities(profileId: string, limit?: number): Promise<ActivityWithLifts[]>;
+
+  /**
+   * Who is booked into a class, as other members may see them.
+   *
+   * Returns chosen names and drawn avocados, never a full name, a phone or an
+   * email. On Postgres this is a security-definer function rather than a join,
+   * because RLS protects rows and this needs to protect columns.
+   */
+  listClassRoster(classId: string): Promise<RosterEntry[]>;
   getActivity(activityId: string, profileId: string): Promise<ActivityWithLifts | null>;
   deleteActivity(activityId: string, profileId: string): Promise<void>;
   /** Heaviest lift per exercise, for this member only. */

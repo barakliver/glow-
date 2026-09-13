@@ -26,6 +26,24 @@ export const avocadoStyleSchema = z.enum(['strong', 'lean', 'flow']);
 
 export const onboardingSchema = z.object({
   full_name: fullNameSchema,
+  /*
+   * What other members see. Optional: leave it empty and the club uses your
+   * first name, which is what it did before there were nicknames at all.
+   */
+  display_name: z
+    .string()
+    .trim()
+    .max(24, 'הכינוי ארוך מדי')
+    .optional()
+    .or(z.literal(''))
+    .transform((value) => (value && value.trim() !== '' ? value.trim() : null)),
+  avatar_preset: z
+    .string()
+    .trim()
+    .regex(/^[a-z][a-z0-9_-]{0,31}$/, 'בחירה לא תקינה')
+    .optional()
+    .or(z.literal(''))
+    .transform((value) => (value && value !== '' ? value : null)),
   phone: phoneSchema,
   experience_level: z.enum(['beginner', 'intermediate', 'advanced']),
   avocado_style: avocadoStyleSchema,
