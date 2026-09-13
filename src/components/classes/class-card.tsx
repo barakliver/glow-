@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Clock, MapPin, User, Users } from 'lucide-react';
+import { Clock, Lock, LockOpen, MapPin, User, Users } from 'lucide-react';
 import { AvailabilityBadge } from '@/components/classes/availability-badge';
 import { Badge } from '@/components/ui/badge';
 import { availabilityForClass } from '@/lib/domain/booking-rules';
-import { CATEGORY_LABELS, DIFFICULTY_LABELS } from '@/lib/labels';
+import { CATEGORY_LABELS, DIFFICULTY_LABELS, WORKOUT_FORMAT_LABELS } from '@/lib/labels';
 import { formatTime, formatShortDate } from '@/lib/time';
 import { cn } from '@/lib/utils';
 import type { ClassWithMeta } from '@/lib/domain/types';
@@ -73,11 +73,30 @@ export function ClassCard({
           <span className="num">
             {gymClass.confirmed_count}/{gymClass.capacity}
           </span>
+          <span>תפוסים</span>
           {gymClass.waitlist_count > 0 && (
             <span className="text-muted">· המתנה {gymClass.waitlist_count}</span>
           )}
         </span>
       </div>
+
+      {gymClass.workout_teaser && (
+        <p
+          data-workout={isMine ? 'open' : 'locked'}
+          className={cn(
+            'mt-2 inline-flex items-center gap-1.5 text-xs',
+            isMine ? 'text-accent-ink' : 'text-muted',
+          )}
+        >
+          {isMine ? (
+            <LockOpen className="size-3.5" aria-hidden />
+          ) : (
+            <Lock className="size-3.5" aria-hidden />
+          )}
+          {WORKOUT_FORMAT_LABELS[gymClass.workout_teaser.format]}
+          {isMine ? ' · האימון פתוח לצפייה' : ' · נחשף אחרי ההרשמה'}
+        </p>
+      )}
 
       {action && <div className="mt-3">{action}</div>}
     </article>

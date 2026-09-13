@@ -5,11 +5,13 @@ import { requireUser, getRepository } from '@/lib/auth';
 import { BookingButton } from '@/components/classes/booking-button';
 import { AvailabilityBadge } from '@/components/classes/availability-badge';
 import { ShareActions } from '@/components/share/share-actions';
+import { WorkoutDetail, WorkoutLocked } from '@/components/workout/workout-detail';
+import { LogResultForm } from '@/components/workout/log-result-form';
 import { Badge } from '@/components/ui/badge';
 import { PageHeader } from '@/components/layout/page-header';
 import { availabilityForClass } from '@/lib/domain/booking-rules';
 import { CATEGORY_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '@/lib/labels';
-import { formatDuration, formatHebrewDate, formatTime, minutesUntil } from '@/lib/time';
+import { dayKey, formatDuration, formatHebrewDate, formatTime, minutesUntil, now } from '@/lib/time';
 import { APP_URL } from '@/lib/env';
 import type { Equipment } from '@/lib/domain/types';
 
@@ -29,11 +31,29 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
   const user = await requireUser(`/classes/${id}`);
   const repository = await getRepository();
 
-  const [gymClass, organization] = await Promise.all([
+  const [gymClass, organization, reveal] = await Promise.all([
     repository.getClass(id, user.profile.id),
     repository.getOrganization(),
+    repository.getClassWorkout(id, user.profile.id),
   ]);
   if (!gymClass || (!gymClass.published && user.membership.role === 'member')) notFound();
+
+  // The result form belongs at the end of the session, not before it. A member
+  // who booked can see the plan from the moment they book; they can only file a
+  // score once the class has actually started.
+  const started = new Date(gymClass.starts_at).getTime() <= Date.now();
+  const canLog =
+    started &&
+    reveal.state === 'revealed' &&
+    (gymClass.my_booking?.status === 'confirmed' || gymClass.my_booking?.status === 'attended');
+
+  const [existingLog, history] =
+    canLog && reveal.state === 'revealed'
+      ? await Promise.all([
+          repository.getWorkoutLog(user.profile.id, reveal.workout.id, dayKey(now())),
+          repository.listWorkoutHistory(user.profile.id, reveal.workout.id),
+        ])
+      : [null, []];
 
   const availability = availabilityForClass(gymClass);
   const durationMinutes = Math.round(
@@ -95,6 +115,28 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
           />
         </div>
       </section>
+
+      {reveal.state === 'locked' && (
+        <WorkoutLocked
+          category={reveal.category}
+          format={reveal.format}
+          durationMinutes={reveal.duration_minutes}
+          difficulty={reveal.difficulty}
+        />
+      )}
+
+      {reveal.state === 'revealed' && (
+        <WorkoutDetail workout={reveal.workout} coachNotes={reveal.notes} />
+      )}
+
+      {canLog && reveal.state === 'revealed' && (
+        <LogResultForm
+          workout={reveal.workout}
+          classId={gymClass.id}
+          existing={existingLog}
+          history={history}
+        />
+      )}
 
       {gymClass.description && (
         <section className="surface p-4">

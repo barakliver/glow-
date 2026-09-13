@@ -8,10 +8,12 @@ import {
   ChevronLeft,
   Dumbbell,
   Filter,
+  Library,
   Play,
   RefreshCw,
   Sparkles,
   Timer,
+  Trophy,
 } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -122,7 +124,7 @@ export function WorkoutHub({
     <div className="space-y-4">
       <PageHeader
         title="אימון"
-        subtitle="המלצות אישיות, תבניות מאושרות וספריית התרגילים"
+        subtitle="המלצות אישיות, מאגר אימונים וספריית התרגילים"
         action={
           <Button variant="ghost" size="icon-sm" asChild aria-label="ספריית תרגילים">
             <Link href="/workout/library">
@@ -322,6 +324,18 @@ export function WorkoutHub({
       </section>
 
       <section className="grid gap-2 sm:grid-cols-2">
+        <Button variant="secondary" size="lg" block asChild>
+          <Link href="/workout/wods">
+            <Library className="size-4" aria-hidden />
+            מאגר האימונים
+          </Link>
+        </Button>
+        <Button variant="secondary" size="lg" block asChild>
+          <Link href="/workout/results">
+            <Trophy className="size-4" aria-hidden />
+            התוצאות שלי
+          </Link>
+        </Button>
         <Button variant="secondary" size="lg" block asChild>
           <Link href="/workout/new">
             <Dumbbell className="size-4" aria-hidden />

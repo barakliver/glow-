@@ -1,5 +1,8 @@
 import type {
   BodyArea,
+  ScoreType,
+  WorkoutCategory,
+  WorkoutFormat,
   BookingStatus,
   Difficulty,
   Equipment,
@@ -61,6 +64,7 @@ export const EQUIPMENT_LABELS: Record<Equipment, string> = {
   rings: 'טבעות',
   pullup_bar: 'מתח',
   mat: 'מזרן',
+  jump_rope: 'חבל קפיצה',
   medicine_ball: 'כדור כוח',
 };
 
@@ -125,6 +129,54 @@ export const AREA_OPTIONS = Object.entries(AREA_LABELS).map(([value, label]) => 
   value: value as BodyArea,
   label,
 }));
+
+export const WORKOUT_CATEGORY_LABELS: Record<WorkoutCategory, string> = {
+  crossfit: 'קרוספיט',
+  functional: 'פונקציונלי',
+  pilates: 'פילאטיס',
+  yoga: 'יוגה ותנועתיות',
+};
+
+export const WORKOUT_FORMAT_LABELS: Record<WorkoutFormat, string> = {
+  amrap: 'AMRAP',
+  for_time: 'For Time',
+  emom: 'EMOM',
+  tabata: 'טבאטה',
+  chipper: "צ'יפר",
+  intervals: 'אינטרוולים',
+  strength: 'כוח',
+  circuit: 'מעגל',
+  flow: 'פלואו',
+};
+
+/** What the format means, in one line, for someone who has not met it before. */
+export const WORKOUT_FORMAT_HINTS: Record<WorkoutFormat, string> = {
+  amrap: 'כמה שיותר סבבים בזמן נתון.',
+  for_time: 'לסיים את העבודה במהירות האפשרית.',
+  emom: 'בתחילת כל דקה מבצעים את העבודה ונחים את שארית הדקה.',
+  tabata: 'שמונה סבבים של 20 שניות עבודה ו-10 שניות מנוחה.',
+  chipper: 'רשימת תרגילים ארוכה שעוברים פעם אחת, מלמעלה למטה.',
+  intervals: 'מקטעי עבודה קבועים עם מנוחה מתוכננת ביניהם.',
+  strength: 'סטים וחזרות עם התקדמות במשקל.',
+  circuit: 'תחנות שעוברים במעגל, סבב אחרי סבב.',
+  flow: 'רצף תנועה מתמשך לפי קצב הנשימה.',
+};
+
+export const SCORE_TYPE_LABELS: Record<ScoreType, string> = {
+  time: 'זמן סיום',
+  rounds_and_reps: 'סבבים וחזרות',
+  reps: 'סך חזרות',
+  weight: 'משקל',
+  completion: 'השלמה',
+};
+
+export const WORKOUT_CATEGORY_OPTIONS = Object.entries(WORKOUT_CATEGORY_LABELS).map(
+  ([value, label]) => ({ value: value as WorkoutCategory, label }),
+);
+
+export const WORKOUT_FORMAT_OPTIONS = Object.entries(WORKOUT_FORMAT_LABELS).map(
+  ([value, label]) => ({ value: value as WorkoutFormat, label }),
+);
 
 /** Hebrew plural helper for small counts. */
 export function pluralHe(count: number, one: string, many: string): string {

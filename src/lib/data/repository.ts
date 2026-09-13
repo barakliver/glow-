@@ -20,6 +20,11 @@ import type {
   WorkoutSession,
   WorkoutSessionExercise,
   WorkoutSet,
+  Workout,
+  WorkoutCategory,
+  WorkoutLog,
+  WorkoutLogWithWorkout,
+  WorkoutReveal,
   WorkoutTemplate,
   WorkoutTemplateExercise,
 } from '@/lib/domain/types';
@@ -178,6 +183,52 @@ export interface Repository {
   getNotificationPreferences(profileId: string): Promise<NotificationPreferences>;
   setNotificationPreferences(profileId: string, prefs: NotificationPreferences): Promise<void>;
   broadcastAnnouncement(input: { title: string; body: string; authorId: string }): Promise<number>;
+
+  // --- workout library --------------------------------------------------
+  listWorkouts(filters?: {
+    category?: WorkoutCategory | null;
+    search?: string | null;
+    includeArchived?: boolean;
+  }): Promise<Workout[]>;
+  getWorkout(idOrSlug: string): Promise<Workout | null>;
+  /**
+   * What this caller is allowed to know about a class's workout.
+   *
+   * The gate is Row Level Security, not this method: a member who has not
+   * booked cannot read the `class_workouts` row at all. What the method adds is
+   * the difference between "there is nothing planned" and "there is something
+   * planned that you have not earned the right to see yet".
+   */
+  getClassWorkout(classId: string, profileId: string | null): Promise<WorkoutReveal>;
+  /** Staff only. Passing `null` detaches whatever was planned. */
+  setClassWorkout(
+    classId: string,
+    workoutId: string | null,
+    input: { notes: string | null; assignedBy: string },
+  ): Promise<void>;
+
+  // --- workout results ---------------------------------------------------
+  /** Records or corrects the member's result. One row per workout per day. */
+  logWorkoutResult(input: {
+    profileId: string;
+    workoutId: string;
+    classId: string | null;
+    performedOn: string;
+    scoreType: WorkoutLog['score_type'];
+    resultSeconds: number | null;
+    resultRounds: number | null;
+    resultReps: number | null;
+    resultWeightKg: number | null;
+    completed: boolean | null;
+    rx: boolean;
+    rpe: number | null;
+    notes: string | null;
+  }): Promise<WorkoutLog>;
+  listWorkoutLogs(profileId: string, limit?: number): Promise<WorkoutLogWithWorkout[]>;
+  /** This member's earlier attempts at one workout, newest first. */
+  listWorkoutHistory(profileId: string, workoutId: string): Promise<WorkoutLog[]>;
+  getWorkoutLog(profileId: string, workoutId: string, performedOn: string): Promise<WorkoutLog | null>;
+  deleteWorkoutLog(logId: string, profileId: string): Promise<void>;
 
   // --- analytics --------------------------------------------------------
   getAdminStats(fromIso: string, toIso: string): Promise<AdminStats>;

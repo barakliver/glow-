@@ -2,7 +2,17 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { CalendarOff, ChevronLeft, ChevronRight, Filter, LayoutGrid, List, X } from 'lucide-react';
+import {
+  CalendarOff,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  LayoutGrid,
+  List,
+  Lock,
+  LockOpen,
+  X,
+} from 'lucide-react';
 import { ClassCard } from '@/components/classes/class-card';
 import { BookingButton } from '@/components/classes/booking-button';
 import { Button } from '@/components/ui/button';
@@ -16,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { availabilityForClass } from '@/lib/domain/booking-rules';
-import { CATEGORY_LABELS, CATEGORY_OPTIONS } from '@/lib/labels';
+import { CATEGORY_LABELS, CATEGORY_OPTIONS, WORKOUT_FORMAT_LABELS } from '@/lib/labels';
 import {
   dayKey,
   formatHebrewFullDate,
@@ -346,8 +356,33 @@ export function WeeklySchedule({
                           </span>
                           <span className="block truncate text-sm font-semibold">{gymClass.title}</span>
                           <span className="block truncate text-[11px] text-muted">
-                            {CATEGORY_LABELS[gymClass.category]} · {gymClass.spots_left} פנויים
+                            {CATEGORY_LABELS[gymClass.category]} ·{' '}
+                            <span className="num">
+                              {gymClass.confirmed_count}/{gymClass.capacity}
+                            </span>{' '}
+                            תפוסים
                           </span>
+                          {gymClass.workout_teaser && (
+                            <span
+                              data-workout={gymClass.my_booking ? 'open' : 'locked'}
+                              title={
+                                gymClass.my_booking
+                                  ? 'האימון פתוח לצפייה'
+                                  : 'האימון נחשף אחרי ההרשמה'
+                              }
+                              className={cn(
+                                'mt-0.5 flex items-center gap-1 text-[11px]',
+                                gymClass.my_booking ? 'text-accent-ink' : 'text-muted',
+                              )}
+                            >
+                              {gymClass.my_booking ? (
+                                <LockOpen className="size-3" aria-hidden />
+                              ) : (
+                                <Lock className="size-3" aria-hidden />
+                              )}
+                              {WORKOUT_FORMAT_LABELS[gymClass.workout_teaser.format]}
+                            </span>
+                          )}
                         </Link>
                         {/* The week grid is the default on a wide screen, so it has
                             to be bookable in place and not only a way in to the

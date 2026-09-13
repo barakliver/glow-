@@ -71,10 +71,12 @@ and it never touches a production database.
    Set `DEMO_MODE=true` to force demo mode anyway.
 
 3. **Create the schema.** Easiest path: open the Supabase SQL editor and paste
-   **`supabase/setup.sql`** — one generated file containing the three
-   migrations plus the starter content (exercise library, workout templates,
-   timer presets) and no demo people. Rebuild it with
-   `npm run build:setup-sql` after changing a migration.
+   **`supabase/setup.sql`** — one generated file containing every migration
+   plus the starter content (exercise library, workout library, workout
+   templates, timer presets) and no demo people. It is safe to paste again
+   later: every statement is guarded, so a second run updates what changed.
+   Rebuild it with `npm run build:setup-sql` after changing a migration or the
+   workout library.
 
    Or apply the migrations individually, in order:
 
@@ -90,6 +92,11 @@ and it never touches a production database.
    | `supabase/migrations/20260101000000_initial_schema.sql` | tables, enums, indexes, constraints |
    | `supabase/migrations/20260101000001_functions.sql` | permission helpers, `book_class`, `cancel_booking`, `set_booking_status`, `public_schedule`, new-user trigger |
    | `supabase/migrations/20260101000002_rls.sql` | Row Level Security for every private table + realtime |
+   | `supabase/migrations/20260101000003_public_invite_status.sql` | public invitation status function |
+   | `supabase/migrations/20260101000004_owner_allowlist_and_approval.sql` | owner allowlist, joining approval |
+   | `supabase/migrations/20260101000005_workouts.sql` | workout library, the class link and its reveal gate, results |
+   | `supabase/migrations/20260101000006_workout_library_content.sql` | the 103 shipped workouts (generated) |
+   | `supabase/migrations/20260101000007_member_access_requires_approval.sql` | member reads require an approved membership |
 
 4. **Seed demo content** (local stack only — it creates `auth.users` rows):
 
@@ -258,8 +265,10 @@ src/
   components/          UI primitives, class cards, charts, workout, share
   lib/
     domain/            pure logic: booking rules, timer, recommendations,
-                       progress — all unit tested, no I/O
+                       progress, workout scoring — all unit tested, no I/O
     data/              repository contract + demo and Supabase adapters, seed
+    data/workouts/     the workout library, authored in TypeScript and
+                       generated into a migration by npm run build:workout-sql
     supabase/          browser, server and middleware clients
     offline/           pending-workout queue
 supabase/
@@ -294,9 +303,44 @@ luminous ring.
 
 ---
 
+## Workout of the day
+
+Every class can carry one workout from a library of **103**: 33 CrossFit
+benchmarks and conditioning pieces, 33 functional and HIIT sessions, 20 mat
+pilates classes and 17 yoga and mobility sessions. Each one carries its format,
+length, warm-up, structure, cool-down, three levels of scaling and how it is
+scored.
+
+The workout is **hidden until a member holds a place in the class**. Before
+booking they see the shape of the session — family, format, length, level — and
+nothing that names a movement. That gate is a Row Level Security policy on
+`class_workouts`, not a hidden interface element: a member who has not booked
+cannot read the row at all, whatever client they use. A waitlisted member counts
+as holding a place, since they can be promoted minutes before the class starts.
+
+A class holds **five people** by default, in the database and not only in the
+form that creates one. The sixth person joins the waiting list and is promoted
+automatically when a place frees up. An owner can still raise the number on a
+specific class.
+
+After the class, the member records a result. The form follows the workout's
+score type — a finishing time for For Time, rounds and reps for an AMRAP, weight
+and reps for a lifting day, a yes or no for a flow — along with Rx or Scaled, an
+RPE from 1 to 10 and a note. Results are private to the member; staff can read
+them to coach, never to rank.
+
+The library is authored in `src/lib/data/workouts/*.ts` and generated into a
+migration, so the in-memory demo adapter and PostgreSQL can never disagree about
+what a workout is. CI fails if the generated SQL is stale.
+
+---
+
 ## Product boundaries
 
 The progress and recommendation features deliberately track **performance,
 consistency and recovery only**. There are no calorie targets, appearance
 ratings, body comparisons or weight-loss plans, and members are never compared
-against each other — only against their own previous results.
+against each other — only against their own previous results. There is no
+leaderboard anywhere in the app, and the workout library is checked by a test
+that fails if a calorie target, a weight-loss claim or a body comparison ever
+finds its way into one of the 103 descriptions.

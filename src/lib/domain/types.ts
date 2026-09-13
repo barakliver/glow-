@@ -55,7 +55,8 @@ export type Equipment =
   | 'rings'
   | 'pullup_bar'
   | 'mat'
-  | 'medicine_ball';
+  | 'medicine_ball'
+  | 'jump_rope';
 
 export type TrainingGoal = 'general' | 'strength' | 'conditioning' | 'mobility' | 'technique';
 
@@ -400,6 +401,20 @@ export interface ClassWithMeta extends GymClass {
   waitlist_count: number;
   spots_left: number;
   my_booking: Booking | null;
+  /**
+   * The shape of the planned workout, or null when nothing is planned.
+   *
+   * Never its content: the movements live behind `getClassWorkout`, which only
+   * hands them over to someone who holds a place.
+   */
+  workout_teaser: WorkoutTeaser | null;
+}
+
+export interface WorkoutTeaser {
+  category: WorkoutCategory;
+  format: WorkoutFormat;
+  duration_minutes: number;
+  difficulty: Difficulty;
 }
 
 export type ClassAvailability =
@@ -411,3 +426,127 @@ export type ClassAvailability =
   | 'cancelled'
   | 'closed'
   | 'past';
+
+// --- workout of the day -------------------------------------------------------
+
+/** The four families the workout library is organised into. */
+export type WorkoutCategory = 'crossfit' | 'functional' | 'pilates' | 'yoga';
+
+/** How a workout is run, which is also what decides how it is scored. */
+export type WorkoutFormat =
+  | 'amrap'
+  | 'for_time'
+  | 'emom'
+  | 'tabata'
+  | 'chipper'
+  | 'intervals'
+  | 'strength'
+  | 'circuit'
+  | 'flow';
+
+/** What a member writes down at the end. */
+export type ScoreType = 'time' | 'rounds_and_reps' | 'reps' | 'weight' | 'completion';
+
+/** One line as a coach would write it on the board. */
+export interface WorkoutMovement {
+  label: string;
+  /** Load, pace, tempo or a cue. Optional. */
+  detail?: string | null;
+}
+
+/** A named part of a workout: a buy-in, the main piece, a cash-out. */
+export interface WorkoutBlock {
+  label: string;
+  /** How to run it - rounds, rest, time cap. */
+  detail?: string | null;
+  items: WorkoutMovement[];
+}
+
+export interface WorkoutScaling {
+  level: Difficulty;
+  detail: string;
+}
+
+export interface Workout {
+  id: string;
+  organization_id: string;
+  /** Stable handle, unique per organization. */
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  category: WorkoutCategory;
+  format: WorkoutFormat;
+  difficulty: Difficulty;
+  duration_minutes: number;
+  time_cap_minutes: number | null;
+  equipment: Equipment[];
+  description: string;
+  warmup: WorkoutMovement[];
+  structure: WorkoutBlock[];
+  cooldown: WorkoutMovement[];
+  scaling: WorkoutScaling[];
+  score_type: ScoreType;
+  /** Overrides the default unit wording, e.g. "סבבים + חזרות". */
+  score_label: string | null;
+  archived: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/** The workout a class will run. Hidden until the member holds a place. */
+export interface ClassWorkout {
+  class_id: string;
+  organization_id: string;
+  workout_id: string;
+  notes: string | null;
+  assigned_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * What a member is allowed to know about their class's workout.
+ *
+ * `locked` still carries the shape of the session - family, format, length -
+ * because that is what someone needs to decide whether to come. It never
+ * carries the movements.
+ */
+export type WorkoutReveal =
+  | { state: 'none' }
+  | {
+      state: 'locked';
+      category: WorkoutCategory;
+      format: WorkoutFormat;
+      duration_minutes: number;
+      difficulty: Difficulty;
+    }
+  | { state: 'revealed'; workout: Workout; notes: string | null };
+
+export interface WorkoutLog {
+  id: string;
+  organization_id: string;
+  profile_id: string;
+  workout_id: string;
+  class_id: string | null;
+  /** yyyy-MM-dd in gym time. */
+  performed_on: string;
+  score_type: ScoreType;
+  result_seconds: number | null;
+  result_rounds: number | null;
+  result_reps: number | null;
+  result_weight_kg: number | null;
+  completed: boolean | null;
+  /** True when performed exactly as prescribed. */
+  rx: boolean;
+  /** Rate of perceived exertion, 1-10. */
+  rpe: number | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** A result together with the workout it belongs to, for history screens. */
+export interface WorkoutLogWithWorkout {
+  log: WorkoutLog;
+  workout: Workout;
+}

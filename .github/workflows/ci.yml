@@ -30,6 +30,17 @@ jobs:
       - run: npm run lint
       - run: npm run test
 
+      # The workout library and setup.sql are generated from source. A change to
+      # the library that was not regenerated would ship a database that disagrees
+      # with the app about what a workout is, so check the tree is up to date.
+      - name: Generated SQL matches its source
+        run: |
+          npm run build:setup-sql
+          git diff --exit-code -- supabase/setup.sql supabase/migrations || {
+            echo "::error::Generated SQL is stale. Run 'npm run build:setup-sql' and commit the result."
+            exit 1
+          }
+
       # Built explicitly rather than only through Playwright's web server, so a
       # broken build fails as a build and not as a server that never came up.
       - run: npm run build

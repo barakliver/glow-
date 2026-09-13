@@ -40,6 +40,12 @@ import type {
   WorkoutSession,
   WorkoutSessionExercise,
   WorkoutSet,
+  Workout,
+  WorkoutCategory,
+  WorkoutLog,
+  WorkoutLogWithWorkout,
+  WorkoutReveal,
+  WorkoutTeaser,
   WorkoutTemplate,
   WorkoutTemplateExercise,
 } from '@/lib/domain/types';
@@ -279,10 +285,30 @@ export class SupabaseRepository implements Repository {
   ): Promise<ClassWithMeta[]> {
     if (classes.length === 0) return [];
     const ids = classes.map((c) => c.id);
-    const [{ data: bookings }, { data: trainers }] = await Promise.all([
+    // The teaser comes from a security-definer function rather than a join:
+    // members cannot read `class_workouts` at all until they hold a place, and
+    // the function only ever returns the shape of the session, never its
+    // movements. One call covers the whole range.
+    const starts = classes.map((c) => new Date(c.starts_at).getTime());
+    const [{ data: bookings }, { data: trainers }, { data: teasers }] = await Promise.all([
       this.supabase.from('bookings').select('*').in('class_id', ids),
       this.supabase.from('trainers').select('id, display_name').eq('organization_id', this.organizationId),
+      this.supabase.rpc('class_workout_teasers', {
+        p_from: new Date(Math.min(...starts)).toISOString(),
+        p_to: new Date(Math.max(...starts) + 1000).toISOString(),
+      }),
     ]);
+    const teaserMap = new Map(
+      ((teasers ?? []) as (WorkoutTeaser & { class_id: string })[]).map((row) => [
+        row.class_id,
+        {
+          category: row.category,
+          format: row.format,
+          duration_minutes: row.duration_minutes,
+          difficulty: row.difficulty,
+        },
+      ]),
+    );
     const trainerMap = new Map(
       ((trainers ?? []) as { id: string; display_name: string }[]).map((t) => [t.id, t.display_name]),
     );
@@ -299,6 +325,7 @@ export class SupabaseRepository implements Repository {
           profileId != null
             ? classBookings.find((b) => b.profile_id === profileId && isActiveBooking(b)) ?? null
             : null,
+        workout_teaser: teaserMap.get(gymClass.id) ?? null,
       };
     });
   }
@@ -1153,6 +1180,220 @@ export class SupabaseRepository implements Repository {
   }
 
   // --- analytics --------------------------------------------------------
+  // --- workout library --------------------------------------------------
+
+  async listWorkouts(filters?: {
+    category?: WorkoutCategory | null;
+    search?: string | null;
+    includeArchived?: boolean;
+  }): Promise<Workout[]> {
+    let query = this.supabase
+      .from('workouts')
+      .select('*')
+      .eq('organization_id', this.organizationId)
+      .order('title');
+    if (!filters?.includeArchived) query = query.eq('archived', false);
+    if (filters?.category) query = query.eq('category', filters.category);
+
+    const needle = filters?.search?.trim();
+    if (needle) {
+      const escaped = needle.replace(/[%,()]/g, ' ');
+      query = query.or(
+        `title.ilike.%${escaped}%,subtitle.ilike.%${escaped}%,description.ilike.%${escaped}%`,
+      );
+    }
+    const { data, error } = await query;
+    if (error) throw new Error(error.message);
+    return (data ?? []) as Workout[];
+  }
+
+  async getWorkout(idOrSlug: string): Promise<Workout | null> {
+    const column = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug)
+      ? 'id'
+      : 'slug';
+    const { data, error } = await this.supabase
+      .from('workouts')
+      .select('*')
+      .eq('organization_id', this.organizationId)
+      .eq(column, idOrSlug)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return (data as Workout) ?? null;
+  }
+
+  /**
+   * The gate here is the RLS policy on `class_workouts`, not this code: an
+   * unbooked member gets no row back, full stop. The teaser is then fetched
+   * through a security-definer function that only ever returns the shape of the
+   * session - never its movements.
+   */
+  async getClassWorkout(classId: string, _profileId: string | null): Promise<WorkoutReveal> {
+    const { data: link, error } = await this.supabase
+      .from('class_workouts')
+      .select('workout_id, notes, workouts(*)')
+      .eq('class_id', classId)
+      .maybeSingle();
+    if (error && error.code !== 'PGRST116') throw new Error(error.message);
+
+    const workout = (link as { workouts?: Workout } | null)?.workouts;
+    if (workout) {
+      return {
+        state: 'revealed',
+        workout,
+        notes: (link as { notes: string | null }).notes,
+      };
+    }
+    return this.classWorkoutTeaser(classId);
+  }
+
+  private async classWorkoutTeaser(classId: string): Promise<WorkoutReveal> {
+    // A wide window, narrowed by class id: the function is keyed on the class
+    // row, and a class always sits inside its own year.
+    const { data, error } = await this.supabase.rpc('class_workout_teasers', {
+      p_from: '1970-01-01T00:00:00Z',
+      p_to: '2999-01-01T00:00:00Z',
+    });
+    if (error) throw new Error(error.message);
+
+    const teaser = ((data ?? []) as {
+      class_id: string;
+      category: WorkoutCategory;
+      format: Workout['format'];
+      duration_minutes: number;
+      difficulty: Workout['difficulty'];
+    }[]).find((row) => row.class_id === classId);
+
+    if (!teaser) return { state: 'none' };
+    return {
+      state: 'locked',
+      category: teaser.category,
+      format: teaser.format,
+      duration_minutes: teaser.duration_minutes,
+      difficulty: teaser.difficulty,
+    };
+  }
+
+  async setClassWorkout(
+    classId: string,
+    workoutId: string | null,
+    input: { notes: string | null; assignedBy: string },
+  ): Promise<void> {
+    if (!workoutId) {
+      const { error } = await this.supabase
+        .from('class_workouts')
+        .delete()
+        .eq('class_id', classId);
+      if (error) throw new Error(error.message);
+      return;
+    }
+    const { error } = await this.supabase.from('class_workouts').upsert(
+      {
+        class_id: classId,
+        organization_id: this.organizationId,
+        workout_id: workoutId,
+        notes: input.notes,
+        assigned_by: input.assignedBy,
+      },
+      { onConflict: 'class_id' },
+    );
+    if (error) throw new Error(error.message);
+  }
+
+  // --- workout results ---------------------------------------------------
+
+  async logWorkoutResult(input: {
+    profileId: string;
+    workoutId: string;
+    classId: string | null;
+    performedOn: string;
+    scoreType: WorkoutLog['score_type'];
+    resultSeconds: number | null;
+    resultRounds: number | null;
+    resultReps: number | null;
+    resultWeightKg: number | null;
+    completed: boolean | null;
+    rx: boolean;
+    rpe: number | null;
+    notes: string | null;
+  }): Promise<WorkoutLog> {
+    const { data, error } = await this.supabase
+      .from('workout_logs')
+      .upsert(
+        {
+          organization_id: this.organizationId,
+          profile_id: input.profileId,
+          workout_id: input.workoutId,
+          class_id: input.classId,
+          performed_on: input.performedOn,
+          score_type: input.scoreType,
+          result_seconds: input.resultSeconds,
+          result_rounds: input.resultRounds,
+          result_reps: input.resultReps,
+          result_weight_kg: input.resultWeightKg,
+          completed: input.completed,
+          rx: input.rx,
+          rpe: input.rpe,
+          notes: input.notes,
+        },
+        { onConflict: 'profile_id,workout_id,performed_on' },
+      )
+      .select('*')
+      .single();
+    if (error) throw new Error(error.message);
+    return data as WorkoutLog;
+  }
+
+  async listWorkoutLogs(profileId: string, limit = 50): Promise<WorkoutLogWithWorkout[]> {
+    const { data, error } = await this.supabase
+      .from('workout_logs')
+      .select('*, workouts(*)')
+      .eq('profile_id', profileId)
+      .order('performed_on', { ascending: false })
+      .limit(limit);
+    if (error) throw new Error(error.message);
+
+    return ((data ?? []) as (WorkoutLog & { workouts: Workout | null })[]).flatMap((row) => {
+      const { workouts, ...log } = row;
+      return workouts ? [{ log: log as WorkoutLog, workout: workouts }] : [];
+    });
+  }
+
+  async listWorkoutHistory(profileId: string, workoutId: string): Promise<WorkoutLog[]> {
+    const { data, error } = await this.supabase
+      .from('workout_logs')
+      .select('*')
+      .eq('profile_id', profileId)
+      .eq('workout_id', workoutId)
+      .order('performed_on', { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data ?? []) as WorkoutLog[];
+  }
+
+  async getWorkoutLog(
+    profileId: string,
+    workoutId: string,
+    performedOn: string,
+  ): Promise<WorkoutLog | null> {
+    const { data, error } = await this.supabase
+      .from('workout_logs')
+      .select('*')
+      .eq('profile_id', profileId)
+      .eq('workout_id', workoutId)
+      .eq('performed_on', performedOn)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return (data as WorkoutLog) ?? null;
+  }
+
+  async deleteWorkoutLog(logId: string, profileId: string): Promise<void> {
+    const { error } = await this.supabase
+      .from('workout_logs')
+      .delete()
+      .eq('id', logId)
+      .eq('profile_id', profileId);
+    if (error) throw new Error(error.message);
+  }
+
   async getAdminStats(fromIso: string, toIso: string): Promise<AdminStats> {
     const { data: classes } = await this.supabase
       .from('classes')

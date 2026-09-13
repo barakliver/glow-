@@ -89,6 +89,9 @@ assert glow_migrations scripts/sql/assert-booking.sql
 echo "==> asserting who gets in, and as what"
 assert glow_migrations scripts/sql/assert-joining.sql
 
+echo "==> asserting the workout of the day stays hidden until booked"
+assert glow_migrations scripts/sql/assert-workouts.sql
+
 # --- 2. setup.sql, the single file pasted into the Supabase SQL editor --------
 echo "==> applying setup.sql (the one-paste path)"
 "${PSQL[@]}" -d postgres -c "create database glow_setup;" >/dev/null

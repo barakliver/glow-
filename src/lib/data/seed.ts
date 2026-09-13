@@ -5,6 +5,7 @@
  */
 import { addDays, format } from 'date-fns';
 import { fromGymTime, gymWeekDays, toGymTime } from '@/lib/time';
+import { WORKOUT_LIBRARY, libraryWorkouts, workoutLibraryId } from '@/lib/data/workouts';
 import type {
   AppNotification,
   Attendance,
@@ -17,8 +18,11 @@ import type {
   Organization,
   Profile,
   ReadinessLog,
+  ClassWorkout,
   TimerPreset,
   Trainer,
+  Workout,
+  WorkoutLog,
   WorkoutSession,
   WorkoutSet,
   WorkoutTemplate,
@@ -43,7 +47,25 @@ export interface SeedData {
   readiness: ReadinessLog[];
   timerPresets: TimerPreset[];
   notifications: AppNotification[];
+  workouts: Workout[];
+  classWorkouts: ClassWorkout[];
+  workoutLogs: WorkoutLog[];
 }
+
+/**
+ * Which family of workouts a class of each kind runs.
+ *
+ * A mobility class does not get Fran. Keeping this explicit means the demo
+ * schedule reads like a real week rather than a shuffle of the whole library.
+ */
+const WORKOUT_FAMILY: Record<ClassSeries['category'], Workout['category']> = {
+  strength: 'functional',
+  functional: 'functional',
+  tabata: 'crossfit',
+  mobility: 'yoga',
+  open: 'crossfit',
+  conditioning: 'crossfit',
+};
 
 const ORG_ID = '00000000-0000-4000-8000-000000000001';
 
@@ -360,17 +382,17 @@ interface ClassSeed {
 }
 
 const WEEK_TEMPLATE: ClassSeed[] = [
-  { weekday: 0, time: '07:00', title: 'אימון כוח', category: 'strength', difficulty: 'intermediate', trainerIndex: 0, capacity: 8, duration: 60, equipment: ['barbell', 'dumbbell'], description: 'אימון כוח מובנה סביב סקוואט, דדליפט ולחיצות. מתקדמים בעומס לפי הרגשה ומסיימים בעבודת ליבה.' },
-  { weekday: 0, time: '18:30', title: 'אימון פונקציונלי', category: 'functional', difficulty: 'beginner', trainerIndex: 1, capacity: 10, duration: 45, equipment: ['kettlebell', 'box'], description: 'תחנות של דחיפה, משיכה, נשיאה וקפיצה. מתאים לכל הרמות עם התאמות אישיות.' },
-  { weekday: 1, time: '06:30', title: 'טבאטה', category: 'tabata', difficulty: 'intermediate', trainerIndex: 1, capacity: 12, duration: 30, equipment: ['none'], description: 'שמונה סבבים של 20 שניות עבודה ו-10 שניות מנוחה, ארבעה בלוקים. קצר, חד ויעיל.' },
-  { weekday: 1, time: '19:00', title: 'אימון כוח', category: 'strength', difficulty: 'advanced', trainerIndex: 0, capacity: 6, duration: 60, equipment: ['barbell'], description: 'בלוק כוח מתקדם עם עבודה כבדה על תרגילי יסוד ומנוחות ארוכות.' },
-  { weekday: 2, time: '07:00', title: 'מוביליטי', category: 'mobility', difficulty: 'beginner', trainerIndex: 1, capacity: 12, duration: 30, equipment: ['mat', 'bands'], description: 'שחרור אגן, גב עליון וכתפיים. מושלם ליום שאחרי אימון כבד.' },
-  { weekday: 2, time: '18:30', title: 'אימון פונקציונלי', category: 'functional', difficulty: 'intermediate', trainerIndex: 0, capacity: 10, duration: 45, equipment: ['kettlebell', 'rower'], description: 'מעגלים מתמשכים בקצב בינוני עם דגש על טכניקה נקייה תחת עייפות.' },
-  { weekday: 3, time: '06:30', title: 'אימון כוח', category: 'strength', difficulty: 'intermediate', trainerIndex: 0, capacity: 8, duration: 60, equipment: ['barbell', 'dumbbell'], description: 'דגש על פלג גוף עליון: לחיצות, חתירות ומתח, עם עבודת ייצוב.' },
-  { weekday: 3, time: '19:00', title: 'טבאטה', category: 'tabata', difficulty: 'beginner', trainerIndex: 1, capacity: 12, duration: 30, equipment: ['none'], description: 'גרסה נגישה של טבאטה עם תרגילי משקל גוף בלבד.' },
-  { weekday: 4, time: '07:00', title: 'אימון פתוח', category: 'open', difficulty: 'intermediate', trainerIndex: 0, capacity: 10, duration: 60, equipment: ['barbell', 'dumbbell', 'kettlebell'], description: 'מתאמנים לפי התוכנית האישית שלכם, עם ליווי והתאמות מהמאמן.' },
-  { weekday: 5, time: '08:00', title: 'אימון פונקציונלי', category: 'functional', difficulty: 'beginner', trainerIndex: 1, capacity: 14, duration: 45, equipment: ['kettlebell', 'box', 'bands'], description: 'אימון סוף שבוע אנרגטי בקבוצה גדולה, מסיימים במתיחות ארוכות.' },
-  { weekday: 6, time: '19:30', title: 'מוביליטי', category: 'mobility', difficulty: 'beginner', trainerIndex: 1, capacity: 12, duration: 30, equipment: ['mat'], description: 'פתיחת שבוע רגועה: נשימה, טווחי תנועה ושחרור כללי.' },
+  { weekday: 0, time: '07:00', title: 'אימון כוח', category: 'strength', difficulty: 'intermediate', trainerIndex: 0, capacity: 5, duration: 60, equipment: ['barbell', 'dumbbell'], description: 'אימון כוח מובנה סביב סקוואט, דדליפט ולחיצות. מתקדמים בעומס לפי הרגשה ומסיימים בעבודת ליבה.' },
+  { weekday: 0, time: '18:30', title: 'אימון פונקציונלי', category: 'functional', difficulty: 'beginner', trainerIndex: 1, capacity: 5, duration: 45, equipment: ['kettlebell', 'box'], description: 'תחנות של דחיפה, משיכה, נשיאה וקפיצה. מתאים לכל הרמות עם התאמות אישיות.' },
+  { weekday: 1, time: '06:30', title: 'טבאטה', category: 'tabata', difficulty: 'intermediate', trainerIndex: 1, capacity: 5, duration: 30, equipment: ['none'], description: 'שמונה סבבים של 20 שניות עבודה ו-10 שניות מנוחה, ארבעה בלוקים. קצר, חד ויעיל.' },
+  { weekday: 1, time: '19:00', title: 'אימון כוח', category: 'strength', difficulty: 'advanced', trainerIndex: 0, capacity: 5, duration: 60, equipment: ['barbell'], description: 'בלוק כוח מתקדם עם עבודה כבדה על תרגילי יסוד ומנוחות ארוכות.' },
+  { weekday: 2, time: '07:00', title: 'מוביליטי', category: 'mobility', difficulty: 'beginner', trainerIndex: 1, capacity: 5, duration: 30, equipment: ['mat', 'bands'], description: 'שחרור אגן, גב עליון וכתפיים. מושלם ליום שאחרי אימון כבד.' },
+  { weekday: 2, time: '18:30', title: 'אימון פונקציונלי', category: 'functional', difficulty: 'intermediate', trainerIndex: 0, capacity: 5, duration: 45, equipment: ['kettlebell', 'rower'], description: 'מעגלים מתמשכים בקצב בינוני עם דגש על טכניקה נקייה תחת עייפות.' },
+  { weekday: 3, time: '06:30', title: 'אימון כוח', category: 'strength', difficulty: 'intermediate', trainerIndex: 0, capacity: 5, duration: 60, equipment: ['barbell', 'dumbbell'], description: 'דגש על פלג גוף עליון: לחיצות, חתירות ומתח, עם עבודת ייצוב.' },
+  { weekday: 3, time: '19:00', title: 'טבאטה', category: 'tabata', difficulty: 'beginner', trainerIndex: 1, capacity: 5, duration: 30, equipment: ['none'], description: 'גרסה נגישה של טבאטה עם תרגילי משקל גוף בלבד.' },
+  { weekday: 4, time: '07:00', title: 'אימון פתוח', category: 'open', difficulty: 'intermediate', trainerIndex: 0, capacity: 5, duration: 60, equipment: ['barbell', 'dumbbell', 'kettlebell'], description: 'מתאמנים לפי התוכנית האישית שלכם, עם ליווי והתאמות מהמאמן.' },
+  { weekday: 5, time: '08:00', title: 'אימון פונקציונלי', category: 'functional', difficulty: 'beginner', trainerIndex: 1, capacity: 5, duration: 45, equipment: ['kettlebell', 'box', 'bands'], description: 'אימון סוף שבוע אנרגטי בקבוצה גדולה, מסיימים במתיחות ארוכות.' },
+  { weekday: 6, time: '19:30', title: 'מוביליטי', category: 'mobility', difficulty: 'beginner', trainerIndex: 1, capacity: 5, duration: 30, equipment: ['mat'], description: 'פתיחת שבוע רגועה: נשימה, טווחי תנועה ושחרור כללי.' },
 ];
 
 export function buildSeed(anchor: Date = new Date()): SeedData {
@@ -946,6 +968,66 @@ export function buildSeed(anchor: Date = new Date()): SeedData {
     },
   ];
 
+  // --- workout of the day ----------------------------------------------------
+  const workouts = libraryWorkouts(ORG_ID, TS);
+
+  // Every class gets a workout from its own family, picked deterministically so
+  // the demo week looks the same on every machine and in every test run.
+  const classWorkouts: ClassWorkout[] = classes.map((gymClass, index) => {
+    const family = WORKOUT_FAMILY[gymClass.category];
+    const pool = WORKOUT_LIBRARY.filter((entry) => entry.category === family);
+    const entry = pool[index % pool.length];
+    return {
+      class_id: gymClass.id,
+      organization_id: ORG_ID,
+      workout_id: workoutLibraryId(entry.slug),
+      notes: null,
+      assigned_by: PROFILE_IDS.trainer1,
+      created_at: TS,
+      updated_at: TS,
+    };
+  });
+
+  // A short history for one member, so the progress screen has something to
+  // compare against rather than an empty state on first open.
+  const pastWithWorkout = classes
+    .filter((gymClass) => new Date(gymClass.starts_at).getTime() < nowMs)
+    .slice(-6);
+  const workoutLogs: WorkoutLog[] = pastWithWorkout.map((gymClass, index) => {
+    const link = classWorkouts.find((cw) => cw.class_id === gymClass.id)!;
+    const workout = workouts.find((w) => w.id === link.workout_id)!;
+    const improving = index / Math.max(1, pastWithWorkout.length - 1);
+    return {
+      id: id(index + 1, '993'),
+      organization_id: ORG_ID,
+      profile_id: PROFILE_IDS.member1,
+      workout_id: workout.id,
+      class_id: gymClass.id,
+      performed_on: format(toGymTime(new Date(gymClass.starts_at)), 'yyyy-MM-dd'),
+      score_type: workout.score_type,
+      result_seconds:
+        workout.score_type === 'time' ? Math.round(720 - improving * 90) : null,
+      result_rounds:
+        workout.score_type === 'rounds_and_reps' ? 12 + Math.round(improving * 4) : null,
+      result_reps:
+        workout.score_type === 'rounds_and_reps'
+          ? 7
+          : workout.score_type === 'reps'
+            ? 120 + Math.round(improving * 30)
+            : workout.score_type === 'weight'
+              ? 5
+              : null,
+      result_weight_kg:
+        workout.score_type === 'weight' ? 60 + Math.round(improving * 10) : null,
+      completed: workout.score_type === 'completion' ? true : null,
+      rx: index % 3 !== 0,
+      rpe: 6 + (index % 4),
+      notes: index === pastWithWorkout.length - 1 ? 'הרגשתי חזק, הקצב היה יציב.' : null,
+      created_at: gymClass.ends_at,
+      updated_at: gymClass.ends_at,
+    };
+  });
+
   return {
     organization,
     profiles,
@@ -964,6 +1046,9 @@ export function buildSeed(anchor: Date = new Date()): SeedData {
     readiness,
     timerPresets,
     notifications,
+    workouts,
+    classWorkouts,
+    workoutLogs,
   };
 }
 

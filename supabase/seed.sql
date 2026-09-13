@@ -56,9 +56,13 @@ begin
       set full_name = excluded.full_name, phone = excluded.phone,
           experience_level = excluded.experience_level, onboarding_completed = true;
 
-    insert into public.memberships (organization_id, profile_id, role)
-    values (v_org, (v_person ->> 'id')::uuid, (v_person ->> 'role')::public.member_role)
-    on conflict (organization_id, profile_id) do update set role = excluded.role;
+    -- Seeded people are already in the club; only a real sign-up waits at the
+    -- door. Without this every demo member is unapproved and can read nothing.
+    insert into public.memberships (organization_id, profile_id, role, approved_at)
+    values (v_org, (v_person ->> 'id')::uuid, (v_person ->> 'role')::public.member_role, now())
+    on conflict (organization_id, profile_id) do update
+      set role = excluded.role,
+          approved_at = coalesce(public.memberships.approved_at, excluded.approved_at);
   end loop;
 end $$;
 

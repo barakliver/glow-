@@ -1,5 +1,6 @@
 'use client';
 
+import { DEFAULT_CLASS_CAPACITY } from '@/lib/domain/booking-rules';
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -73,7 +74,7 @@ function emptyValues(date: string): ClassFormValues {
     difficulty: 'beginner',
     trainer_id: '',
     location: 'אולם GLoW',
-    capacity: '10',
+    capacity: String(DEFAULT_CLASS_CAPACITY),
     date,
     time: '18:00',
     duration_minutes: '45',

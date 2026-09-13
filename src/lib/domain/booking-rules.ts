@@ -6,6 +6,15 @@ import type {
   GymClass,
 } from '@/lib/domain/types';
 
+/**
+ * How many people fit in one class by default.
+ *
+ * GLoW is a private gym with a single floor: five is what the room holds, and
+ * the sixth person belongs on the waiting list. An owner can still raise it on
+ * a specific class - the number is a default, not a ceiling.
+ */
+export const DEFAULT_CLASS_CAPACITY = 5;
+
 export const BOOKING_ERRORS = {
   CLASS_NOT_FOUND: 'class_not_found',
   CLASS_CANCELLED: 'class_cancelled',

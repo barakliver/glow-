@@ -179,3 +179,60 @@ export function zodFieldErrors(error: z.ZodError): Record<string, string> {
   }
   return result;
 }
+
+/**
+ * A workout result.
+ *
+ * The shape is deliberately permissive: every score field is optional, because
+ * which of them matter depends on the workout's score type. `scoreColumns`
+ * in domain/workout-score then keeps only the ones that type actually uses, so
+ * a For Time result can never smuggle a rounds count into the database.
+ */
+export const workoutLogSchema = z
+  .object({
+    workout_id: z.string().min(1, 'חסר מזהה אימון'),
+    class_id: z.string().optional().or(z.literal('')),
+    score_type: z.enum(['time', 'rounds_and_reps', 'reps', 'weight', 'completion']),
+    minutes: z.coerce.number().int().min(0).max(600).optional(),
+    seconds: z.coerce.number().int().min(0).max(59, 'שניות הן מספר בין 0 ל-59').optional(),
+    rounds: z.coerce.number().int().min(0, 'מספר שלילי').max(999).optional(),
+    reps: z.coerce.number().int().min(0, 'מספר שלילי').max(9999).optional(),
+    weight_kg: z.coerce.number().min(0, 'מספר שלילי').max(500, 'עד 500 ק״ג').optional(),
+    completed: z.boolean().optional(),
+    rx: z.boolean().default(false),
+    rpe: z.coerce.number().int().min(1).max(10).optional(),
+    notes: z.string().trim().max(500, 'ההערה ארוכה מדי').optional().or(z.literal('')),
+  })
+  .superRefine((value, ctx) => {
+    const missing = (path: string, message: string) =>
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path], message });
+
+    switch (value.score_type) {
+      case 'time':
+        if (!value.minutes && !value.seconds) missing('minutes', 'נדרש זמן סיום');
+        break;
+      case 'rounds_and_reps':
+        if (value.rounds === undefined && value.reps === undefined) {
+          missing('rounds', 'נדרש מספר סבבים');
+        }
+        break;
+      case 'reps':
+        if (value.reps === undefined) missing('reps', 'נדרש מספר חזרות');
+        break;
+      case 'weight':
+        if (!value.weight_kg) missing('weight_kg', 'נדרש משקל');
+        break;
+      case 'completion':
+        if (value.completed === undefined) missing('completed', 'נדרש לסמן אם האימון הושלם');
+        break;
+    }
+  });
+export type WorkoutLogInput = z.infer<typeof workoutLogSchema>;
+
+export const classWorkoutSchema = z.object({
+  class_id: z.string().min(1),
+  /** Empty detaches whatever was planned. */
+  workout_id: z.string().optional().or(z.literal('')),
+  notes: z.string().trim().max(500, 'ההערה ארוכה מדי').optional().or(z.literal('')),
+});
+export type ClassWorkoutInput = z.infer<typeof classWorkoutSchema>;

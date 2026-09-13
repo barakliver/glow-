@@ -46,3 +46,49 @@ begin
   if v_open is not null then raise exception 'tables without row level security: %', v_open; end if;
   raise notice 'row level security enabled on every table';
 end $$;
+
+-- The workout library ships with the club, installed by the trigger that fires
+-- when the organization row is created.
+do $$
+declare
+  v_total integer;
+  v_crossfit integer;
+  v_incomplete text;
+begin
+  select count(*) into v_total from workouts;
+  if v_total < 100 then
+    raise exception 'the workout library installed only % workouts', v_total;
+  end if;
+
+  select count(*) into v_crossfit from workouts where category = 'crossfit';
+  if v_crossfit < 30 then
+    raise exception 'only % crossfit workouts installed', v_crossfit;
+  end if;
+
+  -- A workout with no structure or no scaling cannot actually be run.
+  select string_agg(slug, ', ') into v_incomplete
+  from workouts
+  where jsonb_array_length(structure) = 0
+     or jsonb_array_length(scaling) <> 3
+     or jsonb_array_length(warmup) = 0;
+  if v_incomplete is not null then
+    raise exception 'incomplete workouts: %', v_incomplete;
+  end if;
+
+  raise notice 'the workout library is installed (% workouts)', v_total;
+end $$;
+
+-- Nothing is planned for a class yet, and nobody has a result: the starter
+-- content is a library, not somebody's training history.
+do $$
+declare
+  v_links integer;
+  v_logs integer;
+begin
+  select count(*) into v_links from class_workouts;
+  select count(*) into v_logs from workout_logs;
+  if v_links <> 0 or v_logs <> 0 then
+    raise exception 'starter content carried % class links and % results', v_links, v_logs;
+  end if;
+  raise notice 'no class assignments or results leaked into starter content';
+end $$;

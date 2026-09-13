@@ -16,6 +16,7 @@ import {
   promoteFromWaitlist,
   spotsLeft,
   BOOKING_ERRORS,
+  DEFAULT_CLASS_CAPACITY,
 } from '@/lib/domain/booking-rules';
 import { detectNewRecords } from '@/lib/domain/progress';
 import { dayKey, formatTime, fromGymTime, toGymTime } from '@/lib/time';
@@ -50,6 +51,12 @@ import type {
   WorkoutSession,
   WorkoutSessionExercise,
   WorkoutSet,
+  Workout,
+  WorkoutCategory,
+  WorkoutLog,
+  WorkoutLogWithWorkout,
+  WorkoutReveal,
+  WorkoutTeaser,
   WorkoutTemplate,
   WorkoutTemplateExercise,
 } from '@/lib/domain/types';
@@ -233,6 +240,21 @@ export class DemoRepository implements Repository {
       waitlist_count: countWaitlisted(bookings),
       spots_left: spotsLeft(gymClass.capacity, bookings),
       my_booking: mine,
+      workout_teaser: this.teaserFor(gymClass.id),
+    };
+  }
+
+  private teaserFor(classId: string): WorkoutTeaser | null {
+    const database = db();
+    const link = database.classWorkouts.find((entry) => entry.class_id === classId);
+    if (!link) return null;
+    const workout = database.workouts.find((entry) => entry.id === link.workout_id);
+    if (!workout) return null;
+    return {
+      category: workout.category,
+      format: workout.format,
+      duration_minutes: workout.duration_minutes,
+      difficulty: workout.difficulty,
     };
   }
 
@@ -272,7 +294,7 @@ export class DemoRepository implements Repository {
       difficulty: input.difficulty ?? 'beginner',
       trainer_id: input.trainer_id ?? null,
       location: input.location ?? 'אולם GLoW',
-      capacity: input.capacity ?? 10,
+      capacity: input.capacity ?? DEFAULT_CLASS_CAPACITY,
       starts_at: input.starts_at ?? nowIso(),
       ends_at: input.ends_at ?? nowIso(),
       equipment: input.equipment ?? [],
@@ -1131,6 +1153,206 @@ export class DemoRepository implements Repository {
   }
 
   // --- analytics --------------------------------------------------------
+  // --- workout library --------------------------------------------------
+
+  async listWorkouts(filters?: {
+    category?: WorkoutCategory | null;
+    search?: string | null;
+    includeArchived?: boolean;
+  }): Promise<Workout[]> {
+    const needle = filters?.search?.trim().toLowerCase() ?? '';
+    return db()
+      .workouts.filter((workout) => {
+        if (!filters?.includeArchived && workout.archived) return false;
+        if (filters?.category && workout.category !== filters.category) return false;
+        if (!needle) return true;
+        return (
+          workout.title.toLowerCase().includes(needle) ||
+          (workout.subtitle ?? '').toLowerCase().includes(needle) ||
+          workout.description.toLowerCase().includes(needle)
+        );
+      })
+      .sort((a, b) => a.title.localeCompare(b.title, 'he'));
+  }
+
+  async getWorkout(idOrSlug: string): Promise<Workout | null> {
+    return (
+      db().workouts.find((workout) => workout.id === idOrSlug || workout.slug === idOrSlug) ?? null
+    );
+  }
+
+  async getClassWorkout(classId: string, profileId: string | null): Promise<WorkoutReveal> {
+    const database = db();
+    const link = database.classWorkouts.find((entry) => entry.class_id === classId);
+    if (!link) return { state: 'none' };
+
+    const workout = database.workouts.find((entry) => entry.id === link.workout_id);
+    if (!workout) return { state: 'none' };
+
+    if (profileId && this.canSeeClassWorkout(classId, profileId)) {
+      return { state: 'revealed', workout, notes: link.notes };
+    }
+    return {
+      state: 'locked',
+      category: workout.category,
+      format: workout.format,
+      duration_minutes: workout.duration_minutes,
+      difficulty: workout.difficulty,
+    };
+  }
+
+  /**
+   * Staff always; a member only while they hold a place. A waitlisted member
+   * counts - they can be promoted minutes before the class starts, and finding
+   * out what they are walking into only then helps nobody.
+   */
+  private canSeeClassWorkout(classId: string, profileId: string): boolean {
+    const database = db();
+    const membership = database.memberships.find((m) => m.profile_id === profileId);
+    if (!membership || membership.status !== 'active' || !membership.approved_at) return false;
+    if (membership.role === 'owner' || membership.role === 'trainer') return true;
+    return database.bookings.some(
+      (booking) =>
+        booking.class_id === classId &&
+        booking.profile_id === profileId &&
+        isActiveBooking(booking),
+    );
+  }
+
+  async setClassWorkout(
+    classId: string,
+    workoutId: string | null,
+    input: { notes: string | null; assignedBy: string },
+  ): Promise<void> {
+    const database = db();
+    const index = database.classWorkouts.findIndex((entry) => entry.class_id === classId);
+
+    if (!workoutId) {
+      if (index >= 0) database.classWorkouts.splice(index, 1);
+      return;
+    }
+    if (!database.workouts.some((workout) => workout.id === workoutId)) {
+      throw new Error('workout_not_found');
+    }
+    if (index >= 0) {
+      const existing = database.classWorkouts[index];
+      existing.workout_id = workoutId;
+      existing.notes = input.notes;
+      existing.assigned_by = input.assignedBy;
+      touch(existing);
+      return;
+    }
+    database.classWorkouts.push({
+      class_id: classId,
+      organization_id: database.organization.id,
+      workout_id: workoutId,
+      notes: input.notes,
+      assigned_by: input.assignedBy,
+      created_at: nowIso(),
+      updated_at: nowIso(),
+    });
+  }
+
+  // --- workout results ---------------------------------------------------
+
+  async logWorkoutResult(input: {
+    profileId: string;
+    workoutId: string;
+    classId: string | null;
+    performedOn: string;
+    scoreType: WorkoutLog['score_type'];
+    resultSeconds: number | null;
+    resultRounds: number | null;
+    resultReps: number | null;
+    resultWeightKg: number | null;
+    completed: boolean | null;
+    rx: boolean;
+    rpe: number | null;
+    notes: string | null;
+  }): Promise<WorkoutLog> {
+    const database = db();
+    const columns = {
+      score_type: input.scoreType,
+      result_seconds: input.resultSeconds,
+      result_rounds: input.resultRounds,
+      result_reps: input.resultReps,
+      result_weight_kg: input.resultWeightKg,
+      completed: input.completed,
+      rx: input.rx,
+      rpe: input.rpe,
+      notes: input.notes,
+      class_id: input.classId,
+    };
+
+    // Logging the same workout twice on one day is a correction, not a second
+    // result. Anything else quietly doubles a member's history.
+    const existing = database.workoutLogs.find(
+      (log) =>
+        log.profile_id === input.profileId &&
+        log.workout_id === input.workoutId &&
+        log.performed_on === input.performedOn,
+    );
+    if (existing) {
+      Object.assign(existing, columns);
+      touch(existing);
+      return existing;
+    }
+
+    const log: WorkoutLog = {
+      id: newId(),
+      organization_id: database.organization.id,
+      profile_id: input.profileId,
+      workout_id: input.workoutId,
+      performed_on: input.performedOn,
+      created_at: nowIso(),
+      updated_at: nowIso(),
+      ...columns,
+    };
+    database.workoutLogs.push(log);
+    return log;
+  }
+
+  async listWorkoutLogs(profileId: string, limit = 50): Promise<WorkoutLogWithWorkout[]> {
+    const database = db();
+    return database.workoutLogs
+      .filter((log) => log.profile_id === profileId)
+      .sort((a, b) => b.performed_on.localeCompare(a.performed_on))
+      .slice(0, limit)
+      .flatMap((log) => {
+        const workout = database.workouts.find((entry) => entry.id === log.workout_id);
+        return workout ? [{ log, workout }] : [];
+      });
+  }
+
+  async listWorkoutHistory(profileId: string, workoutId: string): Promise<WorkoutLog[]> {
+    return db()
+      .workoutLogs.filter((log) => log.profile_id === profileId && log.workout_id === workoutId)
+      .sort((a, b) => b.performed_on.localeCompare(a.performed_on));
+  }
+
+  async getWorkoutLog(
+    profileId: string,
+    workoutId: string,
+    performedOn: string,
+  ): Promise<WorkoutLog | null> {
+    return (
+      db().workoutLogs.find(
+        (log) =>
+          log.profile_id === profileId &&
+          log.workout_id === workoutId &&
+          log.performed_on === performedOn,
+      ) ?? null
+    );
+  }
+
+  async deleteWorkoutLog(logId: string, profileId: string): Promise<void> {
+    const database = db();
+    const index = database.workoutLogs.findIndex(
+      (log) => log.id === logId && log.profile_id === profileId,
+    );
+    if (index >= 0) database.workoutLogs.splice(index, 1);
+  }
+
   async getAdminStats(fromIso: string, toIso: string): Promise<AdminStats> {
     const database = db();
     const from = new Date(fromIso).getTime();

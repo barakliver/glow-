@@ -27,9 +27,8 @@ const banner = `-- =============================================================
 -- creates the schema, the booking functions, every Row Level Security policy,
 -- and the starter content (exercise library, workout templates, timer presets).
 --
--- Safe to run on a fresh project. Running it twice will fail on the enum
--- definitions, which is intentional: re-running a schema migration is a
--- mistake, not a routine operation.
+-- Safe to run on a fresh project and safe to run again: every statement is
+-- guarded, so a second paste updates what changed and leaves the rest alone.
 -- =============================================================================
 
 `;
