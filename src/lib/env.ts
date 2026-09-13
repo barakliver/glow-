@@ -29,6 +29,39 @@ function isLoopback(url: string): boolean {
 }
 
 /**
+ * Turns whatever was configured into an address that can actually be used.
+ *
+ * Everything built from APP_URL - sign-in callbacks, invitation links, ICS
+ * files, check-in QR codes, the link-preview card - goes through `new URL`,
+ * which throws on anything that is not absolute. A hostname on its own is the
+ * obvious thing to paste into a deployment's settings, and `glow.vercel.app`
+ * is not a URL: it takes the app down rather than degrading.
+ *
+ * So a missing scheme is added rather than rejected, and anything still
+ * unusable returns empty so the caller falls through to its next choice. Note
+ * that `localhost:3000` does parse - as the protocol `localhost:` - which is
+ * why the scheme is checked rather than just the parse.
+ */
+function normaliseUrl(value: string): string {
+  const trimmed = value.trim().replace(/\/+$/, '');
+  if (trimmed === '') return '';
+
+  const host = trimmed.replace(/^\/\//, '');
+  const withScheme = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `${/^(localhost|127\.0\.0\.1|\[::1\])(:|$)/i.test(host) ? 'http' : 'https'}://${host}`;
+
+  try {
+    const parsed = new URL(withScheme);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+    if (parsed.hostname === '') return '';
+    return withScheme;
+  } catch {
+    return '';
+  }
+}
+
+/**
  * Public URL of this deployment. Sign-in links, invitations, ICS files and the
  * check-in QR codes are all built from it.
  *
@@ -37,12 +70,14 @@ function isLoopback(url: string): boolean {
  * the repository's example file, `APP_URL=http://localhost:3000` among them.
  * Left alone it would mail members a sign-in link pointing at their own
  * machine. Where the platform tells us the real host, that wins.
+ *
+ * Always absolute and always http(s), whatever was configured. Every caller
+ * feeds it to `new URL`, so a value this function could not repair would take
+ * down every page rather than just the link it was needed for.
  */
 function resolveAppUrl(): string {
-  const configured = read('APP_URL', 'NEXT_PUBLIC_APP_URL').replace(/\/$/, '');
-  const platform = process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : '';
+  const configured = normaliseUrl(read('APP_URL', 'NEXT_PUBLIC_APP_URL'));
+  const platform = normaliseUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL ?? '');
   if (configured && !(platform && isLoopback(configured))) return configured;
   return platform || 'http://localhost:3000';
 }

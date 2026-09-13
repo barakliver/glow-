@@ -42,6 +42,39 @@ describe('APP_URL', () => {
     expect(env.APP_URL).toBe('http://127.0.0.1:3000');
   });
 
+  /*
+   * Everything built from APP_URL goes through `new URL`, which throws on a
+   * bare hostname - and a bare hostname is exactly what you paste into a
+   * deployment's settings. Before this was repaired it did not break the link
+   * it was needed for, it returned 500 for every page in the app.
+   */
+  it('repairs an address that was pasted in without a scheme', async () => {
+    const env = await loadEnv({ APP_URL: 'glow-six-kohl.vercel.app' });
+    expect(env.APP_URL).toBe('https://glow-six-kohl.vercel.app');
+    expect(() => new URL('/auth/callback', env.APP_URL)).not.toThrow();
+  });
+
+  it('keeps a local address on http rather than promoting it to https', async () => {
+    const env = await loadEnv({ APP_URL: 'localhost:3000' });
+    expect(env.APP_URL).toBe('http://localhost:3000');
+  });
+
+  it('ignores an address it cannot repair instead of taking the app down', async () => {
+    const env = await loadEnv({
+      APP_URL: 'not a url at all',
+      VERCEL_PROJECT_PRODUCTION_URL: 'glow-six-kohl.vercel.app',
+    });
+    expect(env.APP_URL).toBe('https://glow-six-kohl.vercel.app');
+  });
+
+  it('is always something new URL accepts, whatever it was handed', async () => {
+    for (const value of ['', ' ', 'glow.example.com', '//glow.example.com', 'ftp://glow.example.com', 'https://glow.example.com///']) {
+      const env = await loadEnv({ APP_URL: value });
+      expect(() => new URL(env.APP_URL), `APP_URL=${JSON.stringify(value)}`).not.toThrow();
+      expect(new URL(env.APP_URL).protocol, `APP_URL=${JSON.stringify(value)}`).toMatch(/^https?:$/);
+    }
+  });
+
   it('falls back to the platform host when nothing was configured', async () => {
     const env = await loadEnv({ VERCEL_PROJECT_PRODUCTION_URL: 'glow-six-kohl.vercel.app' });
     expect(env.APP_URL).toBe('https://glow-six-kohl.vercel.app');
