@@ -15,6 +15,8 @@ export default async function OnboardingPage() {
       defaultName={user.profile.full_name}
       defaultPhone={user.profile.phone ?? ''}
       defaultLevel={user.profile.experience_level}
+      defaultStyle={user.profile.avocado_style}
+      defaultWeeklyGoal={user.profile.weekly_goal_sessions}
     />
   );
 }

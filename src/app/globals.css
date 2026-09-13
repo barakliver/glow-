@@ -76,11 +76,11 @@
    * screens read as a grid of containers; the eye should land on the content.
    */
   .surface {
-    @apply rounded-lg border border-line/70 bg-surface shadow-card;
+    @apply rounded-xl border border-line/60 bg-surface shadow-card;
   }
 
   .surface-raised {
-    @apply rounded-lg border border-line/60 bg-raised;
+    @apply rounded-xl border border-line/50 bg-raised;
   }
 
   /* Marks the one thing on screen that is live or chosen. Nothing else. */
@@ -94,7 +94,11 @@
    */
   .display {
     font-family: var(--font-frank), Georgia, serif;
-    @apply font-bold tracking-normal;
+    /*
+     * Lighter than bold. At display sizes a serif carries the weight of the
+     * page on its own, and bold makes it shout where it should just be large.
+     */
+    @apply font-semibold tracking-[-0.015em];
   }
 
   /*
@@ -103,8 +107,14 @@
    * Hebrew has no capitals, and letter-spacing pulls its letters apart into
    * something that reads as broken rather than refined.
    */
+  /*
+   * Section headings: a level above the cards under them, without shouting.
+   * Deliberately no uppercase and no wide tracking - both are Latin devices.
+   * Hebrew has no capitals, and letter-spacing pulls its letters apart into
+   * something that reads as broken rather than refined.
+   */
   .section-label {
-    @apply text-[13px] font-bold text-muted;
+    @apply text-[13px] font-semibold text-muted;
   }
 
   .stat-value {
@@ -142,5 +152,39 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@layer base {
+  /*
+   * Air.
+   *
+   * The screens were built as stacks of cards with 12-16px between them, which
+   * reads as a list of containers. Everything below widens the gaps and softens
+   * the edges so the content is what the eye lands on, not the boxes.
+   */
+  body {
+    letter-spacing: -0.006em;
+  }
+
+  /* Body copy inside cards breathes; dense numbers stay dense. */
+  p:not(.num) {
+    line-height: 1.65;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /*
+   * Stacked full-width actions. Two buttons touching at 8px look like one
+   * control that has been cut in half.
+   */
+  .action-stack {
+    @apply grid gap-3;
   }
 }

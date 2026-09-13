@@ -9,6 +9,7 @@ import {
   Link2,
   ListChecks,
   Megaphone,
+  PenLine,
   Settings,
   Users,
 } from 'lucide-react';
@@ -18,6 +19,7 @@ const ITEMS = [
   { href: '/admin', label: 'סקירה', icon: BarChart3, ownerOnly: false },
   { href: '/admin/schedule', label: 'לוח שבועי', icon: CalendarDays, ownerOnly: false },
   { href: '/admin/members', label: 'מתאמנים', icon: Users, ownerOnly: true },
+  { href: '/admin/workouts', label: 'כתיבת אימון', icon: PenLine, ownerOnly: false },
   { href: '/admin/templates', label: 'תבניות אימון', icon: ListChecks, ownerOnly: false },
   { href: '/admin/exercises', label: 'ספריית תרגילים', icon: Dumbbell, ownerOnly: false },
   { href: '/admin/invites', label: 'הזמנות', icon: Link2, ownerOnly: true },

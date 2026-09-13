@@ -10,32 +10,41 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/toast';
 import { updateProfileAction } from '@/app/actions/auth';
 import { onboardingSchema, zodFieldErrors } from '@/lib/validation';
-import { DIFFICULTY_OPTIONS } from '@/lib/labels';
+import { AVOCADO_STYLE_OPTIONS, DIFFICULTY_OPTIONS } from '@/lib/labels';
+import { RipenessMark } from '@/components/brand/ripeness-mark';
 import { cn } from '@/lib/utils';
-import type { Difficulty } from '@/lib/domain/types';
+import type { AvocadoStyle, Difficulty } from '@/lib/domain/types';
 
 export function ProfileForm({
   fullName,
   phone,
   email,
   level,
+  style,
+  weeklyGoal,
 }: {
   fullName: string;
   phone: string;
   email: string;
   level: Difficulty;
+  style: AvocadoStyle | null;
+  weeklyGoal: number;
 }) {
   const router = useRouter();
   const { toast } = useToast();
   const [pending, startTransition] = useTransition();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedLevel, setSelectedLevel] = useState<Difficulty>(level);
+  const [selectedStyle, setSelectedStyle] = useState<AvocadoStyle>(style ?? 'lean');
+  const [selectedGoal, setSelectedGoal] = useState(weeklyGoal);
 
   const submit = (formData: FormData) => {
     const parsed = onboardingSchema.safeParse({
       full_name: String(formData.get('full_name') ?? ''),
       phone: String(formData.get('phone') ?? ''),
       experience_level: selectedLevel,
+      avocado_style: selectedStyle,
+      weekly_goal_sessions: selectedGoal,
     });
     if (!parsed.success) {
       setErrors(zodFieldErrors(parsed.error));
@@ -43,6 +52,8 @@ export function ProfileForm({
     }
     setErrors({});
     formData.set('experience_level', selectedLevel);
+    formData.set('avocado_style', selectedStyle);
+    formData.set('weekly_goal_sessions', String(selectedGoal));
     startTransition(async () => {
       const result = await updateProfileAction(formData);
       toast({ title: result.message, tone: result.ok ? 'success' : 'error' });
@@ -118,6 +129,70 @@ export function ProfileForm({
           <p className="text-xs text-muted">
             רמת הניסיון משפיעה על ההמלצות שתקבלו, ואינה מוצגת למתאמנים אחרים.
           </p>
+        </fieldset>
+
+        <fieldset className="space-y-3">
+          <legend className="text-sm font-semibold">האבוקדו שלך</legend>
+          <div className="space-y-2.5">
+            {AVOCADO_STYLE_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setSelectedStyle(option.value)}
+                aria-pressed={selectedStyle === option.value}
+                className={cn(
+                  'flex w-full items-center gap-4 rounded-xl border p-4 text-start transition-all',
+                  selectedStyle === option.value
+                    ? 'border-accent bg-accent/12'
+                    : 'border-line bg-raised',
+                )}
+              >
+                <RipenessMark
+                  ripeness={selectedStyle === option.value ? 0.85 : 0.25}
+                  size={40}
+                  title=""
+                />
+                <span className="min-w-0 flex-1">
+                  <span
+                    className={cn(
+                      'block text-sm font-bold',
+                      selectedStyle === option.value ? 'text-accent-ink' : 'text-ink',
+                    )}
+                  >
+                    {option.name}
+                  </span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted">
+                    {option.blurb}
+                  </span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-semibold">
+            יעד שבועי <span className="num text-accent-ink">{selectedGoal}</span> אימונים
+          </legend>
+          <div className="grid grid-cols-7 gap-2">
+            {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setSelectedGoal(value)}
+                aria-pressed={selectedGoal === value}
+                aria-label={`${value} אימונים בשבוע`}
+                className={cn(
+                  'num min-h-[48px] rounded-xl border text-sm font-bold transition-all',
+                  selectedGoal === value
+                    ? 'border-accent bg-accent text-primary-foreground'
+                    : 'border-line bg-raised text-muted',
+                )}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
         </fieldset>
 
         <Button type="submit" block size="lg" loading={pending}>

@@ -1251,6 +1251,38 @@ export class SupabaseRepository implements Repository {
     return (data as Workout) ?? null;
   }
 
+  async saveWorkout(input: Parameters<Repository['saveWorkout']>[0]): Promise<Workout> {
+    const { data, error } = await this.supabase
+      .from('workouts')
+      .upsert(
+        {
+          ...(input.id ? { id: input.id } : {}),
+          organization_id: this.organizationId,
+          slug: input.slug,
+          title: input.title,
+          subtitle: input.subtitle,
+          category: input.category,
+          format: input.format,
+          difficulty: input.difficulty,
+          duration_minutes: input.durationMinutes,
+          time_cap_minutes: input.timeCapMinutes,
+          equipment: input.equipment,
+          description: input.description,
+          warmup: input.warmup,
+          structure: input.structure,
+          cooldown: input.cooldown,
+          scaling: input.scaling,
+          score_type: input.scoreType,
+          score_label: input.scoreLabel,
+        },
+        { onConflict: 'organization_id,slug' },
+      )
+      .select('*')
+      .single();
+    if (error) throw new Error(error.message);
+    return data as Workout;
+  }
+
   /**
    * The gate here is the RLS policy on `class_workouts`, not this code: an
    * unbooked member gets no row back, full stop. The teaser is then fetched

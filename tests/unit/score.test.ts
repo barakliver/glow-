@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  LEVELS,
+  POINTS,
   computeScore,
   computeStreak,
   levelFor,
-  LEVELS,
-  POINTS,
   type ScoreInput,
+  weeklyGoal,
 } from '@/lib/domain/score';
 
 const NOW = new Date('2026-03-12T09:00:00.000Z'); // Thursday
@@ -212,5 +213,40 @@ describe('product guardrails', () => {
   it('never mentions weight, calories or appearance in member-facing copy', () => {
     const copy = LEVELS.map((l) => `${l.name} ${l.blurb}`).join(' ');
     expect(copy).not.toMatch(/קלורי|משקל|הרזיה|שומן|מראה|בטן/);
+  });
+});
+
+describe('weeklyGoal', () => {
+  const weekStart = new Date('2026-09-13T00:00:00.000Z');
+  const inWeek = (day: number) => new Date(`2026-09-1${day}T10:00:00.000Z`).toISOString();
+
+  it('counts only sessions inside the current week', () => {
+    const goal = weeklyGoal(3, ['2026-09-10T10:00:00.000Z', inWeek(4), inWeek(5)], weekStart);
+    expect(goal.done).toBe(2);
+    expect(goal.target).toBe(3);
+    expect(goal.met).toBe(false);
+  });
+
+  it('fills the bar without going past it', () => {
+    // Training more than the target is a good week, not a 200% bar.
+    const goal = weeklyGoal(2, [inWeek(3), inWeek(4), inWeek(5), inWeek(6)], weekStart);
+    expect(goal.progress).toBe(100);
+    expect(goal.met).toBe(true);
+    expect(goal.done).toBe(4);
+  });
+
+  it('reports an empty week plainly rather than dividing by zero', () => {
+    expect(weeklyGoal(0, [], weekStart)).toEqual({
+      target: 1,
+      done: 0,
+      progress: 0,
+      met: false,
+    });
+  });
+
+  it('is met exactly on the target', () => {
+    const goal = weeklyGoal(2, [inWeek(3), inWeek(5)], weekStart);
+    expect(goal.met).toBe(true);
+    expect(goal.progress).toBe(100);
   });
 });

@@ -115,17 +115,23 @@ export async function buildScore(
   profileId: string,
 ): Promise<ScoreSummary> {
   const reference = now();
-  const [sessions, bookings, readiness, sets] = await Promise.all([
+  const [sessions, bookings, readiness, sets, activities] = await Promise.all([
     repository.listSessions(profileId, 500),
     repository.listMyBookings(profileId),
     repository.listReadiness(profileId, 400),
     repository.listSets(profileId),
+    repository.listActivities(profileId, 400),
   ]);
 
   return computeScore({
-    completedWorkouts: sessions
-      .filter((s) => s.status === 'completed' && s.completed_at)
-      .map((s) => s.completed_at as string),
+    // A workout written down by hand counts the same as one run through the
+    // builder. The app should not reward using a particular screen.
+    completedWorkouts: [
+      ...sessions
+        .filter((s) => s.status === 'completed' && s.completed_at)
+        .map((s) => s.completed_at as string),
+      ...activities.map(({ activity }) => `${activity.performed_on}T12:00:00.000Z`),
+    ],
     attendedClasses: bookings
       .filter((row) => row.booking.status === 'attended')
       .map((row) => row.gymClass.starts_at),

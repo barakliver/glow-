@@ -49,7 +49,7 @@ export default async function BookingsPage() {
     attendance.length === 0 ? 0 : Math.round((attended / attendance.length) * 100);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader title="ההזמנות שלי" subtitle="הרישומים, ההיסטוריה והנוכחות שלך" backHref="/" />
 
       <section className="surface grid grid-cols-3 gap-2 p-3" aria-label="סיכום נוכחות">
@@ -146,7 +146,7 @@ function UpcomingRow({ row, reference }: { row: Row; reference: Date }) {
           {waitlisted ? `המתנה ${row.booking.waitlist_position}` : 'רשום'}
         </Badge>
       </div>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap gap-3">
         <BookingButton
           classId={row.gymClass.id}
           availability={classAvailability(

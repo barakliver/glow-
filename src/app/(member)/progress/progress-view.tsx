@@ -72,7 +72,7 @@ export function ProgressView({
   const topMovement = balance[0];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader title="ההתקדמות שלך" subtitle="ביצועים, עקביות והתאוששות" backHref="/" />
 
       <RipenessDetail score={score} />
@@ -95,7 +95,7 @@ export function ProgressView({
         ))}
       </nav>
 
-      <section className="grid grid-cols-2 gap-2" aria-label="סיכום מספרי">
+      <section className="grid grid-cols-2 gap-3" aria-label="סיכום מספרי">
         <StatCard icon={Dumbbell} label="אימונים שהושלמו" value={num(stats.workouts)} />
         <StatCard icon={CalendarCheck} label="שיעורים שהשתתפת" value={num(stats.classes)} />
         <StatCard icon={Timer} label="דקות אימון" value={num(stats.minutes)} />
@@ -108,7 +108,7 @@ export function ProgressView({
         <StatCard icon={Award} label="שיאים אישיים" value={num(records.length)} />
       </section>
 
-      <section className="surface p-4" aria-labelledby="consistency-title">
+      <section className="surface p-5" aria-labelledby="consistency-title">
         <div className="flex items-center justify-between">
           <h2 id="consistency-title" className="section-label">
             עקביות
@@ -180,7 +180,7 @@ export function ProgressView({
       )}
 
       {exerciseHistory.length > 0 && (
-        <section className="surface p-4" aria-labelledby="exercise-compare-title">
+        <section className="surface p-5" aria-labelledby="exercise-compare-title">
           <h2 id="exercise-compare-title" className="section-label">
             השוואה לתוצאות הקודמות שלך
           </h2>
@@ -217,7 +217,7 @@ export function ProgressView({
         </section>
       )}
 
-      <section aria-labelledby="records-title" className="space-y-2">
+      <section aria-labelledby="records-title" className="space-y-2.5">
         <h2 id="records-title" className="section-label">
           שיאים אישיים
         </h2>
@@ -245,7 +245,7 @@ export function ProgressView({
         )}
       </section>
 
-      <section aria-labelledby="notes-title" className="space-y-2">
+      <section aria-labelledby="notes-title" className="space-y-2.5">
         <h2 id="notes-title" className="section-label">
           הערות מאימונים קודמים
         </h2>
@@ -256,10 +256,10 @@ export function ProgressView({
             description="בסיום אימון אפשר לכתוב לעצמכם מה לשנות בפעם הבאה."
           />
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-2.5">
             {notes.map((note) => (
               <li key={note.id} className="surface p-3.5">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start justify-between gap-3">
                   <p className="truncate text-sm font-bold">{note.title}</p>
                   {note.effort !== null && (
                     <Badge tone="neutral">

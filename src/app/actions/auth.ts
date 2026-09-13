@@ -131,6 +131,8 @@ export async function completeOnboardingAction(formData: FormData): Promise<Acti
     full_name: formData.get('full_name'),
     phone: formData.get('phone'),
     experience_level: formData.get('experience_level'),
+    avocado_style: formData.get('avocado_style'),
+    weekly_goal_sessions: formData.get('weekly_goal_sessions') ?? 3,
   });
   if (!parsed.success) {
     return { ok: false, message: parsed.error.issues[0]?.message ?? 'הפרטים אינם תקינים' };
@@ -141,6 +143,8 @@ export async function completeOnboardingAction(formData: FormData): Promise<Acti
     full_name: parsed.data.full_name,
     phone: parsed.data.phone,
     experience_level: parsed.data.experience_level,
+    avocado_style: parsed.data.avocado_style,
+    weekly_goal_sessions: parsed.data.weekly_goal_sessions,
     onboarding_completed: true,
   });
   revalidatePath('/', 'layout');

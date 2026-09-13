@@ -65,10 +65,10 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
   const shareUrl = `${APP_URL}/classes/${gymClass.id}`;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader title={gymClass.title} backHref="/schedule" />
 
-      <section className="surface p-4">
+      <section className="surface p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-bold">{formatHebrewDate(gymClass.starts_at)}</p>
@@ -139,13 +139,13 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
       )}
 
       {gymClass.description && (
-        <section className="surface p-4">
+        <section className="surface p-5">
           <h2 className="mb-1.5 text-sm font-bold">על השיעור</h2>
           <p className="text-sm leading-relaxed text-muted">{gymClass.description}</p>
         </section>
       )}
 
-      <section className="surface p-4">
+      <section className="surface p-5">
         <h2 className="section-label mb-2 block">ציוד נדרש</h2>
         {gymClass.equipment.length === 0 ? (
           <p className="text-sm text-muted">לא נדרש ציוד מיוחד. הכל מחכה באולם.</p>
@@ -160,7 +160,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
         )}
       </section>
 
-      <section className="surface p-4">
+      <section className="surface p-5">
         <h2 className="section-label mb-2 block">כללי רישום וביטול</h2>
         <ul className="space-y-1.5 text-sm text-muted">
           <li>
@@ -189,7 +189,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
         </ul>
       </section>
 
-      <section className="surface p-4">
+      <section className="surface p-5">
         <h2 className="mb-2.5 text-sm font-bold">שיתוף והוספה ליומן</h2>
         <ShareActions
           url={shareUrl}
@@ -212,7 +212,7 @@ function Detail({
   value: string;
 }) {
   return (
-    <div className="rounded-md border border-line bg-raised p-2.5">
+    <div className="rounded-xl border border-line bg-raised p-3.5">
       <dt className="flex items-center gap-1.5 text-[11px] font-semibold text-muted">
         <Icon className="size-3.5" aria-hidden />
         {label}

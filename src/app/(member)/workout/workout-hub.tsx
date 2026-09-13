@@ -6,6 +6,7 @@ import Link from 'next/link';
 import {
   BookOpen,
   ChevronLeft,
+  Dices,
   Dumbbell,
   Filter,
   Library,
@@ -122,7 +123,7 @@ export function WorkoutHub({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader
         title="אימון"
         subtitle="המלצות אישיות, מאגר אימונים וספריית התרגילים"
@@ -253,7 +254,7 @@ export function WorkoutHub({
               key={recommendation.template.id}
               className="rounded-lg border border-line bg-surface p-3.5"
             >
-              <div className="flex items-start justify-between gap-2">
+              <div className="flex items-start justify-between gap-3">
                 <h3 className="text-sm font-bold">{recommendation.template.title}</h3>
                 <Badge tone="accent">{GOAL_LABELS[recommendation.template.goal]}</Badge>
               </div>
@@ -262,7 +263,7 @@ export function WorkoutHub({
                 {formatDuration(recommendation.template.duration_minutes)} ·{' '}
                 {DIFFICULTY_LABELS[recommendation.template.difficulty]}
               </p>
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex gap-3">
                 <Button size="sm" onClick={() => start(recommendation.template.id)} loading={pending}>
                   <Play className="size-4" aria-hidden />
                   התחלה
@@ -280,14 +281,14 @@ export function WorkoutHub({
       </section>
 
       {/* All approved templates */}
-      <section aria-labelledby="templates-title" className="space-y-2">
+      <section aria-labelledby="templates-title" className="space-y-2.5">
         <h2 id="templates-title" className="section-label">
           כל תבניות האימון
         </h2>
         {templates.length === 0 ? (
           <EmptyState icon={Dumbbell} title="עדיין אין תבניות אימון" />
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-2.5">
             {templates.map((template) => (
               <li key={template.id} id={`template-${template.id}`}>
                 <div
@@ -298,7 +299,7 @@ export function WorkoutHub({
                       : 'border-line',
                   )}
                 >
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <h3 className="truncate text-sm font-bold">{template.title}</h3>
                       <p className="num mt-0.5 text-xs text-muted">
@@ -308,7 +309,7 @@ export function WorkoutHub({
                     </div>
                     <Badge tone="outline">{GOAL_LABELS[template.goal]}</Badge>
                   </div>
-                  <div className="mt-3 flex gap-2">
+                  <div className="mt-3 flex gap-3">
                     <Button size="sm" onClick={() => start(template.id)} loading={pending}>
                       <Play className="size-4" aria-hidden />
                       התחלה
@@ -353,6 +354,12 @@ export function WorkoutHub({
           <Link href="/timer">
             <Timer className="size-4" aria-hidden />
             טיימר אינטרוולים
+          </Link>
+        </Button>
+        <Button variant="secondary" size="lg" block asChild>
+          <Link href="/jackpot">
+            <Dices className="size-4" aria-hidden />
+            ג׳קפוט הבטן
           </Link>
         </Button>
       </section>

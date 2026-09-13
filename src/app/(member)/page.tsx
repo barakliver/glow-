@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { buildRecommendations, buildScore } from '@/lib/data/insights';
-import { RipenessCard } from '@/components/score/ripeness-card';
+import { weeklyGoal } from '@/lib/domain/score';
+import { AvocadoCard } from '@/components/score/avocado-card';
 import { availabilityForClass } from '@/lib/domain/booking-rules';
 import { GOAL_LABELS } from '@/lib/labels';
 import {
@@ -41,7 +42,7 @@ export default async function HomePage() {
   const weekStart = gymWeekStart(reference);
   const weekEnd = addDays(weekStart, 7);
 
-  const [bookings, readiness, sessions, upcomingClasses, { recommendations }, score] =
+  const [bookings, readiness, sessions, upcomingClasses, { recommendations }, score, activities] =
     await Promise.all([
     repository.listMyBookings(user.profile.id),
     repository.getReadiness(user.profile.id, dayKey(reference)),
@@ -53,6 +54,7 @@ export default async function HomePage() {
     }),
     buildRecommendations(repository, user.profile.id, { limit: 1 }),
     buildScore(repository, user.profile.id),
+    repository.listActivities(user.profile.id, 60),
   ]);
 
   const upcomingBookings = bookings
@@ -96,6 +98,18 @@ export default async function HomePage() {
       0,
     );
 
+  // Classes attended plus anything logged by hand - the goal counts training,
+  // not which screen it was entered on.
+  const goal = weeklyGoal(
+    user.profile.weekly_goal_sessions,
+    [
+      ...weekSessions.map((s) => s.completed_at as string),
+      ...weekClasses.map((row) => row.gymClass.starts_at),
+      ...activities.map(({ activity }) => `${activity.performed_on}T12:00:00.000Z`),
+    ],
+    weekStart,
+  );
+
   const recommendation = recommendations[0] ?? null;
   const firstName = user.profile.full_name.split(' ')[0];
 
@@ -131,7 +145,7 @@ export default async function HomePage() {
                 <Badge tone="accent">רשום</Badge>
               )}
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-3">
               <BookingButton
                 classId={nextClass.id}
                 availability={availabilityForClass(nextClass)}
@@ -162,7 +176,7 @@ export default async function HomePage() {
       </section>
 
       {/* Weekly summary */}
-      <section aria-labelledby="week-summary-title" className="surface p-4">
+      <section aria-labelledby="week-summary-title" className="surface p-5">
         <h2 id="week-summary-title" className="section-label mb-3 block">
           הפעילות שלך השבוע
         </h2>
@@ -188,19 +202,19 @@ export default async function HomePage() {
         </Link>
       </section>
 
-      <RipenessCard score={score} />
+      <AvocadoCard style={user.profile.avocado_style} score={score} goal={goal} />
 
       <ReadinessCheck existing={readiness} />
 
       {/* Recommendation */}
       {recommendation && (
-        <section aria-labelledby="recommendation-title" className="surface p-4">
+        <section aria-labelledby="recommendation-title" className="surface p-5">
           <h2 id="recommendation-title" className="flex items-center gap-1.5 text-sm font-bold">
             <Sparkles className="size-4 text-champagne" aria-hidden />
             מומלץ עבורך היום
           </h2>
-          <div className="mt-3 rounded-md border border-line bg-raised p-3">
-            <div className="flex items-start justify-between gap-2">
+          <div className="mt-3 rounded-xl border border-line bg-raised p-4">
+            <div className="flex items-start justify-between gap-3">
               <h3 className="text-sm font-bold">{recommendation.template.title}</h3>
               <Badge tone="outline">{GOAL_LABELS[recommendation.template.goal]}</Badge>
             </div>
@@ -223,7 +237,7 @@ export default async function HomePage() {
         <h2 id="quick-actions-title" className="section-label mb-2 block">
           פעולות מהירות
         </h2>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-3">
           <QuickAction href="/schedule" icon={CalendarDays} label="לוח שבועי" />
           <QuickAction href="/workout" icon={Dumbbell} label="התחלת אימון" />
           <QuickAction href="/timer" icon={Timer} label="טיימר טבאטה" />

@@ -62,8 +62,8 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
   if (!editing && existing) {
     const lowReadiness = existing.energy <= 2 || existing.soreness >= 4 || existing.sleep_quality <= 2;
     return (
-      <section className="surface p-4" aria-labelledby="readiness-title">
-        <div className="flex items-start justify-between gap-2">
+      <section className="surface p-5" aria-labelledby="readiness-title">
+        <div className="flex items-start justify-between gap-3">
           <div>
             <h2 id="readiness-title" className="flex items-center gap-1.5 text-sm font-bold">
               <Check className="size-4 text-success" aria-hidden />
@@ -90,7 +90,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
   }
 
   return (
-    <section className="surface p-4" aria-labelledby="readiness-form-title">
+    <section className="surface p-5" aria-labelledby="readiness-form-title">
       <h2 id="readiness-form-title" className="section-label">
         איך אתם מרגישים היום?
       </h2>
@@ -170,7 +170,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
           />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Button block loading={pending} onClick={save}>
             שמירת הדיווח
           </Button>

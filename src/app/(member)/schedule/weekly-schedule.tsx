@@ -112,8 +112,8 @@ export function WeeklySchedule({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-2">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-3">
         <h1 className="display text-xl tracking-tight">לוח שבועי</h1>
         <div className="flex items-center gap-1">
           <Button
@@ -229,7 +229,7 @@ export function WeeklySchedule({
           view === 'auto' && 'block lg:hidden',
         )}
       >
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Day strip */}
           <div
             role="tablist"
@@ -337,7 +337,7 @@ export function WeeklySchedule({
                 {items.length === 0 ? (
                   <p className="py-4 text-center text-xs text-muted">אין שיעורים</p>
                 ) : (
-                  <ul className="space-y-2">
+                  <ul className="space-y-2.5">
                     {items.map((gymClass) => (
                       <li
                         key={gymClass.id}

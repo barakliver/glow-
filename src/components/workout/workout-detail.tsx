@@ -43,7 +43,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="surface p-4">
+    <section className="surface p-5">
       <h3 className="mb-2.5 flex items-center gap-2 text-sm font-bold">
         <Icon className="size-4 text-accent-ink" aria-hidden />
         {title}
@@ -105,7 +105,7 @@ export function WorkoutDetail({
 
   return (
     <div className="space-y-3">
-      <section className="surface p-4">
+      <section className="surface p-5">
         <h2 className="display text-2xl leading-tight">{workout.title}</h2>
         {workout.subtitle && <p className="mt-1 text-sm text-muted">{workout.subtitle}</p>}
         <div className="mt-3">
@@ -145,7 +145,7 @@ export function WorkoutDetail({
       )}
 
       <Section icon={ListChecks} title="האימון">
-        <div className="space-y-4">
+        <div className="space-y-6">
           {workout.structure.map((block, index) => (
             <div key={`${block.label}-${index}`}>
               <p className="text-sm font-bold text-accent-ink">{block.label}</p>

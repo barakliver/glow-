@@ -8,32 +8,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/toast';
-import { DIFFICULTY_OPTIONS } from '@/lib/labels';
+import { AVOCADO_STYLE_OPTIONS, DIFFICULTY_OPTIONS } from '@/lib/labels';
+import { RipenessMark } from '@/components/brand/ripeness-mark';
 import { completeOnboardingAction } from '@/app/actions/auth';
 import { onboardingSchema, zodFieldErrors } from '@/lib/validation';
-import type { Difficulty } from '@/lib/domain/types';
+import type { AvocadoStyle, Difficulty } from '@/lib/domain/types';
 import { cn } from '@/lib/utils';
 
 export function OnboardingForm({
   defaultName,
   defaultPhone,
   defaultLevel,
+  defaultStyle,
+  defaultWeeklyGoal,
 }: {
   defaultName: string;
   defaultPhone: string;
   defaultLevel: Difficulty;
+  defaultStyle: AvocadoStyle | null;
+  defaultWeeklyGoal: number;
 }) {
   const router = useRouter();
   const { toast } = useToast();
   const [pending, startTransition] = useTransition();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [level, setLevel] = useState<Difficulty>(defaultLevel);
+  const [style, setStyle] = useState<AvocadoStyle>(defaultStyle ?? 'lean');
+  const [weeklyGoal, setWeeklyGoal] = useState(defaultWeeklyGoal);
 
   const submit = (formData: FormData) => {
     const values = {
       full_name: String(formData.get('full_name') ?? ''),
       phone: String(formData.get('phone') ?? ''),
       experience_level: level,
+      avocado_style: style,
+      weekly_goal_sessions: weeklyGoal,
     };
     const parsed = onboardingSchema.safeParse(values);
     if (!parsed.success) {
@@ -42,6 +51,8 @@ export function OnboardingForm({
     }
     setErrors({});
     formData.set('experience_level', level);
+    formData.set('avocado_style', style);
+    formData.set('weekly_goal_sessions', String(weeklyGoal));
     startTransition(async () => {
       const result = await completeOnboardingAction(formData);
       if (!result.ok) {
@@ -122,6 +133,76 @@ export function OnboardingForm({
                 )}
               >
                 {option.label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="space-y-3">
+          <legend className="text-sm font-semibold">איזה אבוקדו אתם?</legend>
+          <p className="text-xs text-muted">
+            זה קובע מה נמליץ לכם ואיך נספור את ההתקדמות. אפשר לשנות מתי שרוצים.
+          </p>
+          <div className="space-y-2.5">
+            {AVOCADO_STYLE_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setStyle(option.value)}
+                aria-pressed={style === option.value}
+                className={cn(
+                  'flex w-full items-center gap-4 rounded-xl border p-4 text-start transition-all',
+                  style === option.value
+                    ? 'border-accent bg-accent/12'
+                    : 'border-line bg-raised hover:border-accent/30',
+                )}
+              >
+                <RipenessMark
+                  ripeness={style === option.value ? 0.85 : 0.25}
+                  size={44}
+                  title=""
+                />
+                <span className="min-w-0 flex-1">
+                  <span
+                    className={cn(
+                      'block text-sm font-bold',
+                      style === option.value ? 'text-accent-ink' : 'text-ink',
+                    )}
+                  >
+                    {option.name}
+                  </span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted">
+                    {option.blurb}
+                  </span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-semibold">
+            כמה אימונים בשבוע? <span className="num text-accent-ink">{weeklyGoal}</span>
+          </legend>
+          <p className="text-xs text-muted">
+            יעד ולא מכסה. הוא נספר בדף הבית, ואף אחד לא ננזף על שבוע חלש.
+          </p>
+          <div className="grid grid-cols-7 gap-2">
+            {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setWeeklyGoal(value)}
+                aria-pressed={weeklyGoal === value}
+                aria-label={`${value} אימונים בשבוע`}
+                className={cn(
+                  'num min-h-[48px] rounded-xl border text-sm font-bold transition-all',
+                  weeklyGoal === value
+                    ? 'border-accent bg-accent text-primary-foreground'
+                    : 'border-line bg-raised text-muted hover:text-ink',
+                )}
+              >
+                {value}
               </button>
             ))}
           </div>

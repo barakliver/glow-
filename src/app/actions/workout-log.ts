@@ -2,10 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 import { requireUser, getRepository } from '@/lib/auth';
-import { classWorkoutSchema, workoutLogSchema } from '@/lib/validation';
+import { classWorkoutSchema, customWorkoutSchema, workoutLogSchema } from '@/lib/validation';
 import { dayKey, now } from '@/lib/time';
 import { hasScore, scoreColumns } from '@/lib/domain/workout-score';
 import type { ActionResult } from '@/app/actions/booking';
+import type { Workout } from '@/lib/domain/types';
 
 /**
  * Records the member's result for a workout.
@@ -112,4 +113,75 @@ export async function setClassWorkoutAction(input: unknown): Promise<ActionResul
     ok: true,
     message: workoutId ? 'האימון שובץ לשיעור.' : 'שיבוץ האימון הוסר.',
   };
+}
+
+/** One movement per line; an empty line is skipped rather than stored. */
+function toLines(value: string | undefined): { label: string; detail: string | null }[] {
+  return (value ?? '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .map((line) => {
+      const index = line.indexOf(' | ');
+      if (index === -1) return { label: line, detail: null };
+      return { label: line.slice(0, index).trim(), detail: line.slice(index + 3).trim() };
+    });
+}
+
+/** A URL-safe handle. Hebrew titles leave nothing behind, so fall back to time. */
+function toSlug(title: string, id: string | undefined): string {
+  const base = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  if (base.length >= 3) return `club-${base}`;
+  return `club-${id?.slice(0, 8) ?? Date.now().toString(36)}`;
+}
+
+/** Staff only: writes a workout of the club's own into the library. */
+export async function saveCustomWorkoutAction(input: unknown): Promise<ActionResult> {
+  const user = await requireUser('/admin/workouts');
+  if (user.membership.role === 'member') {
+    return { ok: false, message: 'רק מאמן או מנהל יכולים לכתוב אימון.' };
+  }
+  const parsed = customWorkoutSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? 'הנתונים אינם תקינים.' };
+  }
+  const data = parsed.data;
+  const repository = await getRepository();
+
+  const structure = [
+    { label: 'כוח', detail: data.strength_detail?.trim() || null, items: toLines(data.strength) },
+    { label: 'מטקון', detail: data.metcon_detail?.trim() || null, items: toLines(data.metcon) },
+  ].filter((block) => block.items.length > 0);
+
+  await repository.saveWorkout({
+    id: data.id?.trim() || undefined,
+    slug: toSlug(data.title, data.id?.trim()),
+    title: data.title.trim(),
+    subtitle: data.subtitle?.trim() || null,
+    category: data.category,
+    format: data.format,
+    difficulty: data.difficulty,
+    durationMinutes: data.duration_minutes,
+    timeCapMinutes: data.time_cap_minutes ?? null,
+    equipment: data.equipment as Workout['equipment'],
+    description: data.description?.trim() || '',
+    warmup: toLines(data.warmup),
+    structure,
+    cooldown: toLines(data.cooldown),
+    // A level left blank says so, rather than repeating the line above it.
+    scaling: [
+      { level: 'beginner' as const, detail: data.scaling_beginner?.trim() || 'לא צוינה התאמה.' },
+      { level: 'intermediate' as const, detail: data.scaling_intermediate?.trim() || 'לפי הכתוב.' },
+      { level: 'advanced' as const, detail: data.scaling_advanced?.trim() || 'לפי הכתוב.' },
+    ],
+    scoreType: data.score_type,
+    scoreLabel: null,
+  });
+
+  revalidatePath('/admin/workouts');
+  revalidatePath('/workout/wods');
+  return { ok: true, message: 'האימון נשמר בספרייה.' };
 }

@@ -7,12 +7,12 @@ import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold transition-all disabled:pointer-events-none disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg active:scale-[0.98] select-none',
+  'inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full text-sm font-semibold tracking-[-0.01em] transition-all duration-200 disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg active:scale-[0.985] select-none',
   {
     variants: {
       variant: {
         primary:
-          'bg-accent text-white hover:bg-accent-pressed active:bg-accent-pressed shadow-glow-soft',
+          'bg-accent text-white hover:bg-accent-pressed active:bg-accent-pressed',
         secondary: 'bg-raised text-ink border border-line hover:border-accent/40 hover:bg-raised/80',
         ghost: 'text-ink hover:bg-raised',
         outline: 'border border-line bg-transparent text-ink hover:bg-raised',
@@ -21,11 +21,12 @@ const buttonVariants = cva(
         link: 'text-accent-ink underline-offset-4 hover:underline',
       },
       size: {
-        sm: 'h-9 px-3 text-[13px]',
-        md: 'h-11 px-4',
-        lg: 'h-13 px-6 text-base min-h-[52px]',
-        icon: 'h-11 w-11',
-        'icon-sm': 'h-9 w-9',
+        /* Every size clears 44px, the smallest thing a thumb should have to find. */
+        sm: 'h-10 px-4 text-[13px]',
+        md: 'h-12 px-5',
+        lg: 'h-14 px-7 text-base',
+        icon: 'h-12 w-12 rounded-full',
+        'icon-sm': 'h-10 w-10 rounded-full',
       },
       block: { true: 'w-full', false: '' },
     },

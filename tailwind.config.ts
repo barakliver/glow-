@@ -16,12 +16,18 @@ const config: Config = {
          * against the warm greys is what makes it read as considered rather
          * than as a default dark theme - and the accent only ever appears on
          * an action or on something live.
+         *
+         * Warmer and quieter than before. The greens in the neutrals are what
+         * keep a near-black room from reading as a dashboard: everything is a
+         * few degrees toward olive, so the white text lands warm rather than
+         * clinical, and the blue has something to be cold against.
          */
-        bg: '#0F100D',
-        surface: '#171916',
-        raised: '#212420',
-        ink: '#F6F3EB',
-        muted: '#A6A79B',
+        bg: '#0E100E',
+        surface: '#161917',
+        raised: '#1F2320',
+        ink: '#F4F2EC',
+        /* Lifted from #A6A79B: secondary text was the weakest thing on screen. */
+        muted: '#9FA396',
         accent: {
           /* True royal blue for fills. */
           DEFAULT: '#4169E1',
@@ -40,28 +46,40 @@ const config: Config = {
            apart, and every place that uses either also carries its own icon. */
         warning: '#F0433A',
         danger: '#FF776D',
-        line: '#2A2C26',
+        /* A hairline, not a frame. Cards are separated by light, not by boxes. */
+        line: '#262A24',
         /* shadcn tokens mapped onto the GLoW palette */
-        border: '#2A2C26',
-        input: '#2A2C26',
+        border: '#262A24',
+        input: '#262A24',
         ring: '#7CA0FF',
-        background: '#0F100D',
-        foreground: '#F6F3EB',
+        background: '#0E100E',
+        foreground: '#F4F2EC',
         primary: { DEFAULT: '#4169E1', foreground: '#FFFFFF' },
-        secondary: { DEFAULT: '#212420', foreground: '#F6F3EB' },
-        destructive: { DEFAULT: '#FF776D', foreground: '#0F100D' },
-        popover: { DEFAULT: '#171916', foreground: '#F6F3EB' },
-        card: { DEFAULT: '#171916', foreground: '#F6F3EB' },
+        secondary: { DEFAULT: '#1F2320', foreground: '#F4F2EC' },
+        destructive: { DEFAULT: '#FF776D', foreground: '#0E100E' },
+        popover: { DEFAULT: '#161917', foreground: '#F4F2EC' },
+        card: { DEFAULT: '#161917', foreground: '#F4F2EC' },
       },
       fontFamily: {
         sans: ['var(--font-heebo)', 'system-ui', 'sans-serif'],
         display: ['var(--font-frank)', 'Georgia', 'serif'],
         num: ['var(--font-manrope)', 'var(--font-heebo)', 'system-ui', 'sans-serif'],
       },
+      /*
+       * Bigger, softer corners. A 16px card next to a 12px button reads as two
+       * different systems; the whole scale moves up together and the smallest
+       * step is large enough that nothing looks boxy.
+       */
       borderRadius: {
-        lg: '16px',
-        md: '12px',
-        sm: '8px',
+        '2xl': '28px',
+        xl: '22px',
+        lg: '18px',
+        md: '14px',
+        sm: '10px',
+      },
+      spacing: {
+        /* The gap between stacked actions, used everywhere so it stays one number. */
+        gutter: '1.25rem',
       },
       boxShadow: {
         /*
@@ -72,7 +90,9 @@ const config: Config = {
          */
         glow: '0 0 0 1px rgba(124,160,255,0.32)',
         'glow-soft': '0 8px 24px -14px rgba(0,0,0,0.9)',
-        card: '0 1px 0 0 rgba(255,255,255,0.025), 0 12px 32px -20px rgba(0,0,0,0.95)',
+        card: '0 1px 0 0 rgba(255,255,255,0.028), 0 18px 44px -28px rgba(0,0,0,0.9)',
+        /* For the one element that should feel like it is floating. */
+        lift: '0 1px 0 0 rgba(255,255,255,0.04), 0 28px 60px -32px rgba(0,0,0,0.95)',
       },
       keyframes: {
         'accordion-down': {

@@ -12,6 +12,8 @@ export default async function ProfilePage() {
       phone={user.profile.phone ?? ''}
       email={user.profile.email}
       level={user.profile.experience_level}
+      style={user.profile.avocado_style}
+      weeklyGoal={user.profile.weekly_goal_sessions}
     />
   );
 }

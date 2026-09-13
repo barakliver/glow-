@@ -125,6 +125,10 @@ function profile(
     phone,
     avatar_url: null,
     experience_level: level,
+    // The demo people have each picked a lane, so the home screen has
+    // something to say on first open.
+    avocado_style: (['strong', 'lean', 'flow'] as const)[pid.charCodeAt(pid.length - 1) % 3],
+    weekly_goal_sessions: 3,
     onboarding_completed: true,
     created_at: TS,
     updated_at: TS,

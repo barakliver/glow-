@@ -197,6 +197,26 @@ export interface Repository {
     includeArchived?: boolean;
   }): Promise<Workout[]>;
   getWorkout(idOrSlug: string): Promise<Workout | null>;
+  /** Staff only. Writes a workout of the club's own into the library. */
+  saveWorkout(input: {
+    id?: string;
+    slug: string;
+    title: string;
+    subtitle: string | null;
+    category: WorkoutCategory;
+    format: Workout['format'];
+    difficulty: Workout['difficulty'];
+    durationMinutes: number;
+    timeCapMinutes: number | null;
+    equipment: Workout['equipment'];
+    description: string;
+    warmup: Workout['warmup'];
+    structure: Workout['structure'];
+    cooldown: Workout['cooldown'];
+    scaling: Workout['scaling'];
+    scoreType: Workout['score_type'];
+    scoreLabel: string | null;
+  }): Promise<Workout>;
   /**
    * What this caller is allowed to know about a class's workout.
    *

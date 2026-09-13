@@ -35,13 +35,13 @@ export function BottomNav() {
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex min-h-[64px] flex-col items-center justify-center gap-1 px-1 py-2 text-[11px] font-semibold transition-colors',
+                  'flex min-h-[68px] flex-col items-center justify-center gap-1.5 px-1 py-2.5 text-[11px] font-semibold transition-colors',
                   active ? 'text-accent-ink' : 'text-muted hover:text-ink',
                 )}
               >
                 <span
                   className={cn(
-                    'flex size-8 items-center justify-center rounded-md transition-all',
+                    'flex size-9 items-center justify-center rounded-full transition-all',
                     active && 'bg-accent/12 shadow-glow-soft',
                   )}
                 >

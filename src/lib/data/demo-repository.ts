@@ -181,6 +181,8 @@ export class DemoRepository implements Repository {
       phone: input.phone ?? null,
       avatar_url: null,
       experience_level: 'beginner',
+      avocado_style: null,
+      weekly_goal_sessions: 3,
       onboarding_completed: Boolean(input.full_name && input.phone),
       created_at: nowIso(),
       updated_at: nowIso(),
@@ -1185,6 +1187,48 @@ export class DemoRepository implements Repository {
     return (
       db().workouts.find((workout) => workout.id === idOrSlug || workout.slug === idOrSlug) ?? null
     );
+  }
+
+  async saveWorkout(input: Parameters<Repository['saveWorkout']>[0]): Promise<Workout> {
+    const database = db();
+    const existing = input.id
+      ? database.workouts.find((workout) => workout.id === input.id)
+      : database.workouts.find((workout) => workout.slug === input.slug);
+
+    const fields = {
+      slug: input.slug,
+      title: input.title,
+      subtitle: input.subtitle,
+      category: input.category,
+      format: input.format,
+      difficulty: input.difficulty,
+      duration_minutes: input.durationMinutes,
+      time_cap_minutes: input.timeCapMinutes,
+      equipment: input.equipment,
+      description: input.description,
+      warmup: input.warmup,
+      structure: input.structure,
+      cooldown: input.cooldown,
+      scaling: input.scaling,
+      score_type: input.scoreType,
+      score_label: input.scoreLabel,
+    };
+
+    if (existing) {
+      Object.assign(existing, fields);
+      touch(existing);
+      return existing;
+    }
+    const workout: Workout = {
+      id: newId(),
+      organization_id: database.organization.id,
+      archived: false,
+      created_at: nowIso(),
+      updated_at: nowIso(),
+      ...fields,
+    };
+    database.workouts.push(workout);
+    return workout;
   }
 
   async getClassWorkout(classId: string, profileId: string | null): Promise<WorkoutReveal> {

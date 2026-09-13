@@ -46,6 +46,35 @@ export const LEVELS: RipenessLevel[] = [
   { key: 'perfect', name: 'בשל מושלם', blurb: 'הרמה הגבוהה ביותר. נשאר רק לשמור עליה.', minPoints: 2000, ripeness: 1 },
 ];
 
+export interface WeeklyGoal {
+  /** Sessions the member is aiming for each week. */
+  target: number;
+  /** Sessions done in the current week - classes attended plus logged training. */
+  done: number;
+  /** 0-100, capped. Going past the goal is fine; the bar just fills. */
+  progress: number;
+  met: boolean;
+}
+
+/**
+ * Progress toward the member's own weekly target.
+ *
+ * A target, never a quota. Nothing in the app penalises a quiet week: the bar
+ * simply starts again on Sunday, and the ripeness score keeps every point ever
+ * earned.
+ */
+export function weeklyGoal(target: number, activity: string[], weekStart: Date): WeeklyGoal {
+  const from = weekStart.getTime();
+  const done = activity.filter((iso) => new Date(iso).getTime() >= from).length;
+  const safeTarget = Math.max(1, target);
+  return {
+    target: safeTarget,
+    done,
+    progress: Math.min(100, Math.round((done / safeTarget) * 100)),
+    met: done >= safeTarget,
+  };
+}
+
 export interface ScoreInput {
   /** ISO timestamps of completed workout sessions. */
   completedWorkouts: string[];

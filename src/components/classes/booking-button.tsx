@@ -109,8 +109,8 @@ export function BookingButton({
         ? 'רשום לשיעור'
         : `ברשימת המתנה${waitlistPosition ? ` · מקום ${waitlistPosition}` : ''}`;
     return (
-      <div className="flex items-center gap-2">
-        <span className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-3 py-2.5 text-sm font-bold text-accent-ink">
+      <div className="flex items-center gap-2.5">
+        <span className="flex flex-1 items-center justify-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-bold text-accent-ink">
           {optimistic === 'booked' ? (
             <Check className="size-4" aria-hidden />
           ) : (
@@ -120,7 +120,18 @@ export function BookingButton({
         </span>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="danger" size="icon" aria-label="ביטול הרישום" disabled={pending}>
+            {/*
+              Cancelling is quiet. A solid red circle beside the confirmation
+              was the loudest thing on the card, which is backwards: the state
+              worth seeing is that you have a place, not that you can give it up.
+            */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="ביטול הרישום"
+              disabled={pending}
+              className="text-muted hover:bg-danger/10 hover:text-danger"
+            >
               <X className="size-4" aria-hidden />
             </Button>
           </AlertDialogTrigger>

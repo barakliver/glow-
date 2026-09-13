@@ -134,7 +134,7 @@ export function LogResultForm({
   };
 
   return (
-    <section className="surface p-4">
+    <section className="surface p-5">
       <h2 className="flex items-center gap-2 text-sm font-bold">
         <Trophy className="size-4 text-champagne" aria-hidden />
         {existing ? 'עדכון התוצאה' : 'רישום תוצאה'}
@@ -257,7 +257,7 @@ export function LogResultForm({
         {fields.completed && (
           <fieldset>
             <legend className="mb-1.5 text-sm font-semibold">השלמת את האימון?</legend>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {[
                 { value: true, label: 'כן, השלמתי' },
                 { value: false, label: 'לא הספקתי' },
@@ -283,7 +283,7 @@ export function LogResultForm({
 
         <fieldset>
           <legend className="mb-1.5 text-sm font-semibold">איך ביצעת?</legend>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {[
               { value: true, label: 'Rx', hint: 'בדיוק לפי הפרוטוקול' },
               { value: false, label: 'Scaled', hint: 'בגרסה מותאמת' },

@@ -33,13 +33,13 @@ export function WorkoutHistoryList({
   }));
 
   return (
-    <section className="surface p-4">
+    <section className="surface p-5">
       <h2 className="mb-3 text-sm font-bold">{title}</h2>
-      <ol className="space-y-2">
+      <ol className="space-y-2.5">
         {annotated.reverse().map((entry) => (
           <li
             key={entry.log.id}
-            className="rounded-md border border-line bg-raised p-3"
+            className="rounded-xl border border-line bg-raised p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">

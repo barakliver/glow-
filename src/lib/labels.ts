@@ -1,5 +1,6 @@
 import type {
   ActivityKind,
+  AvocadoStyle,
   BodyArea,
   ScoreType,
   WorkoutCategory,
@@ -193,6 +194,32 @@ export const ACTIVITY_KIND_LABELS: Record<ActivityKind, string> = {
 export const ACTIVITY_KIND_OPTIONS = Object.entries(ACTIVITY_KIND_LABELS).map(
   ([value, label]) => ({ value: value as ActivityKind, label }),
 );
+
+export const AVOCADO_STYLES: Record<
+  AvocadoStyle,
+  { name: string; tagline: string; blurb: string }
+> = {
+  strong: {
+    name: 'אבוקדו חזק',
+    tagline: 'כוח',
+    blurb: 'מוט, משקלים כבדים ומעט חזרות. המטרה היא להרים יותר ממה שהרמת אתמול.',
+  },
+  lean: {
+    name: 'אבוקדו חטוב',
+    tagline: 'סיבולת',
+    blurb: 'מטקונים, אינטרוולים וקצב. המטרה היא לנשום טוב יותר בעומס גבוה.',
+  },
+  flow: {
+    name: 'אבוקדו זורם',
+    tagline: 'תנועה',
+    blurb: 'פילאטיס, יוגה וניידות. המטרה היא גוף שנע טוב ולא כואב.',
+  },
+};
+
+export const AVOCADO_STYLE_OPTIONS = Object.entries(AVOCADO_STYLES).map(([value, meta]) => ({
+  value: value as AvocadoStyle,
+  ...meta,
+}));
 
 /** Hebrew plural helper for small counts. */
 export function pluralHe(count: number, one: string, many: string): string {

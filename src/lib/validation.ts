@@ -22,10 +22,19 @@ export const fullNameSchema = z
   .min(2, 'נדרש שם מלא')
   .max(60, 'השם ארוך מדי');
 
+export const avocadoStyleSchema = z.enum(['strong', 'lean', 'flow']);
+
 export const onboardingSchema = z.object({
   full_name: fullNameSchema,
   phone: phoneSchema,
   experience_level: z.enum(['beginner', 'intermediate', 'advanced']),
+  avocado_style: avocadoStyleSchema,
+  weekly_goal_sessions: z.coerce
+    .number()
+    .int()
+    .min(1, 'לפחות אימון אחד בשבוע')
+    .max(14, 'עד 14 אימונים בשבוע')
+    .default(3),
 });
 export type OnboardingInput = z.infer<typeof onboardingSchema>;
 
@@ -288,3 +297,44 @@ export const activityLogSchema = z
     }
   });
 export type ActivityLogInput = z.infer<typeof activityLogSchema>;
+
+/**
+ * A workout written by the club itself.
+ *
+ * The four sections are plain text, one line per movement, because that is how
+ * a coach writes a workout on a board. Turning that into the structured shape
+ * the app stores is the app's job, not the coach's.
+ */
+export const customWorkoutSchema = z.object({
+  id: z.string().optional().or(z.literal('')),
+  title: z.string().trim().min(2, 'נדרשת כותרת').max(60, 'הכותרת ארוכה מדי'),
+  subtitle: z.string().trim().max(120, 'המשפט ארוך מדי').optional().or(z.literal('')),
+  category: z.enum(['crossfit', 'functional', 'pilates', 'yoga']),
+  format: z.enum([
+    'amrap',
+    'for_time',
+    'emom',
+    'tabata',
+    'chipper',
+    'intervals',
+    'strength',
+    'circuit',
+    'flow',
+  ]),
+  difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
+  duration_minutes: z.coerce.number().int().min(5, 'לפחות 5 דקות').max(240, 'עד 4 שעות'),
+  time_cap_minutes: z.coerce.number().int().min(1).max(240).optional(),
+  score_type: z.enum(['time', 'rounds_and_reps', 'reps', 'weight', 'completion']),
+  description: z.string().trim().max(1200, 'התיאור ארוך מדי').optional().or(z.literal('')),
+  warmup: z.string().max(2000).optional().or(z.literal('')),
+  strength: z.string().max(2000).optional().or(z.literal('')),
+  metcon: z.string().min(1, 'נדרש לפחות תרגיל אחד במטקון').max(2000),
+  cooldown: z.string().max(2000).optional().or(z.literal('')),
+  strength_detail: z.string().trim().max(160).optional().or(z.literal('')),
+  metcon_detail: z.string().trim().max(160).optional().or(z.literal('')),
+  scaling_beginner: z.string().trim().max(300).optional().or(z.literal('')),
+  scaling_intermediate: z.string().trim().max(300).optional().or(z.literal('')),
+  scaling_advanced: z.string().trim().max(300).optional().or(z.literal('')),
+  equipment: z.array(z.string()).default([]),
+});
+export type CustomWorkoutInput = z.infer<typeof customWorkoutSchema>;

@@ -87,6 +87,14 @@ export interface Organization {
   updated_at: string;
 }
 
+/**
+ * The kind of training a member is here for.
+ *
+ * A style, never a body. "I am here to get strong" is something the app can
+ * help with; "become this shape" is a promise it cannot keep.
+ */
+export type AvocadoStyle = 'strong' | 'lean' | 'flow';
+
 export interface Profile {
   id: string;
   email: string;
@@ -94,6 +102,9 @@ export interface Profile {
   phone: string | null;
   avatar_url: string | null;
   experience_level: Difficulty;
+  avocado_style: AvocadoStyle | null;
+  /** Sessions a week this member is aiming for. */
+  weekly_goal_sessions: number;
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;
