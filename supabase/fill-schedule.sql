@@ -64,9 +64,9 @@ declare
   v_weeks    constant integer := 4;
   v_first    constant integer := 7;   -- first class of the day, 07:00
   v_last     constant integer := 23;  -- last class of the day, 23:00
-  -- Classes run 55 minutes so there are five minutes to clear the floor
-  -- between one group and the next.
-  v_minutes  constant integer := 55;
+  -- Every session in the library runs a full hour: warm-up, strength, metcon,
+  -- cool-down. The timetable matches it.
+  v_minutes  constant integer := 60;
   v_marker   constant text := 'generated:hourly-timetable';
 
   -- One entry per hour from 07:00 to 23:00. A gym does not run the same

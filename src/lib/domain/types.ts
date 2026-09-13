@@ -56,7 +56,10 @@ export type Equipment =
   | 'pullup_bar'
   | 'mat'
   | 'medicine_ball'
-  | 'jump_rope';
+  | 'jump_rope'
+  | 'bench'
+  | 'treadmill'
+  | 'hip_thrust';
 
 export type TrainingGoal = 'general' | 'strength' | 'conditioning' | 'mobility' | 'technique';
 

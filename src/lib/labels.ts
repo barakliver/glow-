@@ -65,6 +65,9 @@ export const EQUIPMENT_LABELS: Record<Equipment, string> = {
   pullup_bar: 'מתח',
   mat: 'מזרן',
   jump_rope: 'חבל קפיצה',
+  bench: 'ספסל',
+  treadmill: 'הליכון',
+  hip_thrust: 'היפ תראסט',
   medicine_ball: 'כדור כוח',
 };
 

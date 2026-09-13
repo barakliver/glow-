@@ -18,7 +18,11 @@ import type {
  * next to the movement:
  *
  *   'Thrusters' -> just the movement
- *   'Thrusters | 43/30 ק"ג' -> movement with a prescribed load
+ *   'Thrusters | 21-15-9' -> movement with its rep scheme
+ *
+ * Loads are never written into the library. What someone lifts is theirs to
+ * decide on the day and theirs to record afterwards; a number printed here
+ * would only ever be wrong for most of the room.
  */
 export interface LibraryWorkout {
   slug: string;
@@ -39,6 +43,28 @@ export interface LibraryWorkout {
   scoreType: ScoreType;
   scoreLabel?: string;
 }
+
+/**
+ * What the room actually has. Every CrossFit and functional session in the
+ * library is written against this list and nothing else - no rower, no bike,
+ * no box, no rings, no rope - so nothing on the whiteboard asks for a machine
+ * that is not there.
+ */
+export const ROOM_EQUIPMENT: readonly Equipment[] = [
+  'pullup_bar',
+  'bench',
+  'dumbbell',
+  'treadmill',
+  'kettlebell',
+  'hip_thrust',
+  'barbell',
+  // A mat and a resistance band are floor props rather than machines, and the
+  // pilates and mobility sessions are built around them. If the room has
+  // neither, say so and they come out.
+  'mat',
+  'bands',
+  'none',
+] as const;
 
 const SEPARATOR = ' | ';
 
@@ -109,7 +135,7 @@ export function scale(
 /** Cool-downs repeat across families; these are the four that recur. */
 export const COOLDOWNS = {
   breath: [
-    'הליכה קלה | 3 דקות עד שהדופק יורד',
+    'הליכה קלה על ההליכון | 3 דקות עד שהדופק יורד',
     'נשימת קופסה בשכיבה | 4 שניות פנימה, 4 החזקה, 4 החוצה, 8 סבבים',
     'מתיחת ארבע ראשי בעמידה | 45 שניות לכל צד',
     'מתיחת חזה במשקוף | 45 שניות',
@@ -118,12 +144,12 @@ export const COOLDOWNS = {
     'מתיחת מיתרי ברך בישיבה | 60 שניות לכל צד',
     'מתיחת שוקיים בקיר | 45 שניות לכל צד',
     'תנוחת ילד עם הושטה לצדדים | 90 שניות',
-    'גלגול פוליה בגב עליון | 60 שניות',
+    'פתיחת גב עליון על הספסל | 60 שניות',
   ],
   shoulders: [
     'מתיחת כתף צולבת | 45 שניות לכל צד',
     'מתיחת תלת ראשי מעל הראש | 45 שניות לכל צד',
-    'פתיחת חזה בשכיבה על גליל | 90 שניות',
+    'פתיחת חזה בשכיבה על הספסל | 90 שניות',
     'נשימות עמוקות בישיבה | 2 דקות',
   ],
   hips: [

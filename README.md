@@ -308,7 +308,7 @@ luminous ring.
 A new club starts with an empty week. `supabase/fill-schedule.sql` creates a
 class every hour from 07:00 to 23:00, every day, for the next four weeks — 476
 classes, each open for booking, holding five people, and with a workout already
-assigned from the library. Sessions vary by hour the way a real timetable does:
+assigned from the library. Classes run a full hour, matching the library. Sessions vary by hour the way a real timetable does:
 strength first thing, open gym at midday, tabata in the evening, mobility last.
 
 Paste it into the Supabase SQL editor whenever you want the window rolled
