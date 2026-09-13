@@ -1,5 +1,6 @@
 import { Flame, ListChecks, Lock, Snowflake, SlidersHorizontal, Timer, Trophy } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { MovementLine } from '@/components/workout/movement-line';
 import {
   DIFFICULTY_LABELS,
   EQUIPMENT_LABELS,
@@ -19,15 +20,15 @@ import type {
   WorkoutMovement,
 } from '@/lib/domain/types';
 
-/** The line as it would be written on the whiteboard. */
+/**
+ * The lines as they would be written on the whiteboard - except every movement
+ * on this board can be pressed, and tells you how it is done.
+ */
 function MovementList({ items }: { items: WorkoutMovement[] }) {
   return (
-    <ul className="space-y-1.5">
+    <ul className="space-y-0.5">
       {items.map((item, index) => (
-        <li key={`${item.label}-${index}`} className="flex flex-wrap items-baseline gap-x-2">
-          <span className="text-sm font-semibold">{item.label}</span>
-          {item.detail && <span className="text-xs text-muted">{item.detail}</span>}
-        </li>
+        <MovementLine key={`${item.label}-${index}`} item={item} />
       ))}
     </ul>
   );
