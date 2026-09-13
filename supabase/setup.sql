@@ -24,22 +24,61 @@
 create extension if not exists "pgcrypto";
 
 -- --- enums -------------------------------------------------------------------
-create type public.member_role as enum ('owner', 'trainer', 'member');
-create type public.membership_status as enum ('active', 'suspended');
-create type public.booking_status as enum ('confirmed', 'waitlisted', 'cancelled', 'attended', 'absent');
-create type public.class_status as enum ('scheduled', 'cancelled');
-create type public.difficulty_level as enum ('beginner', 'intermediate', 'advanced');
-create type public.training_category as enum ('strength', 'functional', 'tabata', 'mobility', 'open', 'conditioning');
-create type public.movement_category as enum ('squat', 'hinge', 'push', 'pull', 'carry', 'core', 'conditioning', 'mobility');
-create type public.training_goal as enum ('general', 'strength', 'conditioning', 'mobility', 'technique');
-create type public.workout_status as enum ('active', 'completed', 'abandoned');
-create type public.template_block as enum ('warmup', 'main', 'finisher', 'cooldown');
-create type public.notification_type as enum (
-  'booking_confirmed', 'waitlist_promoted', 'class_cancelled',
-  'class_time_changed', 'class_reminder', 'schedule_published', 'announcement'
-);
-create type public.delivery_status as enum ('pending', 'sent', 'failed', 'skipped_no_provider');
-create type public.attendance_method as enum ('manual', 'qr');
+do $$ begin
+  create type public.member_role as enum ('owner', 'trainer', 'member');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.membership_status as enum ('active', 'suspended');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.booking_status as enum ('confirmed', 'waitlisted', 'cancelled', 'attended', 'absent');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.class_status as enum ('scheduled', 'cancelled');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.difficulty_level as enum ('beginner', 'intermediate', 'advanced');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.training_category as enum ('strength', 'functional', 'tabata', 'mobility', 'open', 'conditioning');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.movement_category as enum ('squat', 'hinge', 'push', 'pull', 'carry', 'core', 'conditioning', 'mobility');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.training_goal as enum ('general', 'strength', 'conditioning', 'mobility', 'technique');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.workout_status as enum ('active', 'completed', 'abandoned');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.template_block as enum ('warmup', 'main', 'finisher', 'cooldown');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.notification_type as enum (
+    'booking_confirmed', 'waitlist_promoted', 'class_cancelled',
+    'class_time_changed', 'class_reminder', 'schedule_published', 'announcement'
+  );
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.delivery_status as enum ('pending', 'sent', 'failed', 'skipped_no_provider');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.attendance_method as enum ('manual', 'qr');
+exception when duplicate_object then null;
+end $$;
 
 -- --- shared trigger ----------------------------------------------------------
 create or replace function public.set_updated_at()
@@ -53,7 +92,7 @@ end;
 $$;
 
 -- --- organizations -----------------------------------------------------------
-create table public.organizations (
+create table if not exists public.organizations (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   slug text not null unique,
@@ -65,11 +104,12 @@ create table public.organizations (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+drop trigger if exists organizations_updated_at on public.organizations;
 create trigger organizations_updated_at before update on public.organizations
   for each row execute function public.set_updated_at();
 
 -- --- profiles ----------------------------------------------------------------
-create table public.profiles (
+create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   email text not null,
   full_name text not null default '',
@@ -80,12 +120,13 @@ create table public.profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create unique index profiles_email_key on public.profiles (lower(email));
+create unique index if not exists profiles_email_key on public.profiles (lower(email));
+drop trigger if exists profiles_updated_at on public.profiles;
 create trigger profiles_updated_at before update on public.profiles
   for each row execute function public.set_updated_at();
 
 -- --- memberships -------------------------------------------------------------
-create table public.memberships (
+create table if not exists public.memberships (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -96,13 +137,14 @@ create table public.memberships (
   updated_at timestamptz not null default now(),
   unique (organization_id, profile_id)
 );
-create index memberships_profile_idx on public.memberships (profile_id);
-create index memberships_org_role_idx on public.memberships (organization_id, role);
+create index if not exists memberships_profile_idx on public.memberships (profile_id);
+create index if not exists memberships_org_role_idx on public.memberships (organization_id, role);
+drop trigger if exists memberships_updated_at on public.memberships;
 create trigger memberships_updated_at before update on public.memberships
   for each row execute function public.set_updated_at();
 
 -- --- trainers ----------------------------------------------------------------
-create table public.trainers (
+create table if not exists public.trainers (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -114,11 +156,12 @@ create table public.trainers (
   updated_at timestamptz not null default now(),
   unique (organization_id, profile_id)
 );
+drop trigger if exists trainers_updated_at on public.trainers;
 create trigger trainers_updated_at before update on public.trainers
   for each row execute function public.set_updated_at();
 
 -- --- class series ------------------------------------------------------------
-create table public.class_series (
+create table if not exists public.class_series (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   title text not null,
@@ -135,12 +178,13 @@ create table public.class_series (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index class_series_org_idx on public.class_series (organization_id);
+create index if not exists class_series_org_idx on public.class_series (organization_id);
+drop trigger if exists class_series_updated_at on public.class_series;
 create trigger class_series_updated_at before update on public.class_series
   for each row execute function public.set_updated_at();
 
 -- --- classes -----------------------------------------------------------------
-create table public.classes (
+create table if not exists public.classes (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   series_id uuid references public.class_series (id) on delete set null,
@@ -162,14 +206,15 @@ create table public.classes (
   updated_at timestamptz not null default now(),
   constraint classes_time_order check (ends_at > starts_at)
 );
-create index classes_org_start_idx on public.classes (organization_id, starts_at);
-create index classes_series_idx on public.classes (series_id);
-create index classes_published_idx on public.classes (organization_id, published, starts_at);
+create index if not exists classes_org_start_idx on public.classes (organization_id, starts_at);
+create index if not exists classes_series_idx on public.classes (series_id);
+create index if not exists classes_published_idx on public.classes (organization_id, published, starts_at);
+drop trigger if exists classes_updated_at on public.classes;
 create trigger classes_updated_at before update on public.classes
   for each row execute function public.set_updated_at();
 
 -- --- bookings ----------------------------------------------------------------
-create table public.bookings (
+create table if not exists public.bookings (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   class_id uuid not null references public.classes (id) on delete cascade,
@@ -187,16 +232,17 @@ create table public.bookings (
     check ((status = 'waitlisted' and waitlist_position is not null)
         or (status <> 'waitlisted' and waitlist_position is null))
 );
-create index bookings_class_status_idx on public.bookings (class_id, status);
-create index bookings_profile_idx on public.bookings (profile_id, status);
-create unique index bookings_waitlist_order_idx
+create index if not exists bookings_class_status_idx on public.bookings (class_id, status);
+create index if not exists bookings_profile_idx on public.bookings (profile_id, status);
+create unique index if not exists bookings_waitlist_order_idx
   on public.bookings (class_id, waitlist_position)
   where status = 'waitlisted';
+drop trigger if exists bookings_updated_at on public.bookings;
 create trigger bookings_updated_at before update on public.bookings
   for each row execute function public.set_updated_at();
 
 -- --- invite links ------------------------------------------------------------
-create table public.invite_links (
+create table if not exists public.invite_links (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   token text not null unique,
@@ -209,12 +255,13 @@ create table public.invite_links (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index invite_links_org_idx on public.invite_links (organization_id);
+create index if not exists invite_links_org_idx on public.invite_links (organization_id);
+drop trigger if exists invite_links_updated_at on public.invite_links;
 create trigger invite_links_updated_at before update on public.invite_links
   for each row execute function public.set_updated_at();
 
 -- --- attendance --------------------------------------------------------------
-create table public.attendance (
+create table if not exists public.attendance (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   class_id uuid not null references public.classes (id) on delete cascade,
@@ -227,12 +274,13 @@ create table public.attendance (
   updated_at timestamptz not null default now(),
   unique (class_id, profile_id)
 );
-create index attendance_profile_idx on public.attendance (profile_id);
+create index if not exists attendance_profile_idx on public.attendance (profile_id);
+drop trigger if exists attendance_updated_at on public.attendance;
 create trigger attendance_updated_at before update on public.attendance
   for each row execute function public.set_updated_at();
 
 -- --- exercises ---------------------------------------------------------------
-create table public.exercises (
+create table if not exists public.exercises (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   name_he text not null,
@@ -249,12 +297,13 @@ create table public.exercises (
   updated_at timestamptz not null default now(),
   unique (organization_id, name_en)
 );
-create index exercises_org_idx on public.exercises (organization_id, archived);
+create index if not exists exercises_org_idx on public.exercises (organization_id, archived);
+drop trigger if exists exercises_updated_at on public.exercises;
 create trigger exercises_updated_at before update on public.exercises
   for each row execute function public.set_updated_at();
 
 -- --- workout templates -------------------------------------------------------
-create table public.workout_templates (
+create table if not exists public.workout_templates (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   title text not null,
@@ -272,11 +321,12 @@ create table public.workout_templates (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index workout_templates_org_idx on public.workout_templates (organization_id, approved, archived);
+create index if not exists workout_templates_org_idx on public.workout_templates (organization_id, approved, archived);
+drop trigger if exists workout_templates_updated_at on public.workout_templates;
 create trigger workout_templates_updated_at before update on public.workout_templates
   for each row execute function public.set_updated_at();
 
-create table public.workout_template_exercises (
+create table if not exists public.workout_template_exercises (
   id uuid primary key default gen_random_uuid(),
   template_id uuid not null references public.workout_templates (id) on delete cascade,
   exercise_id uuid not null references public.exercises (id) on delete restrict,
@@ -292,10 +342,10 @@ create table public.workout_template_exercises (
   alternative_exercise_ids uuid[] not null default '{}',
   unique (template_id, position)
 );
-create index workout_template_exercises_template_idx on public.workout_template_exercises (template_id);
+create index if not exists workout_template_exercises_template_idx on public.workout_template_exercises (template_id);
 
 -- --- workout sessions --------------------------------------------------------
-create table public.workout_sessions (
+create table if not exists public.workout_sessions (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -312,15 +362,16 @@ create table public.workout_sessions (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index workout_sessions_profile_idx on public.workout_sessions (profile_id, started_at desc);
+create index if not exists workout_sessions_profile_idx on public.workout_sessions (profile_id, started_at desc);
 -- At most one active session per member.
-create unique index workout_sessions_single_active_idx
+create unique index if not exists workout_sessions_single_active_idx
   on public.workout_sessions (profile_id)
   where status = 'active';
+drop trigger if exists workout_sessions_updated_at on public.workout_sessions;
 create trigger workout_sessions_updated_at before update on public.workout_sessions
   for each row execute function public.set_updated_at();
 
-create table public.workout_sets (
+create table if not exists public.workout_sets (
   id uuid primary key default gen_random_uuid(),
   session_id uuid not null references public.workout_sessions (id) on delete cascade,
   exercise_id uuid not null references public.exercises (id) on delete restrict,
@@ -335,11 +386,11 @@ create table public.workout_sets (
   completed_at timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
-create index workout_sets_session_idx on public.workout_sets (session_id);
-create index workout_sets_exercise_idx on public.workout_sets (exercise_id, completed_at desc);
+create index if not exists workout_sets_session_idx on public.workout_sets (session_id);
+create index if not exists workout_sets_exercise_idx on public.workout_sets (exercise_id, completed_at desc);
 
 -- --- readiness ---------------------------------------------------------------
-create table public.readiness_logs (
+create table if not exists public.readiness_logs (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -353,11 +404,12 @@ create table public.readiness_logs (
   updated_at timestamptz not null default now(),
   unique (profile_id, log_date)
 );
+drop trigger if exists readiness_logs_updated_at on public.readiness_logs;
 create trigger readiness_logs_updated_at before update on public.readiness_logs
   for each row execute function public.set_updated_at();
 
 -- --- timer presets -----------------------------------------------------------
-create table public.timer_presets (
+create table if not exists public.timer_presets (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid references public.profiles (id) on delete cascade,
@@ -374,12 +426,13 @@ create table public.timer_presets (
   updated_at timestamptz not null default now(),
   constraint timer_presets_owner_check check (is_public or profile_id is not null)
 );
-create index timer_presets_scope_idx on public.timer_presets (organization_id, profile_id, is_public);
+create index if not exists timer_presets_scope_idx on public.timer_presets (organization_id, profile_id, is_public);
+drop trigger if exists timer_presets_updated_at on public.timer_presets;
 create trigger timer_presets_updated_at before update on public.timer_presets
   for each row execute function public.set_updated_at();
 
 -- --- notifications -----------------------------------------------------------
-create table public.notifications (
+create table if not exists public.notifications (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -392,11 +445,11 @@ create table public.notifications (
   delivery_error text,
   created_at timestamptz not null default now()
 );
-create index notifications_profile_idx on public.notifications (profile_id, created_at desc);
-create index notifications_unread_idx on public.notifications (profile_id) where read_at is null;
+create index if not exists notifications_profile_idx on public.notifications (profile_id, created_at desc);
+create index if not exists notifications_unread_idx on public.notifications (profile_id) where read_at is null;
 
 -- --- app settings ------------------------------------------------------------
-create table public.app_settings (
+create table if not exists public.app_settings (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid references public.profiles (id) on delete cascade,
@@ -405,8 +458,9 @@ create table public.app_settings (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create unique index app_settings_scope_key_idx
+create unique index if not exists app_settings_scope_key_idx
   on public.app_settings (organization_id, coalesce(profile_id, '00000000-0000-0000-0000-000000000000'::uuid), key);
+drop trigger if exists app_settings_updated_at on public.app_settings;
 create trigger app_settings_updated_at before update on public.app_settings
   for each row execute function public.set_updated_at();
 
@@ -846,16 +900,20 @@ alter table public.notifications enable row level security;
 alter table public.app_settings enable row level security;
 
 -- --- organizations -----------------------------------------------------------
+drop policy if exists organizations_read on public.organizations;
 create policy organizations_read on public.organizations
   for select to authenticated using (public.is_member_of(id));
+drop policy if exists organizations_update on public.organizations;
 create policy organizations_update on public.organizations
   for update to authenticated using (public.is_owner_of(id)) with check (public.is_owner_of(id));
 
 -- --- profiles ----------------------------------------------------------------
 -- A member sees their own profile. Staff see profiles of their organization's
 -- members so the member directory and attendance lists work.
+drop policy if exists profiles_self_read on public.profiles;
 create policy profiles_self_read on public.profiles
   for select to authenticated using (id = auth.uid());
+drop policy if exists profiles_staff_read on public.profiles;
 create policy profiles_staff_read on public.profiles
   for select to authenticated using (
     exists (
@@ -863,32 +921,41 @@ create policy profiles_staff_read on public.profiles
       where m.profile_id = public.profiles.id and public.is_staff_of(m.organization_id)
     )
   );
+drop policy if exists profiles_self_update on public.profiles;
 create policy profiles_self_update on public.profiles
   for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
+drop policy if exists profiles_self_insert on public.profiles;
 create policy profiles_self_insert on public.profiles
   for insert to authenticated with check (id = auth.uid());
 
 -- --- memberships -------------------------------------------------------------
+drop policy if exists memberships_self_read on public.memberships;
 create policy memberships_self_read on public.memberships
   for select to authenticated using (profile_id = auth.uid());
+drop policy if exists memberships_staff_read on public.memberships;
 create policy memberships_staff_read on public.memberships
   for select to authenticated using (public.is_staff_of(organization_id));
+drop policy if exists memberships_owner_write on public.memberships;
 create policy memberships_owner_write on public.memberships
   for all to authenticated
   using (public.is_owner_of(organization_id))
   with check (public.is_owner_of(organization_id));
 
 -- --- trainers ----------------------------------------------------------------
+drop policy if exists trainers_member_read on public.trainers;
 create policy trainers_member_read on public.trainers
   for select to authenticated using (public.is_member_of(organization_id));
+drop policy if exists trainers_owner_write on public.trainers;
 create policy trainers_owner_write on public.trainers
   for all to authenticated
   using (public.is_owner_of(organization_id))
   with check (public.is_owner_of(organization_id));
 
 -- --- class series ------------------------------------------------------------
+drop policy if exists class_series_member_read on public.class_series;
 create policy class_series_member_read on public.class_series
   for select to authenticated using (public.is_member_of(organization_id));
+drop policy if exists class_series_staff_write on public.class_series;
 create policy class_series_staff_write on public.class_series
   for all to authenticated
   using (public.is_staff_of(organization_id))
@@ -896,15 +963,18 @@ create policy class_series_staff_write on public.class_series
 
 -- --- classes -----------------------------------------------------------------
 -- Members only ever see published classes; staff see drafts too.
+drop policy if exists classes_member_read on public.classes;
 create policy classes_member_read on public.classes
   for select to authenticated using (
     public.is_member_of(organization_id) and (published or public.is_staff_of(organization_id))
   );
+drop policy if exists classes_owner_write on public.classes;
 create policy classes_owner_write on public.classes
   for all to authenticated
   using (public.is_owner_of(organization_id))
   with check (public.is_owner_of(organization_id));
 -- A trainer may manage only the classes assigned to them.
+drop policy if exists classes_trainer_update on public.classes;
 create policy classes_trainer_update on public.classes
   for update to authenticated
   using (
@@ -917,12 +987,15 @@ create policy classes_trainer_update on public.classes
   );
 
 -- --- bookings ----------------------------------------------------------------
+drop policy if exists bookings_self_read on public.bookings;
 create policy bookings_self_read on public.bookings
   for select to authenticated using (profile_id = auth.uid());
+drop policy if exists bookings_staff_read on public.bookings;
 create policy bookings_staff_read on public.bookings
   for select to authenticated using (public.is_staff_of(organization_id));
 -- Writes go through book_class / cancel_booking / set_booking_status, which run
 -- as security definer. Direct writes are limited to staff only.
+drop policy if exists bookings_staff_write on public.bookings;
 create policy bookings_staff_write on public.bookings
   for all to authenticated
   using (public.is_staff_of(organization_id))
@@ -930,28 +1003,34 @@ create policy bookings_staff_write on public.bookings
 
 -- --- invite links ------------------------------------------------------------
 -- Never readable by members: the public invitation page uses public_schedule().
+drop policy if exists invite_links_owner_all on public.invite_links;
 create policy invite_links_owner_all on public.invite_links
   for all to authenticated
   using (public.is_owner_of(organization_id))
   with check (public.is_owner_of(organization_id));
 
 -- --- attendance --------------------------------------------------------------
+drop policy if exists attendance_self_read on public.attendance;
 create policy attendance_self_read on public.attendance
   for select to authenticated using (profile_id = auth.uid());
+drop policy if exists attendance_staff_all on public.attendance;
 create policy attendance_staff_all on public.attendance
   for all to authenticated
   using (public.is_staff_of(organization_id))
   with check (public.is_staff_of(organization_id));
 
 -- --- exercises ---------------------------------------------------------------
+drop policy if exists exercises_member_read on public.exercises;
 create policy exercises_member_read on public.exercises
   for select to authenticated using (public.is_member_of(organization_id));
+drop policy if exists exercises_staff_write on public.exercises;
 create policy exercises_staff_write on public.exercises
   for all to authenticated
   using (public.is_staff_of(organization_id))
   with check (public.is_staff_of(organization_id));
 
 -- --- workout templates -------------------------------------------------------
+drop policy if exists workout_templates_read on public.workout_templates;
 create policy workout_templates_read on public.workout_templates
   for select to authenticated using (
     public.is_member_of(organization_id)
@@ -961,11 +1040,13 @@ create policy workout_templates_read on public.workout_templates
       or public.is_staff_of(organization_id)
     )
   );
+drop policy if exists workout_templates_staff_write on public.workout_templates;
 create policy workout_templates_staff_write on public.workout_templates
   for all to authenticated
   using (public.is_staff_of(organization_id))
   with check (public.is_staff_of(organization_id));
 
+drop policy if exists workout_template_exercises_read on public.workout_template_exercises;
 create policy workout_template_exercises_read on public.workout_template_exercises
   for select to authenticated using (
     exists (
@@ -973,6 +1054,7 @@ create policy workout_template_exercises_read on public.workout_template_exercis
       where t.id = template_id and public.is_member_of(t.organization_id)
     )
   );
+drop policy if exists workout_template_exercises_staff_write on public.workout_template_exercises;
 create policy workout_template_exercises_staff_write on public.workout_template_exercises
   for all to authenticated
   using (
@@ -983,51 +1065,63 @@ create policy workout_template_exercises_staff_write on public.workout_template_
   );
 
 -- --- workout sessions & sets (private to the member) -------------------------
+drop policy if exists workout_sessions_self_all on public.workout_sessions;
 create policy workout_sessions_self_all on public.workout_sessions
   for all to authenticated
   using (profile_id = auth.uid())
   with check (profile_id = auth.uid());
 
+drop policy if exists workout_sets_self_all on public.workout_sets;
 create policy workout_sets_self_all on public.workout_sets
   for all to authenticated
   using (exists (select 1 from public.workout_sessions s where s.id = session_id and s.profile_id = auth.uid()))
   with check (exists (select 1 from public.workout_sessions s where s.id = session_id and s.profile_id = auth.uid()));
 
 -- --- readiness (private) -----------------------------------------------------
+drop policy if exists readiness_self_all on public.readiness_logs;
 create policy readiness_self_all on public.readiness_logs
   for all to authenticated
   using (profile_id = auth.uid())
   with check (profile_id = auth.uid());
 
 -- --- timer presets -----------------------------------------------------------
+drop policy if exists timer_presets_read on public.timer_presets;
 create policy timer_presets_read on public.timer_presets
   for select to authenticated using (
     public.is_member_of(organization_id) and (is_public or profile_id = auth.uid())
   );
+drop policy if exists timer_presets_self_write on public.timer_presets;
 create policy timer_presets_self_write on public.timer_presets
   for all to authenticated
   using (profile_id = auth.uid())
   with check (profile_id = auth.uid() and not is_public);
+drop policy if exists timer_presets_owner_write on public.timer_presets;
 create policy timer_presets_owner_write on public.timer_presets
   for all to authenticated
   using (public.is_owner_of(organization_id))
   with check (public.is_owner_of(organization_id));
 
 -- --- notifications -----------------------------------------------------------
+drop policy if exists notifications_self_read on public.notifications;
 create policy notifications_self_read on public.notifications
   for select to authenticated using (profile_id = auth.uid());
+drop policy if exists notifications_self_update on public.notifications;
 create policy notifications_self_update on public.notifications
   for update to authenticated using (profile_id = auth.uid()) with check (profile_id = auth.uid());
+drop policy if exists notifications_staff_insert on public.notifications;
 create policy notifications_staff_insert on public.notifications
   for insert to authenticated with check (public.is_staff_of(organization_id));
 
 -- --- app settings ------------------------------------------------------------
+drop policy if exists app_settings_self on public.app_settings;
 create policy app_settings_self on public.app_settings
   for all to authenticated
   using (profile_id = auth.uid())
   with check (profile_id = auth.uid());
+drop policy if exists app_settings_org_read on public.app_settings;
 create policy app_settings_org_read on public.app_settings
   for select to authenticated using (profile_id is null and public.is_member_of(organization_id));
+drop policy if exists app_settings_owner_write on public.app_settings;
 create policy app_settings_owner_write on public.app_settings
   for all to authenticated
   using (public.is_owner_of(organization_id) and profile_id is null)
@@ -1035,9 +1129,19 @@ create policy app_settings_owner_write on public.app_settings
 
 -- --- realtime ----------------------------------------------------------------
 -- Capacity updates stream to the schedule in real time.
-alter publication supabase_realtime add table public.bookings;
-alter publication supabase_realtime add table public.classes;
-alter publication supabase_realtime add table public.notifications;
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['bookings', 'classes', 'notifications'] loop
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = t
+    ) then
+      execute format('alter publication supabase_realtime add table public.%I', t);
+    end if;
+  end loop;
+end $$;
 
 
 -- >>> migrations/20260101000003_public_invite_status.sql <<<

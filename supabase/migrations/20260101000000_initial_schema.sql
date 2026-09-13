@@ -7,22 +7,61 @@
 create extension if not exists "pgcrypto";
 
 -- --- enums -------------------------------------------------------------------
-create type public.member_role as enum ('owner', 'trainer', 'member');
-create type public.membership_status as enum ('active', 'suspended');
-create type public.booking_status as enum ('confirmed', 'waitlisted', 'cancelled', 'attended', 'absent');
-create type public.class_status as enum ('scheduled', 'cancelled');
-create type public.difficulty_level as enum ('beginner', 'intermediate', 'advanced');
-create type public.training_category as enum ('strength', 'functional', 'tabata', 'mobility', 'open', 'conditioning');
-create type public.movement_category as enum ('squat', 'hinge', 'push', 'pull', 'carry', 'core', 'conditioning', 'mobility');
-create type public.training_goal as enum ('general', 'strength', 'conditioning', 'mobility', 'technique');
-create type public.workout_status as enum ('active', 'completed', 'abandoned');
-create type public.template_block as enum ('warmup', 'main', 'finisher', 'cooldown');
-create type public.notification_type as enum (
-  'booking_confirmed', 'waitlist_promoted', 'class_cancelled',
-  'class_time_changed', 'class_reminder', 'schedule_published', 'announcement'
-);
-create type public.delivery_status as enum ('pending', 'sent', 'failed', 'skipped_no_provider');
-create type public.attendance_method as enum ('manual', 'qr');
+do $$ begin
+  create type public.member_role as enum ('owner', 'trainer', 'member');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.membership_status as enum ('active', 'suspended');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.booking_status as enum ('confirmed', 'waitlisted', 'cancelled', 'attended', 'absent');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.class_status as enum ('scheduled', 'cancelled');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.difficulty_level as enum ('beginner', 'intermediate', 'advanced');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.training_category as enum ('strength', 'functional', 'tabata', 'mobility', 'open', 'conditioning');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.movement_category as enum ('squat', 'hinge', 'push', 'pull', 'carry', 'core', 'conditioning', 'mobility');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.training_goal as enum ('general', 'strength', 'conditioning', 'mobility', 'technique');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.workout_status as enum ('active', 'completed', 'abandoned');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.template_block as enum ('warmup', 'main', 'finisher', 'cooldown');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.notification_type as enum (
+    'booking_confirmed', 'waitlist_promoted', 'class_cancelled',
+    'class_time_changed', 'class_reminder', 'schedule_published', 'announcement'
+  );
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.delivery_status as enum ('pending', 'sent', 'failed', 'skipped_no_provider');
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  create type public.attendance_method as enum ('manual', 'qr');
+exception when duplicate_object then null;
+end $$;
 
 -- --- shared trigger ----------------------------------------------------------
 create or replace function public.set_updated_at()
@@ -36,7 +75,7 @@ end;
 $$;
 
 -- --- organizations -----------------------------------------------------------
-create table public.organizations (
+create table if not exists public.organizations (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   slug text not null unique,
@@ -48,11 +87,12 @@ create table public.organizations (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+drop trigger if exists organizations_updated_at on public.organizations;
 create trigger organizations_updated_at before update on public.organizations
   for each row execute function public.set_updated_at();
 
 -- --- profiles ----------------------------------------------------------------
-create table public.profiles (
+create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   email text not null,
   full_name text not null default '',
@@ -63,12 +103,13 @@ create table public.profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create unique index profiles_email_key on public.profiles (lower(email));
+create unique index if not exists profiles_email_key on public.profiles (lower(email));
+drop trigger if exists profiles_updated_at on public.profiles;
 create trigger profiles_updated_at before update on public.profiles
   for each row execute function public.set_updated_at();
 
 -- --- memberships -------------------------------------------------------------
-create table public.memberships (
+create table if not exists public.memberships (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -79,13 +120,14 @@ create table public.memberships (
   updated_at timestamptz not null default now(),
   unique (organization_id, profile_id)
 );
-create index memberships_profile_idx on public.memberships (profile_id);
-create index memberships_org_role_idx on public.memberships (organization_id, role);
+create index if not exists memberships_profile_idx on public.memberships (profile_id);
+create index if not exists memberships_org_role_idx on public.memberships (organization_id, role);
+drop trigger if exists memberships_updated_at on public.memberships;
 create trigger memberships_updated_at before update on public.memberships
   for each row execute function public.set_updated_at();
 
 -- --- trainers ----------------------------------------------------------------
-create table public.trainers (
+create table if not exists public.trainers (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -97,11 +139,12 @@ create table public.trainers (
   updated_at timestamptz not null default now(),
   unique (organization_id, profile_id)
 );
+drop trigger if exists trainers_updated_at on public.trainers;
 create trigger trainers_updated_at before update on public.trainers
   for each row execute function public.set_updated_at();
 
 -- --- class series ------------------------------------------------------------
-create table public.class_series (
+create table if not exists public.class_series (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   title text not null,
@@ -118,12 +161,13 @@ create table public.class_series (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index class_series_org_idx on public.class_series (organization_id);
+create index if not exists class_series_org_idx on public.class_series (organization_id);
+drop trigger if exists class_series_updated_at on public.class_series;
 create trigger class_series_updated_at before update on public.class_series
   for each row execute function public.set_updated_at();
 
 -- --- classes -----------------------------------------------------------------
-create table public.classes (
+create table if not exists public.classes (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   series_id uuid references public.class_series (id) on delete set null,
@@ -145,14 +189,15 @@ create table public.classes (
   updated_at timestamptz not null default now(),
   constraint classes_time_order check (ends_at > starts_at)
 );
-create index classes_org_start_idx on public.classes (organization_id, starts_at);
-create index classes_series_idx on public.classes (series_id);
-create index classes_published_idx on public.classes (organization_id, published, starts_at);
+create index if not exists classes_org_start_idx on public.classes (organization_id, starts_at);
+create index if not exists classes_series_idx on public.classes (series_id);
+create index if not exists classes_published_idx on public.classes (organization_id, published, starts_at);
+drop trigger if exists classes_updated_at on public.classes;
 create trigger classes_updated_at before update on public.classes
   for each row execute function public.set_updated_at();
 
 -- --- bookings ----------------------------------------------------------------
-create table public.bookings (
+create table if not exists public.bookings (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   class_id uuid not null references public.classes (id) on delete cascade,
@@ -170,16 +215,17 @@ create table public.bookings (
     check ((status = 'waitlisted' and waitlist_position is not null)
         or (status <> 'waitlisted' and waitlist_position is null))
 );
-create index bookings_class_status_idx on public.bookings (class_id, status);
-create index bookings_profile_idx on public.bookings (profile_id, status);
-create unique index bookings_waitlist_order_idx
+create index if not exists bookings_class_status_idx on public.bookings (class_id, status);
+create index if not exists bookings_profile_idx on public.bookings (profile_id, status);
+create unique index if not exists bookings_waitlist_order_idx
   on public.bookings (class_id, waitlist_position)
   where status = 'waitlisted';
+drop trigger if exists bookings_updated_at on public.bookings;
 create trigger bookings_updated_at before update on public.bookings
   for each row execute function public.set_updated_at();
 
 -- --- invite links ------------------------------------------------------------
-create table public.invite_links (
+create table if not exists public.invite_links (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   token text not null unique,
@@ -192,12 +238,13 @@ create table public.invite_links (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index invite_links_org_idx on public.invite_links (organization_id);
+create index if not exists invite_links_org_idx on public.invite_links (organization_id);
+drop trigger if exists invite_links_updated_at on public.invite_links;
 create trigger invite_links_updated_at before update on public.invite_links
   for each row execute function public.set_updated_at();
 
 -- --- attendance --------------------------------------------------------------
-create table public.attendance (
+create table if not exists public.attendance (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   class_id uuid not null references public.classes (id) on delete cascade,
@@ -210,12 +257,13 @@ create table public.attendance (
   updated_at timestamptz not null default now(),
   unique (class_id, profile_id)
 );
-create index attendance_profile_idx on public.attendance (profile_id);
+create index if not exists attendance_profile_idx on public.attendance (profile_id);
+drop trigger if exists attendance_updated_at on public.attendance;
 create trigger attendance_updated_at before update on public.attendance
   for each row execute function public.set_updated_at();
 
 -- --- exercises ---------------------------------------------------------------
-create table public.exercises (
+create table if not exists public.exercises (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   name_he text not null,
@@ -232,12 +280,13 @@ create table public.exercises (
   updated_at timestamptz not null default now(),
   unique (organization_id, name_en)
 );
-create index exercises_org_idx on public.exercises (organization_id, archived);
+create index if not exists exercises_org_idx on public.exercises (organization_id, archived);
+drop trigger if exists exercises_updated_at on public.exercises;
 create trigger exercises_updated_at before update on public.exercises
   for each row execute function public.set_updated_at();
 
 -- --- workout templates -------------------------------------------------------
-create table public.workout_templates (
+create table if not exists public.workout_templates (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   title text not null,
@@ -255,11 +304,12 @@ create table public.workout_templates (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index workout_templates_org_idx on public.workout_templates (organization_id, approved, archived);
+create index if not exists workout_templates_org_idx on public.workout_templates (organization_id, approved, archived);
+drop trigger if exists workout_templates_updated_at on public.workout_templates;
 create trigger workout_templates_updated_at before update on public.workout_templates
   for each row execute function public.set_updated_at();
 
-create table public.workout_template_exercises (
+create table if not exists public.workout_template_exercises (
   id uuid primary key default gen_random_uuid(),
   template_id uuid not null references public.workout_templates (id) on delete cascade,
   exercise_id uuid not null references public.exercises (id) on delete restrict,
@@ -275,10 +325,10 @@ create table public.workout_template_exercises (
   alternative_exercise_ids uuid[] not null default '{}',
   unique (template_id, position)
 );
-create index workout_template_exercises_template_idx on public.workout_template_exercises (template_id);
+create index if not exists workout_template_exercises_template_idx on public.workout_template_exercises (template_id);
 
 -- --- workout sessions --------------------------------------------------------
-create table public.workout_sessions (
+create table if not exists public.workout_sessions (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -295,15 +345,16 @@ create table public.workout_sessions (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index workout_sessions_profile_idx on public.workout_sessions (profile_id, started_at desc);
+create index if not exists workout_sessions_profile_idx on public.workout_sessions (profile_id, started_at desc);
 -- At most one active session per member.
-create unique index workout_sessions_single_active_idx
+create unique index if not exists workout_sessions_single_active_idx
   on public.workout_sessions (profile_id)
   where status = 'active';
+drop trigger if exists workout_sessions_updated_at on public.workout_sessions;
 create trigger workout_sessions_updated_at before update on public.workout_sessions
   for each row execute function public.set_updated_at();
 
-create table public.workout_sets (
+create table if not exists public.workout_sets (
   id uuid primary key default gen_random_uuid(),
   session_id uuid not null references public.workout_sessions (id) on delete cascade,
   exercise_id uuid not null references public.exercises (id) on delete restrict,
@@ -318,11 +369,11 @@ create table public.workout_sets (
   completed_at timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
-create index workout_sets_session_idx on public.workout_sets (session_id);
-create index workout_sets_exercise_idx on public.workout_sets (exercise_id, completed_at desc);
+create index if not exists workout_sets_session_idx on public.workout_sets (session_id);
+create index if not exists workout_sets_exercise_idx on public.workout_sets (exercise_id, completed_at desc);
 
 -- --- readiness ---------------------------------------------------------------
-create table public.readiness_logs (
+create table if not exists public.readiness_logs (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -336,11 +387,12 @@ create table public.readiness_logs (
   updated_at timestamptz not null default now(),
   unique (profile_id, log_date)
 );
+drop trigger if exists readiness_logs_updated_at on public.readiness_logs;
 create trigger readiness_logs_updated_at before update on public.readiness_logs
   for each row execute function public.set_updated_at();
 
 -- --- timer presets -----------------------------------------------------------
-create table public.timer_presets (
+create table if not exists public.timer_presets (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid references public.profiles (id) on delete cascade,
@@ -357,12 +409,13 @@ create table public.timer_presets (
   updated_at timestamptz not null default now(),
   constraint timer_presets_owner_check check (is_public or profile_id is not null)
 );
-create index timer_presets_scope_idx on public.timer_presets (organization_id, profile_id, is_public);
+create index if not exists timer_presets_scope_idx on public.timer_presets (organization_id, profile_id, is_public);
+drop trigger if exists timer_presets_updated_at on public.timer_presets;
 create trigger timer_presets_updated_at before update on public.timer_presets
   for each row execute function public.set_updated_at();
 
 -- --- notifications -----------------------------------------------------------
-create table public.notifications (
+create table if not exists public.notifications (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid not null references public.profiles (id) on delete cascade,
@@ -375,11 +428,11 @@ create table public.notifications (
   delivery_error text,
   created_at timestamptz not null default now()
 );
-create index notifications_profile_idx on public.notifications (profile_id, created_at desc);
-create index notifications_unread_idx on public.notifications (profile_id) where read_at is null;
+create index if not exists notifications_profile_idx on public.notifications (profile_id, created_at desc);
+create index if not exists notifications_unread_idx on public.notifications (profile_id) where read_at is null;
 
 -- --- app settings ------------------------------------------------------------
-create table public.app_settings (
+create table if not exists public.app_settings (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
   profile_id uuid references public.profiles (id) on delete cascade,
@@ -388,7 +441,8 @@ create table public.app_settings (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create unique index app_settings_scope_key_idx
+create unique index if not exists app_settings_scope_key_idx
   on public.app_settings (organization_id, coalesce(profile_id, '00000000-0000-0000-0000-000000000000'::uuid), key);
+drop trigger if exists app_settings_updated_at on public.app_settings;
 create trigger app_settings_updated_at before update on public.app_settings
   for each row execute function public.set_updated_at();

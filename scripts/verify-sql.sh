@@ -98,5 +98,12 @@ apply glow_setup supabase/setup.sql "setup.sql"
 echo "==> asserting starter content"
 assert glow_setup scripts/sql/assert-starter-content.sql
 
+# Nobody pastes setup.sql exactly once. People re-run it after editing an
+# address, or because they lost track of whether the first paste finished.
+# A second run must be a no-op rather than "type member_role already exists".
+echo "==> applying setup.sql a second time (it has to be re-runnable)"
+apply glow_setup supabase/setup.sql "setup.sql, again"
+assert glow_setup scripts/sql/assert-starter-content.sql
+
 echo
 echo "All database checks passed."
