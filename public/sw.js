@@ -72,8 +72,14 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(SHELL_CACHE).then((cache) => cache.put(request, copy)).catch(() => undefined);
+          /* Only keep a page that actually loaded. Caching a 404 or a 500 -
+           * which is what a page returns while a deployment is still going out
+           * - pins that failure in place, and the visitor keeps being served it
+           * long after the real page is live. */
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(SHELL_CACHE).then((cache) => cache.put(request, copy)).catch(() => undefined);
+          }
           return response;
         })
         .catch(async () => {
