@@ -91,7 +91,11 @@ test.describe('the workout of the day', () => {
     await page.goto('/workout/wods');
 
     await expect(page.getByRole('heading', { name: 'מאגר האימונים' })).toBeVisible();
-    await expect(page.getByText(/1\d\d אימונים מוכנים/)).toBeVisible();
+    // Any count, not a three-digit one. The library was 103 when this was
+    // written and is 135 now; pinning the shape of the number means this test
+    // breaks on the day somebody archives enough workouts to drop under 100,
+    // which has nothing to do with whether the library is browsable.
+    await expect(page.getByText(/\d+ אימונים מוכנים/)).toBeVisible();
 
     await page.getByRole('tab', { name: /קרוספיט/ }).click();
     const fran = page.getByRole('link', { name: /Fran/ }).first();

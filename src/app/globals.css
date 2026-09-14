@@ -146,6 +146,15 @@
   }
 
   /*
+   * The fruit as a watermark. Faint enough to read as paper texture rather
+   * than as an illustration, which is the only way it can appear on twenty
+   * screens without any of them looking like a sticker.
+   */
+  .avocado-wash {
+    @apply pointer-events-none absolute text-ink/[0.035];
+  }
+
+  /*
    * Room under the fixed bottom navigation.
    *
    * The bar is 80px, but the avocado in the middle of it stands 8px proud of
