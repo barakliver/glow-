@@ -11,7 +11,7 @@ export const metadata: Metadata = {
  */
 export default function PrivacyPage() {
   return (
-    <article className="space-y-6">
+    <article className="space-y-8">
       <div>
         <h1 className="display text-2xl tracking-tight">מדיניות פרטיות</h1>
         <p className="mt-1 text-xs text-muted">עודכן לאחרונה: ספטמבר 2026</p>
@@ -23,16 +23,16 @@ export default function PrivacyPage() {
       </p>
 
       <section className="space-y-2">
-        <h2 className="text-lg font-bold">מה נאסף</h2>
+        <h2 className="text-lg font-semibold">מה נאסף</h2>
         <ul className="space-y-1.5 text-sm text-muted">
-          <li>· <span className="font-semibold text-ink">פרטי חשבון</span> — שם וכתובת אימייל, מחשבון Google שבו נכנסתם. אנחנו לא מקבלים ולא שומרים את הסיסמה שלכם.</li>
-          <li>· <span className="font-semibold text-ink">מספר טלפון</span> — אם בחרתם למלא אותו. אפשר להשאיר ריק.</li>
-          <li>· <span className="font-semibold text-ink">פעילות במועדון</span> — הרשמות לשיעורים, נוכחות, אימונים שרשמתם, שיאים אישיים ודיווחי מוכנות יומיים.</li>
+          <li>· <span className="font-medium text-ink">פרטי חשבון</span> — שם וכתובת אימייל, מחשבון Google שבו נכנסתם. אנחנו לא מקבלים ולא שומרים את הסיסמה שלכם.</li>
+          <li>· <span className="font-medium text-ink">מספר טלפון</span> — אם בחרתם למלא אותו. אפשר להשאיר ריק.</li>
+          <li>· <span className="font-medium text-ink">פעילות במועדון</span> — הרשמות לשיעורים, נוכחות, אימונים שרשמתם, שיאים אישיים ודיווחי מוכנות יומיים.</li>
         </ul>
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-lg font-bold">למה זה משמש</h2>
+        <h2 className="text-lg font-semibold">למה זה משמש</h2>
         <p className="text-sm text-muted">
           כדי להפעיל את המועדון בלבד: לשבץ אתכם לשיעורים, לנהל רשימות המתנה, להציג לכם את
           ההתקדמות שלכם ולשלוח התראות על שיעורים שנרשמתם אליהם. אנחנו לא משתמשים במידע לפרסום,
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-lg font-bold">מי רואה מה</h2>
+        <h2 className="text-lg font-semibold">מי רואה מה</h2>
         <p className="text-sm text-muted">
           מתאמן רואה את הנתונים של עצמו בלבד. בעלי המועדון והמאמנים רואים את רשימות השיעורים
           והנוכחות, כנדרש לניהול. ההפרדה הזאת אכופה במסד הנתונים עצמו, לא רק במסכים — גם מי
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-lg font-bold">איפה זה נשמר</h2>
+        <h2 className="text-lg font-semibold">איפה זה נשמר</h2>
         <p className="text-sm text-muted">
           הנתונים נשמרים ב-Supabase, ספק תשתית מסדי נתונים, בשרתים באירופה. הכניסה נעשית דרך
           חשבון Google שלכם; אנחנו מקבלים מגוגל את השם והאימייל בלבד.
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-lg font-bold">הזכויות שלכם</h2>
+        <h2 className="text-lg font-semibold">הזכויות שלכם</h2>
         <p className="text-sm text-muted">
           אתם יכולים לעיין בפרטים שלכם ולתקן אותם מתוך האפליקציה, במסך הפרופיל. אם תרצו שהחשבון
           והנתונים שלכם יימחקו — פנו לבעלי המועדון והבקשה תבוצע.
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-lg font-bold">יצירת קשר</h2>
+        <h2 className="text-lg font-semibold">יצירת קשר</h2>
         <p className="text-sm text-muted">
           לכל שאלה בנושא פרטיות אפשר לפנות לבעלי המועדון, דרך פרטי הקשר שמופיעים במסך
           &quot;עוד&quot; באפליקציה.

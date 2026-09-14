@@ -193,7 +193,7 @@ export function ExerciseManager({ exercises }: { exercises: Exercise[] }) {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="truncate text-sm font-bold">{exercise.name_he}</h2>
+                    <h2 className="truncate text-sm font-semibold">{exercise.name_he}</h2>
                     {exercise.archived && <Badge tone="neutral">בארכיון</Badge>}
                   </div>
                   <p className="text-[11px] text-muted" dir="ltr">
@@ -373,7 +373,7 @@ function Field({
       <Label htmlFor={htmlFor}>{label}</Label>
       {children}
       {error && (
-        <p role="alert" className="text-xs font-semibold text-danger">
+        <p role="alert" className="text-xs font-medium text-danger">
           {error}
         </p>
       )}
@@ -396,7 +396,7 @@ function ChipGroup({
 }) {
   return (
     <fieldset>
-      <legend className="mb-1.5 text-sm font-semibold">{legend}</legend>
+      <legend className="mb-1.5 text-sm font-medium">{legend}</legend>
       <div className="flex flex-wrap gap-1.5">
         {options.map((option) => (
           <button
@@ -405,7 +405,7 @@ function ChipGroup({
             aria-pressed={selected.includes(option.value)}
             onClick={() => onToggle(option.value)}
             className={cn(
-              'rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
+              'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
               selected.includes(option.value)
                 ? 'border-accent bg-accent/12 text-accent-ink'
                 : 'border-line bg-raised text-muted',
@@ -416,7 +416,7 @@ function ChipGroup({
         ))}
       </div>
       {error && (
-        <p role="alert" className="mt-1 text-xs font-semibold text-danger">
+        <p role="alert" className="mt-1 text-xs font-medium text-danger">
           {error}
         </p>
       )}

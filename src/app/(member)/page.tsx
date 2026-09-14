@@ -114,7 +114,7 @@ export default async function HomePage() {
   const firstName = user.profile.full_name.split(' ')[0];
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-9">
       <header className="pt-1">
         <p className="text-sm text-muted">{greeting(reference)},</p>
         <h1 className="display mt-0.5 text-[32px] leading-none tracking-tight">{firstName}</h1>
@@ -126,13 +126,13 @@ export default async function HomePage() {
           השיעור הבא שלך
         </h2>
         {nextClass ? (
-          <div className="surface glow-ring p-4">
+          <div className="surface glow-ring p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-accent-ink">
+                <p className="text-xs font-medium text-accent-ink">
                   {relativeHebrew(nextClass.starts_at, reference)}
                 </p>
-                <h3 className="mt-1 truncate text-xl font-extrabold tracking-tight">{nextClass.title}</h3>
+                <h3 className="mt-1 truncate text-xl font-semibold tracking-tight">{nextClass.title}</h3>
                 <p className="mt-1 text-xs text-muted">
                   {formatHebrewDate(nextClass.starts_at)} ·{' '}
                   <span className="num">{formatTime(nextClass.starts_at)}</span>
@@ -176,7 +176,7 @@ export default async function HomePage() {
       </section>
 
       {/* Weekly summary */}
-      <section aria-labelledby="week-summary-title" className="surface p-5">
+      <section aria-labelledby="week-summary-title" className="surface p-6">
         <h2 id="week-summary-title" className="section-label mb-3 block">
           הפעילות שלך השבוע
         </h2>
@@ -195,7 +195,7 @@ export default async function HomePage() {
         )}
         <Link
           href="/progress"
-          className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-ink/80 transition-colors hover:text-ink"
+          className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-ink/80 transition-colors hover:text-ink"
         >
           <TrendingUp className="size-3.5" aria-hidden />
           לצפייה בהתקדמות המלאה
@@ -208,18 +208,18 @@ export default async function HomePage() {
 
       {/* Recommendation */}
       {recommendation && (
-        <section aria-labelledby="recommendation-title" className="surface p-5">
-          <h2 id="recommendation-title" className="flex items-center gap-1.5 text-sm font-bold">
+        <section aria-labelledby="recommendation-title" className="surface p-6">
+          <h2 id="recommendation-title" className="flex items-center gap-1.5 text-sm font-semibold">
             <Sparkles className="size-4 text-champagne" aria-hidden />
             מומלץ עבורך היום
           </h2>
           <div className="mt-3 rounded-xl border border-line bg-raised p-4">
             <div className="flex items-start justify-between gap-3">
-              <h3 className="text-sm font-bold">{recommendation.template.title}</h3>
+              <h3 className="text-sm font-semibold">{recommendation.template.title}</h3>
               <Badge tone="outline">{GOAL_LABELS[recommendation.template.goal]}</Badge>
             </div>
             <p className="mt-1.5 text-xs leading-relaxed text-muted">{recommendation.reason}</p>
-            <p className="num mt-2 text-xs font-semibold text-muted">
+            <p className="num mt-2 text-xs font-medium text-muted">
               {formatDuration(recommendation.template.duration_minutes)}
             </p>
             <Button size="sm" className="mt-3" asChild block>
@@ -277,7 +277,7 @@ function QuickAction({
   return (
     <Link
       href={href}
-      className="flex min-h-[84px] flex-col items-center justify-center gap-2 rounded-md border border-line bg-surface p-3 text-center text-xs font-bold transition-colors hover:border-line hover:bg-raised"
+      className="flex min-h-[84px] flex-col items-center justify-center gap-2 rounded-md border border-line bg-surface p-3 text-center text-xs font-semibold transition-colors hover:border-line hover:bg-raised"
     >
       <Icon className="size-5 text-muted" aria-hidden />
       {label}

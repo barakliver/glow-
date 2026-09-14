@@ -49,7 +49,7 @@ export default async function BookingsPage() {
     attendance.length === 0 ? 0 : Math.round((attended / attendance.length) * 100);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader title="ההזמנות שלי" subtitle="הרישומים, ההיסטוריה והנוכחות שלך" backHref="/" />
 
       <section className="surface grid grid-cols-3 gap-2 p-3" aria-label="סיכום נוכחות">
@@ -133,10 +133,10 @@ function UpcomingRow({ row, reference }: { row: Row; reference: Date }) {
     <article className="rounded-lg border border-accent/40 bg-surface p-3.5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-accent-ink">
+          <p className="text-xs font-medium text-accent-ink">
             {relativeHebrew(row.gymClass.starts_at, reference)}
           </p>
-          <h3 className="mt-0.5 truncate text-base font-bold">{row.gymClass.title}</h3>
+          <h3 className="mt-0.5 truncate text-base font-semibold">{row.gymClass.title}</h3>
           <p className="mt-1 text-xs text-muted">
             {formatHebrewDate(row.gymClass.starts_at)} ·{' '}
             <span className="num">{formatTime(row.gymClass.starts_at)}</span> · {row.gymClass.location}
@@ -185,7 +185,7 @@ function HistoryRow({ row }: { row: Row }) {
       className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface p-3.5 transition-colors hover:border-accent/30"
     >
       <div className="min-w-0">
-        <h3 className="truncate text-sm font-bold">{row.gymClass.title}</h3>
+        <h3 className="truncate text-sm font-semibold">{row.gymClass.title}</h3>
         <p className="mt-0.5 text-xs text-muted">
           {formatHebrewDate(row.gymClass.starts_at)} ·{' '}
           <span className="num">{formatTime(row.gymClass.starts_at)}</span> ·{' '}

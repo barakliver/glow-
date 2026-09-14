@@ -112,7 +112,7 @@ export function WeeklySchedule({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between gap-3">
         <h1 className="display text-xl tracking-tight">לוח שבועי</h1>
         <div className="flex items-center gap-1">
@@ -150,9 +150,9 @@ export function WeeklySchedule({
           </Link>
         </Button>
         <div className="min-w-0 text-center">
-          <p className="truncate text-xs font-semibold">{weekLabel}</p>
+          <p className="truncate text-xs font-medium">{weekLabel}</p>
           {weekOffset !== 0 && (
-            <Link href="/schedule" className="text-[11px] font-bold text-ink/80 transition-colors hover:text-ink">
+            <Link href="/schedule" className="text-[11px] font-semibold text-ink/80 transition-colors hover:text-ink">
               חזרה להיום
             </Link>
           )}
@@ -167,12 +167,12 @@ export function WeeklySchedule({
       {filtersOpen && (
         <div className="surface space-y-3 p-3.5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-bold">סינון</p>
+            <p className="text-sm font-semibold">סינון</p>
             {activeFilters > 0 && (
               <button
                 type="button"
                 onClick={resetFilters}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-ink/80 transition-colors hover:text-ink"
+                className="inline-flex items-center gap-1 text-xs font-medium text-ink/80 transition-colors hover:text-ink"
               >
                 <X className="size-3" aria-hidden />
                 ניקוי
@@ -229,7 +229,7 @@ export function WeeklySchedule({
           view === 'auto' && 'block lg:hidden',
         )}
       >
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Day strip */}
           <div
             role="tablist"
@@ -254,15 +254,15 @@ export function WeeklySchedule({
                       : 'border-line bg-surface text-muted hover:text-ink',
                   )}
                 >
-                  <span className="text-[11px] font-bold">
+                  <span className="text-[11px] font-semibold">
                     {HEBREW_WEEKDAYS_SHORT[date.getDay()]}
                   </span>
-                  <span className="num text-base font-extrabold leading-none">
+                  <span className="num text-base font-semibold leading-none">
                     {format(date, 'd')}
                   </span>
                   <span
                     className={cn(
-                      'num text-[10px] font-semibold',
+                      'num text-[10px] font-medium',
                       today && !active && 'text-accent-ink',
                     )}
                   >
@@ -274,7 +274,7 @@ export function WeeklySchedule({
           </div>
 
           <section aria-label="שיעורים ביום שנבחר" className="space-y-3">
-            <p className="text-sm font-semibold text-muted">
+            <p className="text-sm font-medium text-muted">
               {formatHebrewFullDate(parseISO(`${selectedDay}T12:00:00`))}
             </p>
             {dayClasses.length === 0 ? (
@@ -328,7 +328,7 @@ export function WeeklySchedule({
             return (
               <section key={day} className="surface p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <h2 className="text-sm font-bold">
+                  <h2 className="text-sm font-semibold">
                     יום {HEBREW_WEEKDAYS_SHORT[date.getDay()]}
                     <span className="num ms-1.5 text-muted">{format(date, 'd.M')}</span>
                   </h2>
@@ -347,14 +347,14 @@ export function WeeklySchedule({
                         )}
                       >
                         <Link href={`/classes/${gymClass.id}`} className="block px-2.5 pb-1.5 pt-2">
-                          <span className="num block text-xs font-bold text-accent-ink">
+                          <span className="num block text-xs font-semibold text-accent-ink">
                             {new Date(gymClass.starts_at).toLocaleTimeString('he-IL', {
                               hour: '2-digit',
                               minute: '2-digit',
                               timeZone: 'Asia/Jerusalem',
                             })}
                           </span>
-                          <span className="block truncate text-sm font-semibold">{gymClass.title}</span>
+                          <span className="block truncate text-sm font-medium">{gymClass.title}</span>
                           <span className="block truncate text-[11px] text-muted">
                             {CATEGORY_LABELS[gymClass.category]} ·{' '}
                             <span className="num">

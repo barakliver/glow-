@@ -72,7 +72,7 @@ export function WorkoutPicker({
 
   return (
     <section className="surface p-4">
-      <h2 className="text-sm font-bold">אימון השיעור</h2>
+      <h2 className="text-sm font-semibold">אימון השיעור</h2>
       <p className="mt-1 flex items-start gap-1.5 text-xs text-muted">
         <Lock className="mt-0.5 size-3.5 shrink-0" aria-hidden />
         המתאמנים יראו את התוכנית המלאה רק אחרי שנרשמו לשיעור. לפני זה מוצגים להם רק סוג האימון,
@@ -81,7 +81,7 @@ export function WorkoutPicker({
 
       {current && (
         <div className="mt-3 rounded-md border border-accent/40 bg-accent/8 p-3">
-          <p className="text-sm font-bold text-accent-ink">{current.title}</p>
+          <p className="text-sm font-semibold text-accent-ink">{current.title}</p>
           {current.subtitle && <p className="mt-0.5 text-xs text-muted">{current.subtitle}</p>}
           <div className="mt-2 flex flex-wrap gap-1.5">
             <Badge tone="accent">{WORKOUT_CATEGORY_LABELS[current.category]}</Badge>
@@ -126,7 +126,7 @@ export function WorkoutPicker({
               aria-pressed={category === option.value}
               onClick={() => setCategory(option.value as WorkoutCategory | 'all')}
               className={cn(
-                'rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
+                'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
                 category === option.value
                   ? 'border-accent bg-accent/12 text-accent-ink'
                   : 'border-line bg-raised text-muted hover:text-ink',
@@ -152,7 +152,7 @@ export function WorkoutPicker({
                   : 'border-line bg-raised hover:border-accent/30',
               )}
             >
-              <span className="block text-sm font-semibold">{workout.title}</span>
+              <span className="block text-sm font-medium">{workout.title}</span>
               <span className="mt-0.5 block text-[11px] text-muted">
                 {WORKOUT_FORMAT_LABELS[workout.format]} · {formatDuration(workout.duration_minutes)}{' '}
                 · {DIFFICULTY_LABELS[workout.difficulty]}

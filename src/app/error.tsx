@@ -70,12 +70,12 @@ export default function GlobalError({
       <div className="flex size-14 items-center justify-center rounded-full bg-danger/12">
         <AlertOctagon className="size-7 text-danger" aria-hidden />
       </div>
-      <h1 className="text-xl font-extrabold">משהו השתבש</h1>
+      <h1 className="text-xl font-semibold">משהו השתבש</h1>
 
       {schemaBehind ? (
         <p className="text-sm leading-relaxed text-muted">
           מסד הנתונים של המועדון לא מעודכן לגרסה הנוכחית. בעל המועדון צריך להריץ שוב את{' '}
-          <span dir="ltr" className="font-bold text-ink">
+          <span dir="ltr" className="font-semibold text-ink">
             supabase/setup.sql
           </span>{' '}
           בעורך ה־SQL של Supabase. אפשר להריץ אותו שוב בבטחה.
@@ -100,7 +100,7 @@ export default function GlobalError({
         >
           {failing.map((row) => (
             <p key={row.step}>
-              <span className="font-bold text-danger">✕</span> {row.step}
+              <span className="font-semibold text-danger">✕</span> {row.step}
               {row.detail ? `: ${row.detail}` : ''}
             </p>
           ))}

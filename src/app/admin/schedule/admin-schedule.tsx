@@ -339,11 +339,11 @@ export function AdminSchedule({
           </Link>
         </Button>
         {weekOffset !== 0 ? (
-          <Link href="/admin/schedule" className="text-xs font-bold text-ink/80 transition-colors hover:text-ink">
+          <Link href="/admin/schedule" className="text-xs font-semibold text-ink/80 transition-colors hover:text-ink">
             חזרה לשבוע הנוכחי
           </Link>
         ) : (
-          <span className="text-xs font-semibold text-muted">השבוע הנוכחי</span>
+          <span className="text-xs font-medium text-muted">השבוע הנוכחי</span>
         )}
         <Button variant="ghost" size="icon-sm" asChild aria-label="שבוע הבא">
           <Link href={`/admin/schedule?week=${weekOffset + 1}`}>
@@ -387,10 +387,10 @@ export function AdminSchedule({
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="num text-sm font-extrabold text-accent-ink">
+                            <span className="num text-sm font-semibold text-accent-ink">
                               {formatTime(gymClass.starts_at)}
                             </span>
-                            <h3 className="truncate text-sm font-bold">{gymClass.title}</h3>
+                            <h3 className="truncate text-sm font-semibold">{gymClass.title}</h3>
                             {!gymClass.published && <Badge tone="warning">טיוטה</Badge>}
                             {gymClass.status === 'cancelled' && <Badge tone="danger">בוטל</Badge>}
                             {gymClass.registration_closed && <Badge tone="neutral">הרשמה סגורה</Badge>}
@@ -558,14 +558,14 @@ export function AdminSchedule({
 
           {editing?.series_id && (
             <fieldset className="mb-3">
-              <legend className="mb-1.5 text-sm font-semibold">על מה חל השינוי?</legend>
+              <legend className="mb-1.5 text-sm font-medium">על מה חל השינוי?</legend>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   aria-pressed={scope === 'one'}
                   onClick={() => setScope('one')}
                   className={cn(
-                    'rounded-md border px-3 py-2.5 text-xs font-bold transition-all',
+                    'rounded-md border px-3 py-2.5 text-xs font-semibold transition-all',
                     scope === 'one'
                       ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
@@ -578,7 +578,7 @@ export function AdminSchedule({
                   aria-pressed={scope === 'all'}
                   onClick={() => setScope('all')}
                   className={cn(
-                    'rounded-md border px-3 py-2.5 text-xs font-bold transition-all',
+                    'rounded-md border px-3 py-2.5 text-xs font-semibold transition-all',
                     scope === 'all'
                       ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
@@ -643,7 +643,7 @@ export function AdminSchedule({
 
       {series.length > 0 && isOwner && (
         <p className="pt-2 text-xs text-muted">
-          פעילות כרגע <span className="num font-bold text-ink">{series.length}</span> סדרות קבועות.
+          פעילות כרגע <span className="num font-semibold text-ink">{series.length}</span> סדרות קבועות.
         </p>
       )}
     </div>

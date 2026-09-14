@@ -42,8 +42,8 @@ export function BodyMetricForm({ latest }: { latest: BodyMetric | null }) {
   };
 
   return (
-    <section className="surface p-5">
-      <h2 className="flex items-center gap-2 text-sm font-bold">
+    <section className="surface p-6">
+      <h2 className="flex items-center gap-2 text-sm font-semibold">
         <Ruler className="size-4 text-accent-ink" aria-hidden />
         גובה ומשקל
       </h2>
@@ -86,7 +86,7 @@ export function BodyMetricForm({ latest }: { latest: BodyMetric | null }) {
       </div>
 
       {error && (
-        <p role="alert" className="mt-4 text-sm font-semibold text-danger">
+        <p role="alert" className="mt-4 text-sm font-medium text-danger">
           {error}
         </p>
       )}

@@ -110,7 +110,7 @@ export function MemberDirectory({
           <ul className="space-y-2">
             {waiting.map((row) => (
               <li key={row.profileId} className="rounded-md border border-line bg-raised p-3">
-                <p className="text-sm font-bold">{row.name}</p>
+                <p className="text-sm font-semibold">{row.name}</p>
                 <p className="num text-xs text-muted">{row.email}</p>
                 {row.phone && <p className="num text-xs text-muted">{row.phone}</p>}
                 <p className="num mt-1 text-[11px] text-muted">
@@ -183,7 +183,7 @@ export function MemberDirectory({
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="truncate text-sm font-bold">{row.name}</h2>
+                      <h2 className="truncate text-sm font-semibold">{row.name}</h2>
                       <Badge
                         tone={
                           row.role === 'owner' ? 'accent' : row.role === 'trainer' ? 'warning' : 'neutral'

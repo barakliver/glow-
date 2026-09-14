@@ -56,7 +56,7 @@ export function DemoBanner() {
       <div className="mx-auto flex max-w-2xl items-start gap-2 text-start">
         <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
         <p className="flex-1 text-xs leading-relaxed">
-          <span className="font-bold">מצב הדגמה.</span> עדיין לא חובר מסד נתונים, ולכן רישומים
+          <span className="font-semibold">מצב הדגמה.</span> עדיין לא חובר מסד נתונים, ולכן רישומים
           ואימונים עשויים להתאפס. הלוח והמסכים מלאים ופעילים לחלוטין.
         </p>
         <button

@@ -51,7 +51,7 @@ export function CheckInScreen({
       <Logo size="lg" stacked className="justify-center" />
 
       <section className="surface p-5 text-center">
-        <h1 className="text-xl font-extrabold">{title}</h1>
+        <h1 className="text-xl font-semibold">{title}</h1>
         <p className="mt-1 text-sm text-muted">{when}</p>
         <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted">
           <MapPin className="size-3.5" aria-hidden />
@@ -59,7 +59,7 @@ export function CheckInScreen({
         </p>
 
         <p className="mt-4 text-sm">
-          שלום <span className="font-bold">{memberName}</span>
+          שלום <span className="font-semibold">{memberName}</span>
         </p>
         <div className="mt-2 flex justify-center">
           <Badge tone={eligible ? 'accent' : 'warning'}>
@@ -81,12 +81,12 @@ export function CheckInScreen({
             ) : (
               <XCircle className="size-8" aria-hidden />
             )}
-            <p className="text-sm font-bold">{result.message}</p>
+            <p className="text-sm font-semibold">{result.message}</p>
           </div>
         ) : cancelled ? (
           <p
             role="alert"
-            className="mt-5 rounded-md border border-danger/40 bg-danger/10 p-3 text-sm font-semibold text-danger"
+            className="mt-5 rounded-md border border-danger/40 bg-danger/10 p-3 text-sm font-medium text-danger"
           >
             השיעור בוטל ולכן לא ניתן לבצע צ׳ק-אין.
           </p>
@@ -96,7 +96,7 @@ export function CheckInScreen({
             אישור הגעה
           </Button>
         ) : (
-          <p className="mt-5 rounded-md border border-warning/40 bg-warning/10 p-3 text-sm font-semibold text-warning">
+          <p className="mt-5 rounded-md border border-warning/40 bg-warning/10 p-3 text-sm font-medium text-warning">
             {bookingStatus === 'waitlisted'
               ? 'אתם ברשימת ההמתנה. אם יתפנה מקום תקבלו התראה ותוכלו לבצע צ׳ק-אין.'
               : 'אין לכם רישום מאושר לשיעור הזה.'}

@@ -123,7 +123,7 @@ export function ClassRoster({
               <li key={row.bookingId} className="surface p-3.5">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold">{row.name}</p>
+                    <p className="truncate text-sm font-semibold">{row.name}</p>
                     {row.phone && (
                       <a
                         href={`tel:${row.phone}`}
@@ -233,7 +233,7 @@ export function ClassRoster({
                 className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-surface p-3.5"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-bold">
+                  <p className="truncate text-sm font-semibold">
                     <span className="num text-warning">#{row.waitlistPosition}</span> {row.name}
                   </p>
                   {row.phone && (
@@ -303,7 +303,7 @@ export function ClassRoster({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="text-center">
-      <p className="num text-lg font-extrabold">{value}</p>
+      <p className="num text-lg font-semibold">{value}</p>
       <p className="label-muted">{label}</p>
     </div>
   );

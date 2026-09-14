@@ -128,7 +128,7 @@ export function SignInForm({
       {!demoMode ? (
         <div className="surface space-y-4 p-6">
           <div className="text-center">
-            <h1 className="text-lg font-bold">כניסה למועדון</h1>
+            <h1 className="text-lg font-semibold">כניסה למועדון</h1>
             <p className="mt-1 text-sm text-muted">
               הכניסה נעשית עם חשבון Google. אין סיסמה לזכור.
             </p>
@@ -162,7 +162,7 @@ export function SignInForm({
               required
             />
             {emailError && (
-              <p role="alert" className="text-xs font-semibold text-danger">
+              <p role="alert" className="text-xs font-medium text-danger">
                 {emailError}
               </p>
             )}
@@ -177,7 +177,7 @@ export function SignInForm({
           <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-accent/12">
             <Mail className="size-6 text-accent-ink" aria-hidden />
           </div>
-          <h1 className="text-lg font-bold">שלחנו לכם קישור כניסה</h1>
+          <h1 className="text-lg font-semibold">שלחנו לכם קישור כניסה</h1>
           <p className="text-sm text-muted">
             בדקו את תיבת הדואר של <span className="num">{email}</span> ולחצו על הקישור כדי להיכנס.
             הקישור תקף ל-60 דקות.
@@ -205,7 +205,7 @@ export function SignInForm({
               required
             />
             {emailError ? (
-              <p id="email-error" role="alert" className="text-xs font-semibold text-danger">
+              <p id="email-error" role="alert" className="text-xs font-medium text-danger">
                 {emailError}
               </p>
             ) : (
@@ -229,7 +229,7 @@ export function SignInForm({
         <section className="mt-6" aria-labelledby="demo-heading">
           <div className="mb-2 flex items-center gap-2">
             <Sparkles className="size-4 text-champagne" aria-hidden />
-            <h2 id="demo-heading" className="text-sm font-bold">
+            <h2 id="demo-heading" className="text-sm font-semibold">
               כניסה מהירה להדגמה
             </h2>
           </div>
@@ -247,7 +247,7 @@ export function SignInForm({
                   className="flex w-full items-center justify-between gap-3 rounded-md border border-line bg-surface px-3 py-3 text-start transition-colors hover:border-accent/40 hover:bg-raised disabled:opacity-50"
                 >
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-bold">{account.name}</span>
+                    <span className="block truncate text-sm font-semibold">{account.name}</span>
                     <span className="block truncate font-num text-xs text-muted" dir="ltr">
                       {account.email}
                     </span>

@@ -29,7 +29,7 @@ export function MovementLine({ item }: { item: WorkoutMovement }) {
   if (!match) {
     return (
       <li className="flex flex-wrap items-baseline gap-x-2">
-        <span className="text-sm font-semibold text-muted">{item.label}</span>
+        <span className="text-sm font-medium text-muted">{item.label}</span>
         {item.detail && <span className="text-xs text-muted">{item.detail}</span>}
       </li>
     );
@@ -47,7 +47,7 @@ export function MovementLine({ item }: { item: WorkoutMovement }) {
           'text-start transition-colors hover:bg-raised active:bg-raised',
         )}
       >
-        <span className="text-sm font-semibold underline decoration-line decoration-dotted underline-offset-4 group-hover:decoration-accent-ink">
+        <span className="text-sm font-medium underline decoration-line decoration-dotted underline-offset-4 group-hover:decoration-accent-ink">
           {item.label}
         </span>
         {item.detail && <span className="text-xs text-muted">{item.detail}</span>}
@@ -71,7 +71,7 @@ export function MovementLine({ item }: { item: WorkoutMovement }) {
             <ol className="mt-4 space-y-2.5">
               {guide.cues.map((cue, index) => (
                 <li key={cue} className="flex gap-3">
-                  <span className="num mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-raised text-[11px] font-bold text-accent-ink">
+                  <span className="num mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-raised text-[11px] font-semibold text-accent-ink">
                     {index + 1}
                   </span>
                   <span className="text-sm leading-relaxed">{cue}</span>
@@ -82,7 +82,7 @@ export function MovementLine({ item }: { item: WorkoutMovement }) {
 
           {guide?.watch && (
             <p className="mt-4 rounded-md border border-warning/30 bg-warning/10 p-3 text-xs leading-relaxed">
-              <span className="font-bold">שימו לב · </span>
+              <span className="font-semibold">שימו לב · </span>
               {guide.watch}
             </p>
           )}

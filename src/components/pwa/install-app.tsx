@@ -83,7 +83,7 @@ export function InstallApp() {
 
   if (platform === 'installed') {
     return (
-      <p className="flex items-center justify-center gap-1.5 rounded-md border border-success/35 bg-success/8 px-3 py-2.5 text-xs font-semibold text-success">
+      <p className="flex items-center justify-center gap-1.5 rounded-md border border-success/35 bg-success/8 px-3 py-2.5 text-xs font-medium text-success">
         <Check className="size-4 shrink-0" aria-hidden />
         האפליקציה מותקנת במכשיר הזה
       </p>
@@ -153,11 +153,11 @@ function Step({
 }) {
   return (
     <li className="flex items-start gap-3 rounded-md border border-line bg-raised p-3">
-      <span className="num flex size-7 shrink-0 items-center justify-center rounded-full bg-accent/12 text-xs font-extrabold text-accent-ink">
+      <span className="num flex size-7 shrink-0 items-center justify-center rounded-full bg-accent/12 text-xs font-semibold text-accent-ink">
         {index}
       </span>
       <div className="min-w-0">
-        <p className="flex items-center gap-1.5 text-sm font-bold">
+        <p className="flex items-center gap-1.5 text-sm font-semibold">
           {icon}
           {title}
         </p>

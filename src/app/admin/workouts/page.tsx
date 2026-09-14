@@ -8,7 +8,7 @@ export default async function WriteWorkoutPage() {
   await requireStaff();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="display text-2xl tracking-tight">כתיבת אימון</h1>
         <p className="mt-1.5 text-sm text-muted">

@@ -21,7 +21,7 @@ export function AccessibleChart({
 }) {
   return (
     <section className={cn('surface p-4', className)} aria-labelledby={`chart-${slug(title)}`}>
-      <h3 id={`chart-${slug(title)}`} className="text-sm font-bold">
+      <h3 id={`chart-${slug(title)}`} className="text-sm font-semibold">
         {title}
       </h3>
       <div className="mt-3" role="img" aria-label={`${title}. ${summary}`}>
@@ -30,7 +30,7 @@ export function AccessibleChart({
       <p className="mt-3 text-xs leading-relaxed text-muted">{summary}</p>
       {table && (
         <details className="mt-2">
-          <summary className="cursor-pointer text-[11px] font-semibold text-accent-ink">
+          <summary className="cursor-pointer text-[11px] font-medium text-accent-ink">
             הצגת הנתונים כטבלה
           </summary>
           <div className="mt-2 overflow-x-auto">
@@ -39,7 +39,7 @@ export function AccessibleChart({
               <thead>
                 <tr className="border-b border-line">
                   {table.head.map((cell) => (
-                    <th key={cell} scope="col" className="p-1.5 text-start font-bold text-muted">
+                    <th key={cell} scope="col" className="p-1.5 text-start font-semibold text-muted">
                       {cell}
                     </th>
                   ))}

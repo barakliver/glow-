@@ -120,7 +120,7 @@ export function InviteManager({ invites, appUrl }: { invites: InviteLink[]; appU
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="truncate text-sm font-bold">{invite.label}</h2>
+                      <h2 className="truncate text-sm font-semibold">{invite.label}</h2>
                       <Badge tone={state.tone}>{state.label}</Badge>
                     </div>
                     <p className="num mt-1 break-all text-[11px] text-muted" dir="ltr">
@@ -199,7 +199,7 @@ export function InviteManager({ invites, appUrl }: { invites: InviteLink[]; appU
                 aria-invalid={Boolean(errors.label)}
               />
               {errors.label && (
-                <p role="alert" className="text-xs font-semibold text-danger">
+                <p role="alert" className="text-xs font-medium text-danger">
                   {errors.label}
                 </p>
               )}

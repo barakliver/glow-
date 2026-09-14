@@ -84,7 +84,7 @@ export function ExerciseLibrary({ exercises }: { exercises: Exercise[] }) {
                 <summary className="cursor-pointer list-none">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <h2 className="truncate text-sm font-bold">{exercise.name_he}</h2>
+                      <h2 className="truncate text-sm font-semibold">{exercise.name_he}</h2>
                       <p className="text-[11px] text-muted" dir="ltr">
                         {exercise.name_en}
                       </p>
@@ -103,18 +103,18 @@ export function ExerciseLibrary({ exercises }: { exercises: Exercise[] }) {
 
                 <div className="mt-3 space-y-2 border-t border-line pt-3">
                   <div>
-                    <h3 className="text-xs font-bold text-muted">אזורי עבודה</h3>
+                    <h3 className="text-xs font-semibold text-muted">אזורי עבודה</h3>
                     <p className="mt-1 text-xs">
                       {exercise.target_areas.map((area) => AREA_LABELS[area as BodyArea]).join(' · ')}
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-muted">הוראות ביצוע</h3>
+                    <h3 className="text-xs font-semibold text-muted">הוראות ביצוע</h3>
                     <p className="mt-1 text-xs leading-relaxed">{exercise.instructions}</p>
                   </div>
                   {exercise.safety_cues && (
                     <div className="rounded-md border border-warning/35 bg-warning/8 p-2.5">
-                      <h3 className="flex items-center gap-1.5 text-xs font-bold text-warning">
+                      <h3 className="flex items-center gap-1.5 text-xs font-semibold text-warning">
                         <ShieldAlert className="size-3.5" aria-hidden />
                         דגשי בטיחות
                       </h3>
@@ -128,7 +128,7 @@ export function ExerciseLibrary({ exercises }: { exercises: Exercise[] }) {
                       href={exercise.media_url}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="inline-block text-xs font-bold text-ink/80 transition-colors hover:text-ink"
+                      className="inline-block text-xs font-semibold text-ink/80 transition-colors hover:text-ink"
                     >
                       צפייה בהדגמה
                     </a>
@@ -158,7 +158,7 @@ function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
+        'shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
         active ? 'border-accent bg-accent/12 text-accent-ink' : 'border-line bg-raised text-muted',
       )}
     >

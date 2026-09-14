@@ -75,8 +75,13 @@
    * A card is a lifted surface, not a boxed one. Outlining every panel made the
    * screens read as a grid of containers; the eye should land on the content.
    */
+  /*
+   * Separated by light, not by a frame. The border is nearly gone - what
+   * actually reads as a card is the lift off the ground and the soft drop
+   * under it, which is what a printed page does too.
+   */
   .surface {
-    @apply rounded-xl border border-line/60 bg-surface shadow-card;
+    @apply rounded-2xl border border-line/40 bg-surface shadow-card;
   }
 
   .surface-raised {
@@ -101,10 +106,13 @@
   .display {
     font-family: var(--font-frank), Georgia, serif;
     /*
-     * Lighter than bold. At display sizes a serif carries the weight of the
-     * page on its own, and bold makes it shout where it should just be large.
+     * Lighter than the text under it.
+     *
+     * At display sizes a serif carries the page on its own; weight on top of
+     * size is how a heading turns into a shout. Frank Ruhl Libre at 500 with
+     * the counters open is the whole difference between "app" and "printed".
      */
-    @apply font-semibold tracking-[-0.015em];
+    @apply font-medium tracking-[-0.01em];
   }
 
   /*
@@ -130,7 +138,7 @@
   }
 
   .label-muted {
-    @apply text-xs font-medium text-muted;
+    @apply text-[11px] font-medium tracking-[0.01em] text-muted;
   }
 
   .skeleton {

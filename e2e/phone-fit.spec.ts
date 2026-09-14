@@ -46,6 +46,29 @@ test.describe('fits a phone', () => {
     expect(sideways, `these scroll sideways at 360px: ${sideways.join(', ')}`).toEqual([]);
   });
 
+  /*
+   * The page is declared viewport-fit: cover so it can paint under the status
+   * bar instead of leaving a grey band. That makes reserving the top inset the
+   * app's job, and nothing reserved it - so on a phone with a notch the logo
+   * sat underneath the Dynamic Island and the header read as cut off.
+   *
+   * Chromium reports env(safe-area-inset-top) as 0 on a desktop viewport, so
+   * the resolved padding cannot distinguish "reserved" from "absent". What can
+   * be checked is that the reservation is declared at all, which is what a
+   * later refactor would delete.
+   */
+  test('the header reserves the space the notch takes', async ({ page }) => {
+    await signInAs(page, DEMO.member);
+    await page.goto('/');
+    const declared = await page
+      .locator('header')
+      .first()
+      .evaluate((el) => el.getAttribute('style') ?? '');
+    expect(declared, 'the header must reserve the top safe-area inset').toContain(
+      'safe-area-inset-top',
+    );
+  });
+
   test('the navigation never lands on top of the content', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await signInAs(page, DEMO.member);

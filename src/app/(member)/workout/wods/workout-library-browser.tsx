@@ -75,7 +75,7 @@ export function WorkoutLibraryBrowser({ workouts }: { workouts: Workout[] }) {
               aria-selected={category === option.value}
               onClick={() => setCategory(option.value as WorkoutCategory | 'all')}
               className={cn(
-                'rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
+                'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
                 category === option.value
                   ? 'border-accent bg-accent/12 text-accent-ink'
                   : 'border-line bg-raised text-muted hover:text-ink',
@@ -107,7 +107,7 @@ export function WorkoutLibraryBrowser({ workouts }: { workouts: Workout[] }) {
                 className="flex items-center gap-3 rounded-lg border border-line bg-surface p-3.5 transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 <div className="min-w-0 flex-1">
-                  <h2 className="truncate text-base font-bold leading-tight">{workout.title}</h2>
+                  <h2 className="truncate text-base font-semibold leading-tight">{workout.title}</h2>
                   {workout.subtitle && (
                     <p className="mt-0.5 truncate text-xs text-muted">{workout.subtitle}</p>
                   )}

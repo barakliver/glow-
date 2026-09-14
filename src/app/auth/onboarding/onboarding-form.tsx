@@ -69,13 +69,13 @@ export function OnboardingForm({
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
       <div className="mb-7 text-center">
         <Logo size="lg" stacked className="justify-center" />
-        <h1 className="mt-4 text-xl font-extrabold">כמה פרטים ונתחיל</h1>
+        <h1 className="mt-4 text-xl font-semibold">כמה פרטים ונתחיל</h1>
         <p className="mt-1 text-sm text-muted">
           השם והטלפון משמשים את המאמן בלבד ואינם מוצגים במקומות ציבוריים.
         </p>
       </div>
 
-      <form action={submit} className="surface space-y-5 p-5" noValidate>
+      <form action={submit} className="surface space-y-7 p-5" noValidate>
         <div className="space-y-1.5">
           <Label htmlFor="full_name">שם מלא</Label>
           <Input
@@ -88,7 +88,7 @@ export function OnboardingForm({
             required
           />
           {errors.full_name && (
-            <p id="name-error" role="alert" className="text-xs font-semibold text-danger">
+            <p id="name-error" role="alert" className="text-xs font-medium text-danger">
               {errors.full_name}
             </p>
           )}
@@ -110,14 +110,14 @@ export function OnboardingForm({
             required
           />
           {errors.phone && (
-            <p id="phone-error" role="alert" className="text-xs font-semibold text-danger">
+            <p id="phone-error" role="alert" className="text-xs font-medium text-danger">
               {errors.phone}
             </p>
           )}
         </div>
 
         <fieldset className="space-y-2">
-          <legend className="text-sm font-semibold">רמת ניסיון באימונים</legend>
+          <legend className="text-sm font-medium">רמת ניסיון באימונים</legend>
           <div className="grid grid-cols-3 gap-2">
             {DIFFICULTY_OPTIONS.map((option) => (
               <button
@@ -126,7 +126,7 @@ export function OnboardingForm({
                 onClick={() => setLevel(option.value)}
                 aria-pressed={level === option.value}
                 className={cn(
-                  'min-h-[48px] rounded-md border px-2 py-2 text-sm font-semibold transition-all',
+                  'min-h-[48px] rounded-md border px-2 py-2 text-sm font-medium transition-all',
                   level === option.value
                     ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                     : 'border-line bg-raised text-muted hover:text-ink',
@@ -139,7 +139,7 @@ export function OnboardingForm({
         </fieldset>
 
         <fieldset className="space-y-3">
-          <legend className="text-sm font-semibold">איזה אבוקדו אתם?</legend>
+          <legend className="text-sm font-medium">איזה אבוקדו אתם?</legend>
           <p className="text-xs text-muted">
             זה קובע מה נמליץ לכם ואיך נספור את ההתקדמות. אפשר לשנות מתי שרוצים.
           </p>
@@ -165,7 +165,7 @@ export function OnboardingForm({
                 <span className="min-w-0 flex-1">
                   <span
                     className={cn(
-                      'block text-sm font-bold',
+                      'block text-sm font-semibold',
                       style === option.value ? 'text-accent-ink' : 'text-ink',
                     )}
                   >
@@ -181,7 +181,7 @@ export function OnboardingForm({
         </fieldset>
 
         <fieldset className="space-y-2">
-          <legend className="text-sm font-semibold">
+          <legend className="text-sm font-medium">
             כמה אימונים בשבוע? <span className="num text-accent-ink">{weeklyGoal}</span>
           </legend>
           <p className="text-xs text-muted">
@@ -196,7 +196,7 @@ export function OnboardingForm({
                 aria-pressed={weeklyGoal === value}
                 aria-label={`${value} אימונים בשבוע`}
                 className={cn(
-                  'num min-h-[48px] rounded-xl border text-sm font-bold transition-all',
+                  'num min-h-[48px] rounded-xl border text-sm font-semibold transition-all',
                   weeklyGoal === value
                     ? 'border-accent bg-accent text-primary-foreground'
                     : 'border-line bg-raised text-muted hover:text-ink',

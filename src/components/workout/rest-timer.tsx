@@ -74,12 +74,12 @@ export function RestTimer({
     >
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold text-muted">
+          <p className="text-[11px] font-medium text-muted">
             {finished ? 'המנוחה הסתיימה' : 'מנוחה בין סטים'}
           </p>
           <p
             className={cn(
-              'num text-3xl font-extrabold tabular-nums',
+              'num text-3xl font-semibold tabular-nums',
               finished ? 'text-success' : 'text-accent-ink',
             )}
           >

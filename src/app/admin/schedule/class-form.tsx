@@ -175,7 +175,7 @@ export function ClassForm({
       {recurring ? (
         <>
           <fieldset>
-            <legend className="mb-1.5 text-sm font-semibold">ימים בשבוע</legend>
+            <legend className="mb-1.5 text-sm font-medium">ימים בשבוע</legend>
             <div className="grid grid-cols-7 gap-1">
               {HEBREW_WEEKDAYS_LONG.map((name, day) => (
                 <button
@@ -185,7 +185,7 @@ export function ClassForm({
                   aria-label={`יום ${name}`}
                   onClick={() => toggleWeekday(day)}
                   className={cn(
-                    'h-11 rounded-md border text-xs font-bold transition-all',
+                    'h-11 rounded-md border text-xs font-semibold transition-all',
                     values.weekdays.includes(day)
                       ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
@@ -196,7 +196,7 @@ export function ClassForm({
               ))}
             </div>
             {errors.weekdays && (
-              <p role="alert" className="mt-1 text-xs font-semibold text-danger">
+              <p role="alert" className="mt-1 text-xs font-medium text-danger">
                 {errors.weekdays}
               </p>
             )}
@@ -269,7 +269,7 @@ export function ClassForm({
           type="button"
           onClick={() => setEquipmentOpen((open) => !open)}
           aria-expanded={equipmentOpen}
-          className="flex w-full items-center justify-between rounded-md border border-line bg-raised px-3 py-2.5 text-sm font-semibold"
+          className="flex w-full items-center justify-between rounded-md border border-line bg-raised px-3 py-2.5 text-sm font-medium"
         >
           <span>ציוד נדרש</span>
           <span className="num text-xs text-muted">{values.equipment.length} נבחרו</span>
@@ -283,7 +283,7 @@ export function ClassForm({
                 aria-pressed={values.equipment.includes(option.value)}
                 onClick={() => toggleEquipment(option.value)}
                 className={cn(
-                  'rounded-md border px-2 py-2 text-xs font-semibold transition-all',
+                  'rounded-md border px-2 py-2 text-xs font-medium transition-all',
                   values.equipment.includes(option.value)
                     ? 'border-accent bg-accent/12 text-accent-ink'
                     : 'border-line bg-raised text-muted',
@@ -298,7 +298,7 @@ export function ClassForm({
 
       <div className="flex items-center justify-between gap-3 rounded-md border border-line bg-raised p-3">
         <div>
-          <p className="text-sm font-semibold">פרסום למתאמנים</p>
+          <p className="text-sm font-medium">פרסום למתאמנים</p>
           <p className="text-xs text-muted">שיעור שאינו מפורסם נשמר כטיוטה ואינו נראה לאיש.</p>
         </div>
         <Switch
@@ -327,7 +327,7 @@ function Field({
       <Label htmlFor={htmlFor}>{label}</Label>
       {children}
       {error && (
-        <p role="alert" className="text-xs font-semibold text-danger">
+        <p role="alert" className="text-xs font-medium text-danger">
           {error}
         </p>
       )}

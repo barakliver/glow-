@@ -13,7 +13,7 @@ export default function NotFound() {
       <div className="flex size-14 items-center justify-center rounded-full bg-raised">
         <SearchX className="size-7 text-muted" aria-hidden />
       </div>
-      <h1 className="text-xl font-extrabold">הדף לא נמצא</h1>
+      <h1 className="text-xl font-semibold">הדף לא נמצא</h1>
       <p className="text-sm text-muted">
         יכול להיות שהשיעור בוטל, שהקישור השתנה או שאין לכם הרשאה לצפות בדף הזה.
       </p>

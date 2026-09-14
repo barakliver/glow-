@@ -12,7 +12,7 @@ export default async function LogActivityPage() {
   const exercises = await repository.listExercises();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         title="רישום אימון"
         subtitle="הכול חוץ מהכותרת והתאריך הוא רשות"

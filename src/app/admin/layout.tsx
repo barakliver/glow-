@@ -26,7 +26,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </span>
             <Link
               href="/"
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-bold text-muted transition-colors hover:bg-raised hover:text-ink"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-semibold text-muted transition-colors hover:bg-raised hover:text-ink"
             >
               חזרה לאפליקציה
               <ArrowRight className="size-3.5" aria-hidden />

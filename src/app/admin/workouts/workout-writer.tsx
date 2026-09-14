@@ -75,8 +75,8 @@ export function WorkoutWriter() {
   };
 
   return (
-    <div className="space-y-6">
-      <section className="surface p-5">
+    <div className="space-y-8">
+      <section className="surface p-6">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <Label htmlFor="w-title">שם האימון</Label>
@@ -143,7 +143,7 @@ export function WorkoutWriter() {
         </div>
 
         <fieldset className="mt-6">
-          <legend className="mb-3 text-sm font-semibold">ציוד</legend>
+          <legend className="mb-3 text-sm font-medium">ציוד</legend>
           <div className="flex flex-wrap gap-2.5">
             {ROOM_EQUIPMENT.filter((item) => item !== 'none').map((item) => (
               <button
@@ -158,7 +158,7 @@ export function WorkoutWriter() {
                   )
                 }
                 className={cn(
-                  'rounded-full border px-4 py-2 text-xs font-semibold transition-colors',
+                  'rounded-full border px-4 py-2 text-xs font-medium transition-colors',
                   equipment.includes(item)
                     ? 'border-accent bg-accent/12 text-accent-ink'
                     : 'border-line bg-raised text-muted hover:text-ink',
@@ -171,15 +171,15 @@ export function WorkoutWriter() {
         </fieldset>
       </section>
 
-      <section className="surface p-5">
-        <h2 className="text-sm font-bold">האימון</h2>
+      <section className="surface p-6">
+        <h2 className="text-sm font-semibold">האימון</h2>
         <p className="mt-1.5 text-xs leading-relaxed text-muted">
           שורה אחת לכל תרגיל. אפשר להוסיף פירוט אחרי{' '}
           <code className="rounded bg-raised px-1.5 py-0.5 text-[11px]">|</code> - למשל{' '}
           <span dir="ltr">Back Squat | 5 סטים של 5</span>.
         </p>
 
-        <div className="mt-5 space-y-5">
+        <div className="mt-5 space-y-7">
           <Block
             id="w-warmup"
             label="חימום"
@@ -217,8 +217,8 @@ export function WorkoutWriter() {
         </div>
       </section>
 
-      <section className="surface p-5">
-        <h2 className="text-sm font-bold">התאמות לרמה</h2>
+      <section className="surface p-6">
+        <h2 className="text-sm font-semibold">התאמות לרמה</h2>
         <div className="mt-5 space-y-4">
           {(
             [
@@ -241,7 +241,7 @@ export function WorkoutWriter() {
         </div>
       </section>
 
-      <section className="surface p-5">
+      <section className="surface p-6">
         <Label htmlFor="w-description">הסבר כללי</Label>
         <Textarea
           id="w-description"
@@ -256,7 +256,7 @@ export function WorkoutWriter() {
       {error && (
         <p
           role="alert"
-          className="rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm font-semibold text-danger"
+          className="rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm font-medium text-danger"
         >
           {error}
         </p>

@@ -90,7 +90,7 @@ export function AnnouncementForm({
                 <div className="flex items-start gap-2">
                   <Megaphone className="mt-0.5 size-4 shrink-0 text-accent-ink" aria-hidden />
                   <div className="min-w-0">
-                    <p className="text-sm font-bold">{item.title}</p>
+                    <p className="text-sm font-semibold">{item.title}</p>
                     <p className="mt-0.5 text-xs text-muted">{item.body}</p>
                     <p className="mt-1 text-[11px] text-muted">{relativeHebrew(item.createdAt)}</p>
                   </div>

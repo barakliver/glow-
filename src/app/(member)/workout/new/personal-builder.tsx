@@ -162,7 +162,7 @@ export function PersonalWorkoutBuilder({ exercises }: { exercises: Exercise[] })
                 <li key={`${item.exercise_id}-${index}`} className="surface p-3.5">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-bold">{exercise?.name_he ?? 'תרגיל'}</p>
+                      <p className="truncate text-sm font-semibold">{exercise?.name_he ?? 'תרגיל'}</p>
                       <p className="text-[11px] text-muted" dir="ltr">
                         {exercise?.name_en}
                       </p>
@@ -258,7 +258,7 @@ function MiniField({
 }) {
   return (
     <div className="space-y-1">
-      <Label htmlFor={id} className="text-[10px] font-semibold text-muted">
+      <Label htmlFor={id} className="text-[10px] font-medium text-muted">
         {label}
       </Label>
       <Input
@@ -268,7 +268,7 @@ function MiniField({
         min="0"
         value={value}
         dir="ltr"
-        className="num h-10 px-1.5 text-center text-sm font-bold"
+        className="num h-10 px-1.5 text-center text-sm font-semibold"
         onChange={(event) => onChange(event.target.value)}
       />
     </div>

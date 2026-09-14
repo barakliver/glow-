@@ -111,10 +111,10 @@ export function LogActivityForm({
   };
 
   return (
-    <div className="space-y-6">
-      <section className="surface p-5">
+    <div className="space-y-8">
+      <section className="surface p-6">
         <fieldset>
-          <legend className="mb-3 text-sm font-semibold">מה עשית?</legend>
+          <legend className="mb-3 text-sm font-medium">מה עשית?</legend>
           <div className="grid grid-cols-3 gap-2.5">
             {ACTIVITY_KIND_OPTIONS.map((option) => (
               <button
@@ -123,7 +123,7 @@ export function LogActivityForm({
                 aria-pressed={kind === option.value}
                 onClick={() => setKind(option.value)}
                 className={cn(
-                  'min-h-[52px] rounded-xl border px-3 text-sm font-semibold transition-colors',
+                  'min-h-[52px] rounded-xl border px-3 text-sm font-medium transition-colors',
                   kind === option.value
                     ? 'border-accent bg-accent/12 text-accent-ink'
                     : 'border-line bg-raised text-muted hover:text-ink',
@@ -209,7 +209,7 @@ export function LogActivityForm({
         </div>
 
         <fieldset className="mt-6">
-          <legend className="mb-3 text-sm font-semibold">
+          <legend className="mb-3 text-sm font-medium">
             עצימות מורגשת
             {rpe !== null && <span className="text-muted"> · {rpe} מתוך 10</span>}
           </legend>
@@ -223,7 +223,7 @@ export function LogActivityForm({
                 aria-label={`${value} מתוך 10`}
                 onClick={() => setRpe(rpe === value ? null : value)}
                 className={cn(
-                  'num h-11 rounded-lg border text-sm font-bold transition-colors',
+                  'num h-11 rounded-lg border text-sm font-semibold transition-colors',
                   rpe === value
                     ? 'border-accent bg-accent text-primary-foreground'
                     : 'border-line bg-raised text-muted hover:text-ink',
@@ -237,10 +237,10 @@ export function LogActivityForm({
       </section>
 
       {kind !== 'run' && (
-        <section className="surface p-5">
+        <section className="surface p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-sm font-bold">מה הרמת</h2>
+              <h2 className="text-sm font-semibold">מה הרמת</h2>
               <p className="mt-1 text-xs text-muted">
                 אפשר להשאיר ריק. כל מה שתרשמו כאן נכנס לשיאים האישיים שלכם.
               </p>
@@ -318,7 +318,7 @@ export function LogActivityForm({
                 {/* The same lift, in fruit. Appears as you type and is only
                     ever an aside - the kilograms are what you train by. */}
                 {liftInAvocados(row) && (
-                  <p className="mt-1.5 flex items-center gap-1.5 text-[11px] font-semibold text-champagne/80">
+                  <p className="mt-1.5 flex items-center gap-1.5 text-[11px] font-medium text-champagne/80">
                     <AvocadoGlyph size={12} filled className="text-champagne/80" />
                     הרמת {liftInAvocados(row)}
                   </p>
@@ -335,7 +335,7 @@ export function LogActivityForm({
         </section>
       )}
 
-      <section className="surface p-5">
+      <section className="surface p-6">
         <Label htmlFor="activity-notes">האימון שלך, במילים שלך</Label>
         <p className="mt-1 text-xs text-muted">
           כתבו כאן מה שבא לכם - סדר התרגילים, מה הרגיש טוב, מה לנסות בפעם הבאה.
@@ -352,7 +352,7 @@ export function LogActivityForm({
       {error && (
         <p
           role="alert"
-          className="rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm font-semibold text-danger"
+          className="rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm font-medium text-danger"
         >
           {error}
         </p>

@@ -15,7 +15,7 @@ export default function OfflinePage() {
       <div className="flex size-14 items-center justify-center rounded-full bg-raised">
         <CloudOff className="size-7 text-warning" aria-hidden />
       </div>
-      <h1 className="text-xl font-extrabold">אין חיבור לאינטרנט</h1>
+      <h1 className="text-xl font-semibold">אין חיבור לאינטרנט</h1>
       <p className="text-sm text-muted">
         הטיימר והאימון הפעיל ממשיכים לעבוד גם בלי רשת. כל הסטים שתרשמו יישמרו במכשיר ויסתנכרנו
         אוטומטית ברגע שהחיבור יחזור.

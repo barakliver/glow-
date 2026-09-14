@@ -12,7 +12,7 @@ export default async function JackpotPage() {
   const core = exercises.filter((exercise) => exercise.movement_category === 'core');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         title="ג׳קפוט הבטן"
         subtitle="משיכה אחת, שלושה תרגילי ליבה"

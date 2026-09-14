@@ -67,13 +67,13 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
   const shareUrl = `${APP_URL}/classes/${gymClass.id}`;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader title={gymClass.title} backHref="/schedule" />
 
-      <section className="surface p-5">
+      <section className="surface p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-bold">{formatHebrewDate(gymClass.starts_at)}</p>
+            <p className="text-sm font-semibold">{formatHebrewDate(gymClass.starts_at)}</p>
             <p className="num mt-0.5 display text-2xl tracking-tight text-accent-ink">
               {formatTime(gymClass.starts_at)}–{formatTime(gymClass.ends_at)}
             </p>
@@ -84,7 +84,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
         {gymClass.status === 'cancelled' && (
           <p
             role="alert"
-            className="mt-3 flex items-start gap-2 rounded-md border border-danger/40 bg-danger/10 p-3 text-sm font-semibold text-danger"
+            className="mt-3 flex items-start gap-2 rounded-md border border-danger/40 bg-danger/10 p-3 text-sm font-medium text-danger"
           >
             <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
             השיעור בוטל על ידי המאמן. אם הייתם רשומים, הרישום בוטל אוטומטית.
@@ -143,13 +143,13 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
       )}
 
       {gymClass.description && (
-        <section className="surface p-5">
-          <h2 className="mb-1.5 text-sm font-bold">על השיעור</h2>
+        <section className="surface p-6">
+          <h2 className="mb-1.5 text-sm font-semibold">על השיעור</h2>
           <p className="text-sm leading-relaxed text-muted">{gymClass.description}</p>
         </section>
       )}
 
-      <section className="surface p-5">
+      <section className="surface p-6">
         <h2 className="section-label mb-2 block">ציוד נדרש</h2>
         {gymClass.equipment.length === 0 ? (
           <p className="text-sm text-muted">לא נדרש ציוד מיוחד. הכל מחכה באולם.</p>
@@ -164,7 +164,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
         )}
       </section>
 
-      <section className="surface p-5">
+      <section className="surface p-6">
         <h2 className="section-label mb-2 block">כללי רישום וביטול</h2>
         <ul className="space-y-1.5 text-sm text-muted">
           <li>
@@ -193,8 +193,8 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ id
         </ul>
       </section>
 
-      <section className="surface p-5">
-        <h2 className="mb-2.5 text-sm font-bold">שיתוף והוספה ליומן</h2>
+      <section className="surface p-6">
+        <h2 className="mb-2.5 text-sm font-semibold">שיתוף והוספה ליומן</h2>
         <ShareActions
           url={shareUrl}
           title={`GLoW · ${gymClass.title}`}
@@ -217,11 +217,11 @@ function Detail({
 }) {
   return (
     <div className="rounded-xl border border-line bg-raised p-3.5">
-      <dt className="flex items-center gap-1.5 text-[11px] font-semibold text-muted">
+      <dt className="flex items-center gap-1.5 text-[11px] font-medium text-muted">
         <Icon className="size-3.5" aria-hidden />
         {label}
       </dt>
-      <dd className="mt-1 truncate text-sm font-bold">{value}</dd>
+      <dd className="mt-1 truncate text-sm font-semibold">{value}</dd>
     </div>
   );
 }

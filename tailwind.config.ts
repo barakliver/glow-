@@ -22,12 +22,17 @@ const config: Config = {
          * few degrees toward olive, so the white text lands warm rather than
          * clinical, and the blue has something to be cold against.
          */
-        bg: '#0E100E',
-        surface: '#161917',
-        raised: '#1F2320',
-        ink: '#F4F2EC',
-        /* Lifted from #A6A79B: secondary text was the weakest thing on screen. */
-        muted: '#9FA396',
+        bg: '#0D0F0E',
+        surface: '#151816',
+        raised: '#1D211E',
+        ink: '#F6F4EE',
+        /*
+         * Secondary text carries most of this interface - every caption, every
+         * label, every line under a title - so it is lifted again, to around
+         * 7:1. Grey-on-grey is the single fastest way to make a clean design
+         * look cheap, and it is always the muted token that does it.
+         */
+        muted: '#ABAE9F',
         accent: {
           /*
            * The club's own warm gold, taken from the logo.
@@ -50,19 +55,23 @@ const config: Config = {
            apart, and every place that uses either also carries its own icon. */
         warning: '#F0433A',
         danger: '#FF776D',
-        /* A hairline, not a frame. Cards are separated by light, not by boxes. */
-        line: '#262A24',
+        /*
+         * A hairline, and a faint one. Cards are separated by light and by the
+         * space around them; the border is only there to stop two surfaces
+         * touching.
+         */
+        line: '#242822',
         /* shadcn tokens mapped onto the GLoW palette */
-        border: '#262A24',
-        input: '#262A24',
+        border: '#242822',
+        input: '#242822',
         ring: '#E7D9AC',
-        background: '#0E100E',
-        foreground: '#F4F2EC',
-        primary: { DEFAULT: '#D9C68C', foreground: '#0E100E' },
-        secondary: { DEFAULT: '#1F2320', foreground: '#F4F2EC' },
-        destructive: { DEFAULT: '#FF776D', foreground: '#0E100E' },
-        popover: { DEFAULT: '#161917', foreground: '#F4F2EC' },
-        card: { DEFAULT: '#161917', foreground: '#F4F2EC' },
+        background: '#0D0F0E',
+        foreground: '#F6F4EE',
+        primary: { DEFAULT: '#D9C68C', foreground: '#0D0F0E' },
+        secondary: { DEFAULT: '#1D211E', foreground: '#F6F4EE' },
+        destructive: { DEFAULT: '#FF776D', foreground: '#0D0F0E' },
+        popover: { DEFAULT: '#151816', foreground: '#F6F4EE' },
+        card: { DEFAULT: '#151816', foreground: '#F6F4EE' },
       },
       fontFamily: {
         sans: ['var(--font-heebo)', 'system-ui', 'sans-serif'],
@@ -84,6 +93,14 @@ const config: Config = {
       spacing: {
         /* The gap between stacked actions, used everywhere so it stays one number. */
         gutter: '1.25rem',
+      },
+      /*
+       * More room to breathe between lines of Hebrew. The default 1.5 is tight
+       * for a script with no ascender/descender rhythm to rest on, and loose
+       * text is most of what separates a considered page from a busy one.
+       */
+      lineHeight: {
+        relaxed: '1.75',
       },
       boxShadow: {
         /*

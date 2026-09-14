@@ -53,7 +53,7 @@ export function NotificationPreferencesForm({
         {TYPES.map((type) => (
           <div key={type.key} className="flex items-center justify-between gap-3 p-3.5">
             <div className="min-w-0">
-              <p className="text-sm font-bold">{NOTIFICATION_LABELS[type.key]}</p>
+              <p className="text-sm font-semibold">{NOTIFICATION_LABELS[type.key]}</p>
               <p className="text-xs text-muted">{type.description}</p>
             </div>
             <Switch
@@ -68,7 +68,7 @@ export function NotificationPreferencesForm({
       <section className="surface p-3.5">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="flex items-center gap-1.5 text-sm font-bold">
+            <p className="flex items-center gap-1.5 text-sm font-semibold">
               <Mail className="size-4 text-muted" aria-hidden />
               קבלת התראות גם באימייל
             </p>

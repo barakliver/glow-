@@ -370,11 +370,11 @@ export function IntervalTimer({
         }}
         aria-live="polite"
       >
-        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: tone.color }}>
+        <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: tone.color }}>
           {phaseLabel}
         </p>
         <p
-          className="num mt-1 text-[68px] font-extrabold leading-none tabular-nums"
+          className="num mt-1 text-[68px] font-semibold leading-none tabular-nums"
           style={{ color: tone.color }}
         >
           {formatClock(state.finished ? 0 : state.remainingInPhase)}
@@ -461,7 +461,7 @@ export function IntervalTimer({
                 className="min-w-0 flex-1 text-start"
               >
                 <span className="flex items-center gap-1.5">
-                  <span className="truncate text-sm font-bold">{preset.name}</span>
+                  <span className="truncate text-sm font-semibold">{preset.name}</span>
                   {preset.is_public && <Badge tone="accent">של המועדון</Badge>}
                 </span>
                 <span className="num mt-0.5 block text-[11px] text-muted">
@@ -512,7 +512,7 @@ export function IntervalTimer({
           <div className="grid grid-cols-2 gap-3">
             {SETTINGS.map((setting) => (
               <div key={setting.key} className="space-y-1">
-                <Label htmlFor={setting.key} className="text-xs font-semibold text-muted">
+                <Label htmlFor={setting.key} className="text-xs font-medium text-muted">
                   {setting.label}
                 </Label>
                 <Input
@@ -521,7 +521,7 @@ export function IntervalTimer({
                   inputMode="numeric"
                   min={setting.key === 'workSeconds' || setting.key === 'rounds' || setting.key === 'sets' ? 1 : 0}
                   dir="ltr"
-                  className="num text-center text-base font-bold"
+                  className="num text-center text-base font-semibold"
                   value={config[setting.key]}
                   onChange={(event) =>
                     setConfig((current) =>
@@ -579,7 +579,7 @@ export function IntervalTimer({
           {canPublish && (
             <div className="mt-3 flex items-center justify-between gap-3 rounded-md border border-line bg-raised p-3">
               <div>
-                <p className="text-sm font-semibold">פרסום לכל המתאמנים</p>
+                <p className="text-sm font-medium">פרסום לכל המתאמנים</p>
                 <p className="text-xs text-muted">התבנית תופיע אצל כל חברי GLoW.</p>
               </div>
               <Switch checked={publish} onCheckedChange={setPublish} aria-label="פרסום לכל המתאמנים" />
@@ -598,7 +598,7 @@ function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-line/60 bg-bg/40 px-3 py-1.5">
       <p className="label-muted">{label}</p>
-      <p className="num text-sm font-extrabold">{value}</p>
+      <p className="num text-sm font-semibold">{value}</p>
     </div>
   );
 }

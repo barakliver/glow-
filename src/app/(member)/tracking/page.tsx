@@ -40,7 +40,7 @@ export default async function TrackingPage() {
     .map((row) => ({ label: formatShortDate(row.measured_on), value: Number(row.weight_kg) }));
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-9">
       <PageHeader
         title="המעקב שלי"
         subtitle="הכול במקום אחד, ורק שלך"
@@ -57,8 +57,8 @@ export default async function TrackingPage() {
       <BodyMetricForm latest={latest} />
 
       {weighIns.length >= 2 && (
-        <section className="surface p-5">
-          <h2 className="flex items-center gap-2 text-sm font-bold">
+        <section className="surface p-6">
+          <h2 className="flex items-center gap-2 text-sm font-semibold">
             <TrendingUp className="size-4 text-accent-ink" aria-hidden />
             המשקל לאורך זמן
           </h2>
@@ -96,7 +96,7 @@ export default async function TrackingPage() {
                 className="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface px-4 py-3.5"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-bold">{record.exercise_name}</p>
+                  <p className="truncate text-sm font-semibold">{record.exercise_name}</p>
                   <p className="num mt-1 text-xs text-muted">
                     {formatShortDate(record.performed_on)} · {num(record.sessions)} אימונים
                   </p>
@@ -132,7 +132,7 @@ export default async function TrackingPage() {
               <li key={activity.id} className="surface p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h3 className="truncate text-sm font-bold">{activity.title}</h3>
+                    <h3 className="truncate text-sm font-semibold">{activity.title}</h3>
                     <p className="num mt-1 text-xs text-muted">
                       {formatShortDate(activity.performed_on)}
                     </p>
@@ -175,7 +175,7 @@ export default async function TrackingPage() {
                   <ul className="mt-3 space-y-1.5 border-t border-line pt-3">
                     {lifts.map((lift) => (
                       <li key={lift.id} className="flex justify-between gap-3 text-xs">
-                        <span className="truncate font-semibold">{lift.exercise_name}</span>
+                        <span className="truncate font-medium">{lift.exercise_name}</span>
                         <span className="num shrink-0 text-muted">
                           {lift.sets} × {lift.reps ?? '—'}
                           {lift.weight_kg !== null && ` · ${lift.weight_kg} ק״ג`}

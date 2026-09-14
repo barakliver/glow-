@@ -19,13 +19,13 @@ export function ClassRoster({ roster, capacity }: { roster: RosterEntry[]; capac
   const waiting = roster.filter((row) => row.status === 'waitlisted');
 
   return (
-    <section className="surface p-5" aria-labelledby="roster-title">
+    <section className="surface p-6" aria-labelledby="roster-title">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="roster-title" className="flex items-center gap-2 text-sm font-bold">
+        <h2 id="roster-title" className="flex items-center gap-2 text-sm font-semibold">
           <Users className="size-4 text-accent-ink" aria-hidden />
           מי מגיע
         </h2>
-        <span className="num text-xs font-bold text-muted">
+        <span className="num text-xs font-semibold text-muted">
           {booked.length} מתוך {capacity}
         </span>
       </div>
@@ -40,7 +40,7 @@ export function ClassRoster({ roster, capacity }: { roster: RosterEntry[]; capac
             {booked.map((row) => (
               <li key={row.profile_id} className="flex w-[68px] flex-col items-center gap-1.5">
                 <AvocadoAvatar profileId={row.profile_id} preset={row.avatar_preset} size={44} />
-                <span className="w-full truncate text-center text-[11px] font-semibold">
+                <span className="w-full truncate text-center text-[11px] font-medium">
                   {row.name}
                 </span>
               </li>

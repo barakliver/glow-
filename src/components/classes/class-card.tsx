@@ -40,7 +40,7 @@ export function ClassCard({
             href={`/classes/${gymClass.id}`}
             className="rounded focus-visible:ring-2 focus-visible:ring-accent"
           >
-            <h3 className="truncate text-base font-bold leading-tight">{gymClass.title}</h3>
+            <h3 className="truncate text-base font-semibold leading-tight">{gymClass.title}</h3>
           </Link>
           <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
             <span className="inline-flex items-center gap-1">

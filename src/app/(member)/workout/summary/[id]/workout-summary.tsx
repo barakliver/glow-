@@ -31,7 +31,7 @@ export function WorkoutSummary({
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-accent/15 shadow-glow-soft">
           <Check className="size-8 text-accent-ink" aria-hidden />
         </div>
-        <h1 className="mt-3 text-2xl font-extrabold">האימון הושלם</h1>
+        <h1 className="mt-3 text-2xl font-semibold">האימון הושלם</h1>
         <p className="mt-1 text-sm text-muted">{title}</p>
       </header>
 
@@ -48,7 +48,7 @@ export function WorkoutSummary({
 
       {records.length > 0 && (
         <section className="surface p-4" aria-labelledby="records-title">
-          <h2 id="records-title" className="mb-2 flex items-center gap-1.5 text-sm font-bold text-accent-ink">
+          <h2 id="records-title" className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-accent-ink">
             <Award className="size-4" aria-hidden />
             שיאים אישיים חדשים
           </h2>
@@ -58,7 +58,7 @@ export function WorkoutSummary({
                 key={`${record.exercise_id}-${record.kind}`}
                 className="flex items-center justify-between gap-2 rounded-md border border-accent/35 bg-accent/8 px-3 py-2"
               >
-                <span className="truncate text-sm font-semibold">{record.exerciseName}</span>
+                <span className="truncate text-sm font-medium">{record.exerciseName}</span>
                 <Badge tone="accent">
                   {PR_LABELS[record.kind]} <span className="num">{record.value}</span>
                 </Badge>
@@ -70,7 +70,7 @@ export function WorkoutSummary({
 
       {notes && (
         <section className="surface p-4">
-          <h2 className="text-sm font-bold">ההערה שלך</h2>
+          <h2 className="text-sm font-semibold">ההערה שלך</h2>
           <p className="mt-1.5 text-sm leading-relaxed text-muted">{notes}</p>
         </section>
       )}

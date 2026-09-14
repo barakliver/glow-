@@ -44,8 +44,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="surface p-5">
-      <h3 className="mb-2.5 flex items-center gap-2 text-sm font-bold">
+    <section className="surface p-6">
+      <h3 className="mb-2.5 flex items-center gap-2 text-sm font-semibold">
         <Icon className="size-4 text-accent-ink" aria-hidden />
         {title}
       </h3>
@@ -106,8 +106,8 @@ export function WorkoutDetail({
 
   return (
     <div className="space-y-3">
-      <section className="surface p-5">
-        <h2 className="text-2xl font-extrabold leading-tight tracking-tight">{workout.title}</h2>
+      <section className="surface p-6">
+        <h2 className="text-2xl font-semibold leading-tight tracking-tight">{workout.title}</h2>
         {workout.subtitle && <p className="mt-1 text-sm text-muted">{workout.subtitle}</p>}
         <div className="mt-3">
           <WorkoutMeta
@@ -134,7 +134,7 @@ export function WorkoutDetail({
 
       {coachNotes && (
         <section className="surface border-accent/40 p-4">
-          <h3 className="mb-1.5 text-sm font-bold text-accent-ink">הערת המאמן לשיעור הזה</h3>
+          <h3 className="mb-1.5 text-sm font-semibold text-accent-ink">הערת המאמן לשיעור הזה</h3>
           <p className="text-sm leading-relaxed">{coachNotes}</p>
         </section>
       )}
@@ -149,7 +149,7 @@ export function WorkoutDetail({
         <div className="space-y-6">
           {workout.structure.map((block, index) => (
             <div key={`${block.label}-${index}`}>
-              <p className="text-sm font-bold text-accent-ink">{block.label}</p>
+              <p className="text-sm font-semibold text-accent-ink">{block.label}</p>
               {block.detail && <p className="mb-2 mt-0.5 text-xs text-muted">{block.detail}</p>}
               <div className={block.detail ? '' : 'mt-2'}>
                 <MovementList items={block.items} />
@@ -161,7 +161,7 @@ export function WorkoutDetail({
 
       <Section icon={Trophy} title="ניקוד">
         <p className="text-sm">
-          <span className="font-semibold">{SCORE_TYPE_LABELS[workout.score_type]}</span>
+          <span className="font-medium">{SCORE_TYPE_LABELS[workout.score_type]}</span>
           {unit && <span className="text-muted"> · {unit}</span>}
         </p>
         {workout.score_label && <p className="mt-1 text-xs text-muted">{workout.score_label}</p>}
@@ -172,7 +172,7 @@ export function WorkoutDetail({
           <dl className="space-y-2.5">
             {workout.scaling.map((option) => (
               <div key={option.level}>
-                <dt className="text-xs font-bold text-accent-ink">
+                <dt className="text-xs font-semibold text-accent-ink">
                   {DIFFICULTY_LABELS[option.level]}
                 </dt>
                 <dd className="mt-0.5 text-sm leading-relaxed text-muted">{option.detail}</dd>
@@ -208,7 +208,7 @@ export function WorkoutLocked({
 }) {
   return (
     <section className="surface border-dashed p-4">
-      <h2 className="flex items-center gap-2 text-sm font-bold">
+      <h2 className="flex items-center gap-2 text-sm font-semibold">
         <Lock className="size-4 text-champagne" aria-hidden />
         האימון של השיעור
       </h2>

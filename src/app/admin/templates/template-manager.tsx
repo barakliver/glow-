@@ -281,7 +281,7 @@ export function TemplateManager({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="truncate text-sm font-bold">{template.title}</h2>
+                    <h2 className="truncate text-sm font-semibold">{template.title}</h2>
                     <Badge tone="outline">{GOAL_LABELS[template.goal]}</Badge>
                     {!template.approved && <Badge tone="warning">לא מאושר</Badge>}
                     {template.archived && <Badge tone="neutral">בארכיון</Badge>}
@@ -313,7 +313,7 @@ export function TemplateManager({
               </div>
 
               <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-line pt-3">
-                <label className="flex items-center gap-2 text-xs font-semibold">
+                <label className="flex items-center gap-2 text-xs font-medium">
                   <Switch
                     checked={template.approved}
                     onCheckedChange={(checked) => setFlags(template.id, { approved: checked })}
@@ -321,7 +321,7 @@ export function TemplateManager({
                   />
                   מאושר למתאמנים
                 </label>
-                <label className="flex items-center gap-2 text-xs font-semibold">
+                <label className="flex items-center gap-2 text-xs font-medium">
                   <Switch
                     checked={template.suggestable}
                     onCheckedChange={(checked) => setFlags(template.id, { suggestable: checked })}
@@ -357,7 +357,7 @@ export function TemplateManager({
                 aria-invalid={Boolean(errors.title)}
               />
               {errors.title && (
-                <p role="alert" className="text-xs font-semibold text-danger">
+                <p role="alert" className="text-xs font-medium text-danger">
                   {errors.title}
                 </p>
               )}
@@ -429,7 +429,7 @@ export function TemplateManager({
             </div>
 
             <div className="flex flex-wrap gap-4 rounded-md border border-line bg-raised p-3">
-              <label className="flex items-center gap-2 text-xs font-semibold">
+              <label className="flex items-center gap-2 text-xs font-medium">
                 <Switch
                   checked={values.approved}
                   onCheckedChange={(checked) => setValues((v) => ({ ...v, approved: checked }))}
@@ -437,7 +437,7 @@ export function TemplateManager({
                 />
                 מאושר למתאמנים
               </label>
-              <label className="flex items-center gap-2 text-xs font-semibold">
+              <label className="flex items-center gap-2 text-xs font-medium">
                 <Switch
                   checked={values.suggestable}
                   onCheckedChange={(checked) => setValues((v) => ({ ...v, suggestable: checked }))}
@@ -449,7 +449,7 @@ export function TemplateManager({
 
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <h3 className="text-sm font-bold">תרגילים ({values.items.length})</h3>
+                <h3 className="text-sm font-semibold">תרגילים ({values.items.length})</h3>
                 <Button variant="secondary" size="sm" onClick={() => setPickerOpen(true)}>
                   <Plus className="size-4" aria-hidden />
                   הוספה
@@ -465,7 +465,7 @@ export function TemplateManager({
                   {values.items.map((item, index) => (
                     <li key={`${item.exercise_id}-${index}`} className="rounded-md border border-line bg-raised p-3">
                       <div className="flex items-start justify-between gap-2">
-                        <p className="truncate text-sm font-bold">
+                        <p className="truncate text-sm font-semibold">
                           {exerciseMap.get(item.exercise_id)?.name_he ?? 'תרגיל'}
                         </p>
                         <div className="flex gap-0.5">
@@ -506,7 +506,7 @@ export function TemplateManager({
                             aria-pressed={item.block === block}
                             onClick={() => updateItem(index, { block })}
                             className={cn(
-                              'rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors',
+                              'rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
                               item.block === block
                                 ? 'border-accent bg-accent/12 text-accent-ink'
                                 : 'border-line bg-surface text-muted',
@@ -568,7 +568,7 @@ export function TemplateManager({
                 </ul>
               )}
               {errors.items && (
-                <p role="alert" className="mt-1 text-xs font-semibold text-danger">
+                <p role="alert" className="mt-1 text-xs font-medium text-danger">
                   {errors.items}
                 </p>
               )}
@@ -605,7 +605,7 @@ function MiniField({
 }) {
   return (
     <div className="space-y-1">
-      <Label htmlFor={id} className="text-[10px] font-semibold text-muted">
+      <Label htmlFor={id} className="text-[10px] font-medium text-muted">
         {label}
       </Label>
       <Input
@@ -613,7 +613,7 @@ function MiniField({
         type="number"
         min="0"
         dir="ltr"
-        className="num h-9 px-1 text-center text-xs font-bold"
+        className="num h-9 px-1 text-center text-xs font-semibold"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />

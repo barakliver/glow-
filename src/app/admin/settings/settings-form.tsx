@@ -76,7 +76,7 @@ export function GymSettingsForm({
             aria-invalid={Boolean(errors.name)}
           />
           {errors.name && (
-            <p role="alert" className="text-xs font-semibold text-danger">
+            <p role="alert" className="text-xs font-medium text-danger">
               {errors.name}
             </p>
           )}
@@ -122,7 +122,7 @@ export function GymSettingsForm({
 
         <div className="flex items-center justify-between gap-3 rounded-md border border-line bg-raised p-3">
           <div>
-            <p className="text-sm font-semibold">רשימת המתנה</p>
+            <p className="text-sm font-medium">רשימת המתנה</p>
             <p className="text-xs text-muted">
               כששיעור מתמלא, מתאמנים נוספים נכנסים לתור ומקודמים אוטומטית כשמתפנה מקום.
             </p>
@@ -140,7 +140,7 @@ export function GymSettingsForm({
       </section>
 
       <section className="surface space-y-3 p-4">
-        <h2 className="text-sm font-bold">תצורת מערכת</h2>
+        <h2 className="text-sm font-semibold">תצורת מערכת</h2>
         <InfoRow icon={Globe} label="אזור זמן" value={`${organization.timezone} · שבוע מתחיל ביום ראשון`} />
         <InfoRow icon={Mail} label="שירות אימייל" value={emailProvider} />
         <InfoRow
@@ -154,7 +154,7 @@ export function GymSettingsForm({
               מצב הדגמה פעיל כי לא הוגדרו פרטי Supabase. כל השינויים נשמרים בזיכרון השרת ונמחקים
               בהפעלה מחדש.
             </p>
-            <p className="font-bold">
+            <p className="font-semibold">
               לפני שמזמינים מתאמנים אמיתיים חובה לחבר Supabase, אחרת הרישומים והאימונים לא יישמרו.
             </p>
           </div>
@@ -175,11 +175,11 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-md border border-line bg-raised px-3 py-2.5">
-      <span className="flex items-center gap-2 text-xs font-semibold text-muted">
+      <span className="flex items-center gap-2 text-xs font-medium text-muted">
         <Icon className="size-4" aria-hidden />
         {label}
       </span>
-      <span className="truncate text-xs font-bold">{value}</span>
+      <span className="truncate text-xs font-semibold">{value}</span>
     </div>
   );
 }

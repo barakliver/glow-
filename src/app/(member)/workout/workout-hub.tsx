@@ -123,7 +123,7 @@ export function WorkoutHub({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         title="אימון"
         subtitle="המלצות אישיות, מאגר אימונים וספריית התרגילים"
@@ -138,8 +138,8 @@ export function WorkoutHub({
 
       {activeSession && (
         <section className="rounded-lg border border-accent bg-accent/10 p-4 shadow-glow-soft">
-          <p className="text-xs font-bold text-accent-ink">יש לך אימון פעיל</p>
-          <h2 className="mt-0.5 text-lg font-extrabold">{activeSession.title}</h2>
+          <p className="text-xs font-semibold text-accent-ink">יש לך אימון פעיל</p>
+          <h2 className="mt-0.5 text-lg font-semibold">{activeSession.title}</h2>
           <p className="mt-1 text-xs text-muted">
             האימון נשמר אוטומטית. אפשר להמשיך בדיוק מאיפה שעצרתם.
           </p>
@@ -155,7 +155,7 @@ export function WorkoutHub({
       {/* Suggestions */}
       <section aria-labelledby="suggestions-title" className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 id="suggestions-title" className="flex items-center gap-1.5 text-sm font-bold">
+          <h2 id="suggestions-title" className="flex items-center gap-1.5 text-sm font-semibold">
             <Sparkles className="size-4 text-champagne" aria-hidden />
             מומלץ עבורך
           </h2>
@@ -184,7 +184,7 @@ export function WorkoutHub({
         {filtersOpen && (
           <div className="surface space-y-3 p-3.5">
             <div className="space-y-1.5">
-              <p className="text-xs font-semibold text-muted">מטרת האימון</p>
+              <p className="text-xs font-medium text-muted">מטרת האימון</p>
               <Select
                 value={goal}
                 onValueChange={(value) => setGoal(value as TrainingGoal | 'auto')}
@@ -203,14 +203,14 @@ export function WorkoutHub({
               </Select>
             </div>
             <div className="space-y-1.5">
-              <p className="text-xs font-semibold text-muted">כמה זמן יש לכם</p>
+              <p className="text-xs font-medium text-muted">כמה זמן יש לכם</p>
               <div className="flex gap-1.5">
                 <button
                   type="button"
                   onClick={() => setMinutes('auto')}
                   aria-pressed={minutes === 'auto'}
                   className={cn(
-                    'h-10 flex-1 rounded-md border text-xs font-bold transition-all',
+                    'h-10 flex-1 rounded-md border text-xs font-semibold transition-all',
                     minutes === 'auto'
                       ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted',
@@ -225,7 +225,7 @@ export function WorkoutHub({
                     onClick={() => setMinutes(value)}
                     aria-pressed={minutes === value}
                     className={cn(
-                      'num h-10 flex-1 rounded-md border text-xs font-bold transition-all',
+                      'num h-10 flex-1 rounded-md border text-xs font-semibold transition-all',
                       minutes === value
                         ? 'border-accent bg-accent/12 text-accent-ink'
                         : 'border-line bg-raised text-muted',
@@ -255,11 +255,11 @@ export function WorkoutHub({
               className="rounded-lg border border-line bg-surface p-3.5"
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-sm font-bold">{recommendation.template.title}</h3>
+                <h3 className="text-sm font-semibold">{recommendation.template.title}</h3>
                 <Badge tone="accent">{GOAL_LABELS[recommendation.template.goal]}</Badge>
               </div>
               <p className="mt-1.5 text-xs leading-relaxed text-muted">{recommendation.reason}</p>
-              <p className="num mt-2 text-xs font-semibold text-muted">
+              <p className="num mt-2 text-xs font-medium text-muted">
                 {formatDuration(recommendation.template.duration_minutes)} ·{' '}
                 {DIFFICULTY_LABELS[recommendation.template.difficulty]}
               </p>
@@ -301,7 +301,7 @@ export function WorkoutHub({
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="truncate text-sm font-bold">{template.title}</h3>
+                      <h3 className="truncate text-sm font-semibold">{template.title}</h3>
                       <p className="num mt-0.5 text-xs text-muted">
                         {formatDuration(template.duration_minutes)} ·{' '}
                         {DIFFICULTY_LABELS[template.difficulty]} · {template.items.length} תרגילים

@@ -77,7 +77,7 @@ export function ProfileForm({
     <div className="space-y-4">
       <PageHeader title="הפרטים שלי" backHref="/more" />
 
-      <form action={submit} className="surface space-y-5 p-4" noValidate>
+      <form action={submit} className="surface space-y-7 p-4" noValidate>
         <div className="space-y-1.5">
           <Label htmlFor="email-display">אימייל</Label>
           <Input id="email-display" value={email} dir="ltr" disabled className="num" />
@@ -94,7 +94,7 @@ export function ProfileForm({
             required
           />
           {errors.full_name && (
-            <p role="alert" className="text-xs font-semibold text-danger">
+            <p role="alert" className="text-xs font-medium text-danger">
               {errors.full_name}
             </p>
           )}
@@ -119,14 +119,14 @@ export function ProfileForm({
             זה מה שאחרים במועדון רואים. אם תשאירו ריק נשתמש בשם הפרטי שלכם.
           </p>
           {errors.display_name && (
-            <p role="alert" className="text-xs font-semibold text-danger">
+            <p role="alert" className="text-xs font-medium text-danger">
               {errors.display_name}
             </p>
           )}
         </div>
 
         <fieldset className="space-y-2">
-          <legend className="text-sm font-semibold">האבוקדו שלך</legend>
+          <legend className="text-sm font-medium">האבוקדו שלך</legend>
           <p className="text-xs text-muted">
             מצויר, לא מצולם. אף תמונה שלכם לא נשמרת בשום מקום.
           </p>
@@ -167,14 +167,14 @@ export function ProfileForm({
             required
           />
           {errors.phone && (
-            <p role="alert" className="text-xs font-semibold text-danger">
+            <p role="alert" className="text-xs font-medium text-danger">
               {errors.phone}
             </p>
           )}
         </div>
 
         <fieldset className="space-y-2">
-          <legend className="text-sm font-semibold">רמת ניסיון</legend>
+          <legend className="text-sm font-medium">רמת ניסיון</legend>
           <div className="grid grid-cols-3 gap-2">
             {DIFFICULTY_OPTIONS.map((option) => (
               <button
@@ -183,7 +183,7 @@ export function ProfileForm({
                 onClick={() => setSelectedLevel(option.value)}
                 aria-pressed={selectedLevel === option.value}
                 className={cn(
-                  'min-h-[48px] rounded-md border px-2 text-sm font-semibold transition-all',
+                  'min-h-[48px] rounded-md border px-2 text-sm font-medium transition-all',
                   selectedLevel === option.value
                     ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                     : 'border-line bg-raised text-muted',
@@ -199,7 +199,7 @@ export function ProfileForm({
         </fieldset>
 
         <fieldset className="space-y-3">
-          <legend className="text-sm font-semibold">האבוקדו שלך</legend>
+          <legend className="text-sm font-medium">האבוקדו שלך</legend>
           <div className="space-y-2.5">
             {AVOCADO_STYLE_OPTIONS.map((option) => (
               <button
@@ -222,7 +222,7 @@ export function ProfileForm({
                 <span className="min-w-0 flex-1">
                   <span
                     className={cn(
-                      'block text-sm font-bold',
+                      'block text-sm font-semibold',
                       selectedStyle === option.value ? 'text-accent-ink' : 'text-ink',
                     )}
                   >
@@ -238,7 +238,7 @@ export function ProfileForm({
         </fieldset>
 
         <fieldset className="space-y-2">
-          <legend className="text-sm font-semibold">
+          <legend className="text-sm font-medium">
             יעד שבועי <span className="num text-accent-ink">{selectedGoal}</span> אימונים
           </legend>
           <div className="grid grid-cols-7 gap-2">
@@ -250,7 +250,7 @@ export function ProfileForm({
                 aria-pressed={selectedGoal === value}
                 aria-label={`${value} אימונים בשבוע`}
                 className={cn(
-                  'num min-h-[48px] rounded-xl border text-sm font-bold transition-all',
+                  'num min-h-[48px] rounded-xl border text-sm font-semibold transition-all',
                   selectedGoal === value
                     ? 'border-accent bg-accent text-primary-foreground'
                     : 'border-line bg-raised text-muted',

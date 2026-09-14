@@ -84,7 +84,7 @@ export function ProgressView({
   const topMovement = balance[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader title="ההתקדמות שלך" subtitle="ביצועים, עקביות והתאוששות" backHref="/" />
 
       {/*
@@ -117,7 +117,7 @@ export function ProgressView({
             href={`/progress?range=${key}`}
             aria-current={range === key ? 'page' : undefined}
             className={cn(
-              'flex-1 rounded-md border px-3 py-2.5 text-center text-sm font-bold transition-all',
+              'flex-1 rounded-md border px-3 py-2.5 text-center text-sm font-semibold transition-all',
               range === key
                 ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                 : 'border-line bg-surface text-muted hover:text-ink',
@@ -162,12 +162,12 @@ export function ProgressView({
         />
       </section>
 
-      <section className="surface p-5" aria-labelledby="consistency-title">
+      <section className="surface p-6" aria-labelledby="consistency-title">
         <div className="flex items-center justify-between">
           <h2 id="consistency-title" className="section-label">
             עקביות
           </h2>
-          <span className="num text-sm font-extrabold text-accent-ink">{stats.consistency}%</span>
+          <span className="num text-sm font-semibold text-accent-ink">{stats.consistency}%</span>
         </div>
         <Progress
           value={stats.consistency}
@@ -235,7 +235,7 @@ export function ProgressView({
       )}
 
       {exerciseHistory.length > 0 && (
-        <section className="surface p-5" aria-labelledby="exercise-compare-title">
+        <section className="surface p-6" aria-labelledby="exercise-compare-title">
           <h2 id="exercise-compare-title" className="section-label">
             השוואה לתוצאות הקודמות שלך
           </h2>
@@ -261,8 +261,8 @@ export function ProgressView({
               <TrendLineChart data={exercise.points} />
               <p className="mt-2 text-xs text-muted">
                 {exercise.name}: מהתוצאה הטובה ביותר של{' '}
-                <span className="num font-bold text-ink">{exercise.points[0]?.value}</span> ועד{' '}
-                <span className="num font-bold text-ink">
+                <span className="num font-semibold text-ink">{exercise.points[0]?.value}</span> ועד{' '}
+                <span className="num font-semibold text-ink">
                   {exercise.points[exercise.points.length - 1]?.value}
                 </span>{' '}
                 באימון האחרון.
@@ -286,7 +286,7 @@ export function ProgressView({
                 className="flex items-center justify-between gap-2 rounded-md border border-line bg-surface px-3 py-2.5"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-bold">{record.exerciseName}</p>
+                  <p className="truncate text-sm font-semibold">{record.exerciseName}</p>
                   <p className="text-[11px] text-muted">
                     {formatHebrewFullDate(record.achieved_at)}
                   </p>
@@ -315,7 +315,7 @@ export function ProgressView({
             {notes.map((note) => (
               <li key={note.id} className="surface p-3.5">
                 <div className="flex items-start justify-between gap-3">
-                  <p className="truncate text-sm font-bold">{note.title}</p>
+                  <p className="truncate text-sm font-semibold">{note.title}</p>
                   {note.effort !== null && (
                     <Badge tone="neutral">
                       מאמץ <span className="num">{note.effort}</span>
@@ -364,7 +364,7 @@ function StatCard({
       <p className="stat-value mt-1.5">{value}</p>
       <p className="label-muted">{label}</p>
       {aside && (
-        <p className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-champagne/80">
+        <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-champagne/80">
           <AvocadoGlyph size={11} filled className="text-champagne/80" />
           {aside}
         </p>
@@ -409,7 +409,7 @@ function RecordCard({
       )}
     >
       <Icon className={cn('size-5', primary ? 'text-accent-ink' : 'text-muted')} aria-hidden />
-      <p className="mt-1 text-sm font-bold">{title}</p>
+      <p className="mt-1 text-sm font-semibold">{title}</p>
       <p className="text-[11px] leading-snug text-muted">{hint}</p>
     </Link>
   );

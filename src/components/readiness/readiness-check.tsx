@@ -62,21 +62,21 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
   if (!editing && existing) {
     const lowReadiness = existing.energy <= 2 || existing.soreness >= 4 || existing.sleep_quality <= 2;
     return (
-      <section className="surface p-5" aria-labelledby="readiness-title">
+      <section className="surface p-6" aria-labelledby="readiness-title">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 id="readiness-title" className="flex items-center gap-1.5 text-sm font-bold">
+            <h2 id="readiness-title" className="flex items-center gap-1.5 text-sm font-semibold">
               <Check className="size-4 text-success" aria-hidden />
               בדיקת המוכנות היומית הושלמה
             </h2>
             <p className="mt-1 text-xs text-muted">
-              אנרגיה <span className="num font-bold text-ink">{existing.energy}</span> · כאבים{' '}
-              <span className="num font-bold text-ink">{existing.soreness}</span> · שינה{' '}
-              <span className="num font-bold text-ink">{existing.sleep_quality}</span> · זמן פנוי{' '}
-              <span className="num font-bold text-ink">{existing.available_minutes}</span> דק׳
+              אנרגיה <span className="num font-semibold text-ink">{existing.energy}</span> · כאבים{' '}
+              <span className="num font-semibold text-ink">{existing.soreness}</span> · שינה{' '}
+              <span className="num font-semibold text-ink">{existing.sleep_quality}</span> · זמן פנוי{' '}
+              <span className="num font-semibold text-ink">{existing.available_minutes}</span> דק׳
             </p>
             {lowReadiness && (
-              <p className="mt-2 rounded-md border border-warning/40 bg-warning/10 px-2.5 py-2 text-xs font-semibold text-warning">
+              <p className="mt-2 rounded-md border border-warning/40 bg-warning/10 px-2.5 py-2 text-xs font-medium text-warning">
                 המוכנות שלך היום נמוכה. שווה לשקול מוביליטי, עבודת טכניקה או אימון קצר.
               </p>
             )}
@@ -90,7 +90,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
   }
 
   return (
-    <section className="surface p-5" aria-labelledby="readiness-form-title">
+    <section className="surface p-6" aria-labelledby="readiness-form-title">
       <h2 id="readiness-form-title" className="section-label">
         איך אתם מרגישים היום?
       </h2>
@@ -102,7 +102,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
           const current = values[scale.key];
           return (
             <fieldset key={scale.key}>
-              <legend className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-muted">
+              <legend className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted">
                 <Icon className="size-3.5" aria-hidden />
                 {scale.label}
                 <span className="text-ink">· {scale.hints[current - 1]}</span>
@@ -117,7 +117,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
                     aria-label={`${scale.label} ${value} מתוך 5 - ${scale.hints[value - 1]}`}
                     onClick={() => setValues((v) => ({ ...v, [scale.key]: value }))}
                     className={cn(
-                      'num h-11 flex-1 rounded-md border text-sm font-bold transition-all',
+                      'num h-11 flex-1 rounded-md border text-sm font-semibold transition-all',
                       current === value
                         ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                         : 'border-line bg-raised text-muted hover:text-ink',
@@ -132,7 +132,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
         })}
 
         <fieldset>
-          <legend className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-muted">
+          <legend className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted">
             <Timer className="size-3.5" aria-hidden />
             כמה זמן יש לכם להתאמן
           </legend>
@@ -145,7 +145,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
                 aria-checked={values.available_minutes === minutes}
                 onClick={() => setValues((v) => ({ ...v, available_minutes: minutes }))}
                 className={cn(
-                  'num h-11 flex-1 rounded-md border text-sm font-bold transition-all',
+                  'num h-11 flex-1 rounded-md border text-sm font-semibold transition-all',
                   values.available_minutes === minutes
                     ? 'border-accent bg-accent/12 text-accent-ink shadow-glow-soft'
                     : 'border-line bg-raised text-muted hover:text-ink',
@@ -158,7 +158,7 @@ export function ReadinessCheck({ existing }: { existing: ReadinessLog | null }) 
         </fieldset>
 
         <div className="space-y-1.5">
-          <Label htmlFor="readiness-note" className="text-xs font-semibold text-muted">
+          <Label htmlFor="readiness-note" className="text-xs font-medium text-muted">
             הערה (לא חובה)
           </Label>
           <Input

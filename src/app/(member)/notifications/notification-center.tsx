@@ -111,7 +111,7 @@ export function NotificationCenter({
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <p className={cn('text-sm', unreadItem ? 'font-bold' : 'font-semibold text-muted')}>
+                    <p className={cn('text-sm', unreadItem ? 'font-semibold' : 'font-medium text-muted')}>
                       {notification.title}
                     </p>
                     {unreadItem && <Badge tone="accent">חדש</Badge>}

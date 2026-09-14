@@ -100,7 +100,7 @@ export function ExercisePicker({
                 }}
                 className="w-full rounded-md border border-line bg-raised p-3 text-start transition-colors hover:border-accent/45"
               >
-                <span className="block text-sm font-bold">{exercise.name_he}</span>
+                <span className="block text-sm font-semibold">{exercise.name_he}</span>
                 <span className="mt-0.5 block text-[11px] text-muted" dir="ltr">
                   {exercise.name_en}
                 </span>
@@ -136,7 +136,7 @@ function FilterChip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
+        'shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
         active ? 'border-accent bg-accent/12 text-accent-ink' : 'border-line bg-raised text-muted',
       )}
     >

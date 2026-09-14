@@ -82,15 +82,15 @@ export function ServiceWorkerRegistrar({ buildId }: { buildId: string }) {
   return (
     <div
       role="status"
-      className="fixed inset-x-0 bottom-[calc(84px+env(safe-area-inset-bottom,0px))] z-50 mx-auto flex w-full max-w-md items-center justify-between gap-3 px-3"
+      className="fixed inset-x-0 bottom-[calc(108px+env(safe-area-inset-bottom,0px))] z-50 mx-auto flex w-full max-w-md items-center justify-between gap-3 px-3"
     >
       <div className="flex w-full items-center justify-between gap-3 rounded-md border border-accent/45 bg-raised/95 px-3.5 py-2.5 shadow-glow-soft backdrop-blur-md">
-        <p className="text-sm font-semibold">גרסה חדשה של GLoW מוכנה</p>
+        <p className="text-sm font-medium">גרסה חדשה של GLoW מוכנה</p>
         <button
           type="button"
           onClick={apply}
           disabled={applying}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-xs font-bold text-bg transition-colors hover:bg-accent-pressed disabled:opacity-60"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-bg transition-colors hover:bg-accent-pressed disabled:opacity-60"
         >
           <RefreshCw className={applying ? 'size-3.5 animate-spin' : 'size-3.5'} aria-hidden />
           {applying ? 'מרענן' : 'רענון'}

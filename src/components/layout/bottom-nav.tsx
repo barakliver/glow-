@@ -44,7 +44,7 @@ export function BottomNav() {
                 <Link
                   href={item.href}
                   aria-current={active ? 'page' : undefined}
-                  className="flex min-h-[68px] flex-col items-center justify-end gap-1 px-1 pb-2.5 text-[11px] font-semibold"
+                  className="flex min-h-[68px] flex-col items-center justify-end gap-1 px-1 pb-2.5 text-[11px] font-medium"
                 >
                   {/*
                     The fruit is the button. A round chip with an avocado
@@ -75,7 +75,7 @@ export function BottomNav() {
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex min-h-[68px] flex-col items-center justify-center gap-1.5 px-1 py-2.5 text-[11px] font-semibold transition-colors',
+                  'flex min-h-[68px] flex-col items-center justify-center gap-1.5 px-1 py-2.5 text-[11px] font-medium transition-colors',
                   active ? 'text-accent-ink' : 'text-muted hover:text-ink',
                 )}
               >

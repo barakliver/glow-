@@ -110,7 +110,7 @@ export function BookingButton({
         : `ברשימת המתנה${waitlistPosition ? ` · מקום ${waitlistPosition}` : ''}`;
     return (
       <div className="flex items-center gap-2.5">
-        <span className="flex flex-1 items-center justify-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-bold text-accent-ink">
+        <span className="flex flex-1 items-center justify-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent-ink">
           {optimistic === 'booked' ? (
             <Check className="size-4" aria-hidden />
           ) : (

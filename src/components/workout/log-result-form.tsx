@@ -134,8 +134,8 @@ export function LogResultForm({
   };
 
   return (
-    <section className="surface p-5">
-      <h2 className="flex items-center gap-2 text-sm font-bold">
+    <section className="surface p-6">
+      <h2 className="flex items-center gap-2 text-sm font-semibold">
         <Trophy className="size-4 text-champagne" aria-hidden />
         {existing ? 'עדכון התוצאה' : 'רישום תוצאה'}
       </h2>
@@ -256,7 +256,7 @@ export function LogResultForm({
 
         {fields.completed && (
           <fieldset>
-            <legend className="mb-1.5 text-sm font-semibold">השלמת את האימון?</legend>
+            <legend className="mb-1.5 text-sm font-medium">השלמת את האימון?</legend>
             <div className="grid grid-cols-2 gap-3">
               {[
                 { value: true, label: 'כן, השלמתי' },
@@ -268,7 +268,7 @@ export function LogResultForm({
                   aria-pressed={draft.completed === option.value}
                   onClick={() => patch({ completed: option.value })}
                   className={cn(
-                    'rounded-md border px-3 py-2.5 text-sm font-semibold transition-colors',
+                    'rounded-md border px-3 py-2.5 text-sm font-medium transition-colors',
                     draft.completed === option.value
                       ? 'border-accent bg-accent/12 text-accent-ink'
                       : 'border-line bg-raised text-muted hover:text-ink',
@@ -282,7 +282,7 @@ export function LogResultForm({
         )}
 
         <fieldset>
-          <legend className="mb-1.5 text-sm font-semibold">איך ביצעת?</legend>
+          <legend className="mb-1.5 text-sm font-medium">איך ביצעת?</legend>
           <div className="grid grid-cols-2 gap-3">
             {[
               { value: true, label: 'Rx', hint: 'בדיוק לפי הפרוטוקול' },
@@ -302,7 +302,7 @@ export function LogResultForm({
               >
                 <span
                   className={cn(
-                    'block text-sm font-bold',
+                    'block text-sm font-semibold',
                     draft.rx === option.value ? 'text-accent-ink' : 'text-ink',
                   )}
                 >
@@ -315,7 +315,7 @@ export function LogResultForm({
         </fieldset>
 
         <fieldset>
-          <legend className="mb-1.5 text-sm font-semibold">
+          <legend className="mb-1.5 text-sm font-medium">
             עצימות מורגשת
             {draft.rpe !== null && (
               <span className="text-muted"> · {draft.rpe} מתוך 10</span>
@@ -331,7 +331,7 @@ export function LogResultForm({
                 aria-label={`${value}${RPE_HINTS[value] ? ` - ${RPE_HINTS[value]}` : ''}`}
                 onClick={() => patch({ rpe: draft.rpe === value ? null : value })}
                 className={cn(
-                  'num h-10 rounded-md border text-sm font-bold transition-colors',
+                  'num h-10 rounded-md border text-sm font-semibold transition-colors',
                   draft.rpe === value
                     ? 'border-accent bg-accent text-primary-foreground'
                     : 'border-line bg-raised text-muted hover:text-ink',
@@ -357,7 +357,7 @@ export function LogResultForm({
       </div>
 
       {error && (
-        <p role="alert" className="mt-3 rounded-md border border-danger/40 bg-danger/10 p-2.5 text-sm font-semibold text-danger">
+        <p role="alert" className="mt-3 rounded-md border border-danger/40 bg-danger/10 p-2.5 text-sm font-medium text-danger">
           {error}
         </p>
       )}

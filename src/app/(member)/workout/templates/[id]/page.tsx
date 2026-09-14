@@ -78,13 +78,13 @@ export default async function TemplatePage({ params }: { params: Promise<{ id: s
 
       {blocks.map((group) => (
         <section key={group.block} className="space-y-2">
-          <h2 className="text-sm font-bold">{BLOCK_LABELS[group.block]}</h2>
+          <h2 className="text-sm font-semibold">{BLOCK_LABELS[group.block]}</h2>
           <ul className="space-y-2">
             {group.items.map((item) => (
               <li key={item.id} className="surface p-3.5">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold">
+                    <p className="truncate text-sm font-semibold">
                       {item.exercise?.name_he ?? 'תרגיל'}
                     </p>
                     <p className="num mt-1 text-xs text-muted">

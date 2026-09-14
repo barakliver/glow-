@@ -24,7 +24,7 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
           {/* The level name is the headline here, so it wraps rather than
               clipping, and the streak badge drops below it when space is tight. */}
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <p className="text-xl font-extrabold leading-tight tracking-tight">{score.level.name}</p>
+            <p className="text-xl font-semibold leading-tight tracking-tight">{score.level.name}</p>
             {score.streakWeeks > 1 && (
               <Badge tone="accent">
                 <Flame className="size-3" aria-hidden />
@@ -34,8 +34,8 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
           </div>
 
           <p className="num mt-1.5 text-xs text-muted">
-            <span className="font-bold text-ink">{num(score.total)}</span> נקודות · השבוע{' '}
-            <span className="font-bold text-ink">+{num(score.thisWeek)}</span>
+            <span className="font-semibold text-ink">{num(score.total)}</span> נקודות · השבוע{' '}
+            <span className="font-semibold text-ink">+{num(score.thisWeek)}</span>
           </p>
 
           {score.nextLevel ? (
@@ -50,7 +50,7 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
               </p>
             </>
           ) : (
-            <p className="mt-2 text-[11px] font-semibold text-accent-ink">
+            <p className="mt-2 text-[11px] font-medium text-accent-ink">
               הגעת לרמה הגבוהה ביותר. נשאר רק לשמור עליה.
             </p>
           )}
@@ -59,7 +59,7 @@ export function RipenessCard({ score }: { score: ScoreSummary }) {
 
       <Link
         href="/progress"
-        className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-ink/80 transition-colors hover:text-ink"
+        className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-ink/80 transition-colors hover:text-ink"
       >
         איך צוברים נקודות
         <ChevronLeft className="size-3.5" aria-hidden />

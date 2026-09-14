@@ -19,7 +19,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
 
   return (
     <section className="space-y-3" aria-labelledby="ripeness-detail-title">
-      <h2 id="ripeness-detail-title" className="flex items-center gap-1.5 text-sm font-bold">
+      <h2 id="ripeness-detail-title" className="flex items-center gap-1.5 text-sm font-semibold">
         <Sprout className="size-4 text-champagne" aria-hidden />
         מדד הבשלות
       </h2>
@@ -28,7 +28,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
         <div className="flex items-center gap-4">
           <RipenessMark ripeness={score.level.ripeness} size={80} />
           <div className="min-w-0 flex-1">
-            <p className="text-xl font-extrabold leading-tight">{score.level.name}</p>
+            <p className="text-xl font-semibold leading-tight">{score.level.name}</p>
             <p className="num text-sm text-muted">{num(score.total)} נקודות</p>
             {score.streakWeeks > 1 && (
               <Badge tone="accent" className="mt-1.5">
@@ -52,11 +52,11 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
 
         <dl className="mt-4 grid grid-cols-2 gap-2">
           <div className="rounded-md border border-line bg-raised p-2.5 text-center">
-            <dd className="num text-lg font-extrabold text-ink">+{num(score.thisWeek)}</dd>
+            <dd className="num text-lg font-semibold text-ink">+{num(score.thisWeek)}</dd>
             <dt className="label-muted">השבוע</dt>
           </div>
           <div className="rounded-md border border-line bg-raised p-2.5 text-center">
-            <dd className="num text-lg font-extrabold">+{num(score.thisMonth)}</dd>
+            <dd className="num text-lg font-semibold">+{num(score.thisMonth)}</dd>
             <dt className="label-muted">החודש</dt>
           </div>
         </dl>
@@ -64,7 +64,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
 
       {score.breakdown.length > 0 && (
         <div className="surface p-4">
-          <h3 className="text-sm font-bold">מאיפה הגיעו הנקודות</h3>
+          <h3 className="text-sm font-semibold">מאיפה הגיעו הנקודות</h3>
           <ul className="mt-2.5 space-y-1.5">
             {score.breakdown.map((row) => (
               <li
@@ -72,12 +72,12 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
                 className="flex items-center justify-between gap-2 rounded-md border border-line bg-raised px-3 py-2"
               >
                 <span className="min-w-0">
-                  <span className="block truncate text-xs font-bold">{row.label}</span>
+                  <span className="block truncate text-xs font-semibold">{row.label}</span>
                   <span className="num block text-[11px] text-muted">
                     {num(row.count)} × {POINT_HINT[row.key]}
                   </span>
                 </span>
-                <span className="num shrink-0 text-sm font-extrabold text-ink">
+                <span className="num shrink-0 text-sm font-semibold text-ink">
                   +{num(row.points)}
                 </span>
               </li>
@@ -87,7 +87,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
       )}
 
       <div className="surface p-4">
-        <h3 className="text-sm font-bold">שלבי הבשלות</h3>
+        <h3 className="text-sm font-semibold">שלבי הבשלות</h3>
         <ol className="mt-2.5 space-y-1.5">
           {LEVELS.map((level, index) => {
             const reached = index <= currentIndex;
@@ -106,7 +106,7 @@ export function RipenessDetail({ score }: { score: ScoreSummary }) {
               >
                 <RipenessMark ripeness={level.ripeness} size={28} title={level.name} />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-bold">{level.name}</span>
+                  <span className="block truncate text-xs font-semibold">{level.name}</span>
                   <span className="num block text-[11px] text-muted">
                     מ-{num(level.minPoints)} נקודות
                   </span>

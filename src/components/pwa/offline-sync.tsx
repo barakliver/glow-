@@ -99,9 +99,9 @@ export function OfflineSync() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed inset-x-0 bottom-[calc(84px+env(safe-area-inset-bottom,0px))] z-40 mx-auto w-[calc(100%-2rem)] max-w-md"
+      className="fixed inset-x-0 bottom-[calc(108px+env(safe-area-inset-bottom,0px))] z-40 mx-auto w-[calc(100%-2rem)] max-w-md"
     >
-      <div className="flex items-center gap-2 rounded-md border border-warning/40 bg-warning/12 px-3 py-2 text-xs font-semibold text-warning">
+      <div className="flex items-center gap-2 rounded-md border border-warning/40 bg-warning/12 px-3 py-2 text-xs font-medium text-warning">
         {syncing ? (
           <RefreshCw className="size-4 animate-spin" aria-hidden />
         ) : (

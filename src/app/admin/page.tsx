@@ -56,7 +56,7 @@ export default async function AdminDashboard({
   );
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="display text-2xl tracking-tight">סקירת המועדון</h1>
@@ -67,7 +67,7 @@ export default async function AdminDashboard({
             missing.
           */}
           <p className="mt-1 text-xs text-muted">
-            מחובר כ<span className="font-bold text-accent-ink">{ROLE_LABELS[user.membership.role]}</span>
+            מחובר כ<span className="font-semibold text-accent-ink">{ROLE_LABELS[user.membership.role]}</span>
             {user.membership.role !== 'owner' && ' · יצירת שיעורים שמורה למנהל'}
           </p>
         </div>
@@ -77,7 +77,7 @@ export default async function AdminDashboard({
               key={value}
               href={`/admin?range=${value}`}
               aria-current={days === value ? 'page' : undefined}
-              className={`num rounded-md border px-3 py-2 text-xs font-bold transition-colors ${
+              className={`num rounded-md border px-3 py-2 text-xs font-semibold transition-colors ${
                 days === value
                   ? 'border-accent bg-accent/12 text-accent-ink'
                   : 'border-line bg-surface text-muted hover:text-ink'
@@ -138,7 +138,7 @@ export default async function AdminDashboard({
             <ul className="space-y-2">
               {stats.popularTimes.map((entry) => (
                 <li key={entry.time} className="flex items-center justify-between gap-2">
-                  <span className="num text-sm font-bold">{entry.time}</span>
+                  <span className="num text-sm font-semibold">{entry.time}</span>
                   <span className="num text-xs text-muted">{entry.bookings} רישומים</span>
                 </li>
               ))}
@@ -154,7 +154,7 @@ export default async function AdminDashboard({
             <ul className="space-y-2">
               {stats.popularClasses.map((entry) => (
                 <li key={entry.title} className="flex items-center justify-between gap-2">
-                  <span className="truncate text-sm font-bold">{entry.title}</span>
+                  <span className="truncate text-sm font-semibold">{entry.title}</span>
                   <span className="num shrink-0 text-xs text-muted">{entry.bookings} רישומים</span>
                 </li>
               ))}
@@ -164,7 +164,7 @@ export default async function AdminDashboard({
       </div>
 
       <section className="surface p-4">
-        <h2 className="mb-1 text-sm font-bold">ייצוא נתונים</h2>
+        <h2 className="mb-1 text-sm font-semibold">ייצוא נתונים</h2>
         <p className="mb-3 text-xs text-muted">קובצי CSV בקידוד UTF-8, מוכנים לפתיחה באקסל.</p>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {[

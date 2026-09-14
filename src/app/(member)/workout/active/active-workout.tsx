@@ -315,7 +315,7 @@ export function ActiveWorkout({
     <div className="space-y-4">
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-accent-ink">אימון פעיל</p>
+          <p className="text-xs font-medium text-accent-ink">אימון פעיל</p>
           <h1 className="truncate display text-xl tracking-tight">{session.title}</h1>
           <p className="num mt-0.5 text-xs text-muted">
             {formatClock(elapsed)} · {totalSets} סטים נרשמו
@@ -352,7 +352,7 @@ export function ActiveWorkout({
 
       {plan.length === 0 || !current || !currentExercise ? (
         <section className="surface space-y-3 p-5 text-center">
-          <p className="text-sm font-bold">האימון ריק</p>
+          <p className="text-sm font-semibold">האימון ריק</p>
           <p className="text-xs text-muted">הוסיפו תרגיל כדי להתחיל לרשום סטים.</p>
           <Button block onClick={() => setPickerOpen(true)}>
             <Plus className="size-4" aria-hidden />
@@ -372,7 +372,7 @@ export function ActiveWorkout({
             >
               <ChevronRight className="size-4" />
             </Button>
-            <p className="num text-xs font-semibold text-muted">
+            <p className="num text-xs font-medium text-muted">
               תרגיל {index + 1} מתוך {plan.length}
             </p>
             <Button
@@ -389,7 +389,7 @@ export function ActiveWorkout({
           <section className="surface p-4" aria-labelledby="current-exercise">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <h2 id="current-exercise" className="text-lg font-extrabold leading-tight">
+                <h2 id="current-exercise" className="text-lg font-semibold leading-tight">
                   {currentExercise.name_he}
                 </h2>
                 <p className="text-xs text-muted" dir="ltr">
@@ -418,7 +418,7 @@ export function ActiveWorkout({
               </div>
             </div>
 
-            <p className="num mt-2 text-xs font-semibold text-accent-ink">
+            <p className="num mt-2 text-xs font-medium text-accent-ink">
               {[
                 current.target_sets && `${current.target_sets} סטים`,
                 current.target_reps && `${current.target_reps} חזרות`,
@@ -453,7 +453,7 @@ export function ActiveWorkout({
             )}
 
             <details className="mt-3 rounded-md border border-line bg-raised p-2.5">
-              <summary className="cursor-pointer text-xs font-bold">הוראות ביצוע ודגשים</summary>
+              <summary className="cursor-pointer text-xs font-semibold">הוראות ביצוע ודגשים</summary>
               <p className="mt-2 text-xs leading-relaxed text-muted">{currentExercise.instructions}</p>
               {currentExercise.safety_cues && (
                 <p className="mt-2 text-xs leading-relaxed text-warning">
@@ -528,7 +528,7 @@ export function ActiveWorkout({
             </div>
 
             <fieldset className="mt-3">
-              <legend className="mb-1.5 text-xs font-semibold text-muted">
+              <legend className="mb-1.5 text-xs font-medium text-muted">
                 מאמץ נתפס ({draft.effort} מתוך 10)
               </legend>
               <div className="hide-scrollbar flex gap-1 overflow-x-auto pb-1">
@@ -540,7 +540,7 @@ export function ActiveWorkout({
                     aria-label={`מאמץ ${value} מתוך 10`}
                     onClick={() => setDraft((d) => ({ ...d, effort: String(value) }))}
                     className={cn(
-                      'num size-9 shrink-0 rounded-md border text-xs font-bold transition-all',
+                      'num size-9 shrink-0 rounded-md border text-xs font-semibold transition-all',
                       draft.effort === String(value)
                         ? 'border-accent bg-accent/12 text-accent-ink'
                         : 'border-line bg-raised text-muted',
@@ -553,7 +553,7 @@ export function ActiveWorkout({
             </fieldset>
 
             <div className="mt-3 space-y-1.5">
-              <Label htmlFor="set-notes" className="text-xs font-semibold text-muted">
+              <Label htmlFor="set-notes" className="text-xs font-medium text-muted">
                 הערה לסט (לא חובה)
               </Label>
               <Input
@@ -582,7 +582,7 @@ export function ActiveWorkout({
                     key={set.id}
                     className="flex items-center justify-between gap-2 rounded-md border border-line bg-raised px-3 py-2"
                   >
-                    <span className="num text-xs font-semibold">
+                    <span className="num text-xs font-medium">
                       <span className="text-accent-ink">#{i + 1}</span>{' '}
                       {[
                         set.reps && `${set.reps} חזרות`,
@@ -646,7 +646,7 @@ export function ActiveWorkout({
                 aria-checked={replaceReason === reason.value}
                 onClick={() => setReplaceReason(reason.value)}
                 className={cn(
-                  'w-full rounded-md border px-3 py-3 text-start text-sm font-semibold transition-colors',
+                  'w-full rounded-md border px-3 py-3 text-start text-sm font-medium transition-colors',
                   replaceReason === reason.value
                     ? 'border-accent bg-accent/12 text-accent-ink'
                     : 'border-line bg-raised text-muted',
@@ -723,7 +723,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1">
-      <Label htmlFor={id} className="text-xs font-semibold text-muted">
+      <Label htmlFor={id} className="text-xs font-medium text-muted">
         {label}
       </Label>
       <Input
@@ -734,7 +734,7 @@ function Field({
         step={step ?? '1'}
         value={value}
         dir="ltr"
-        className="num text-center text-lg font-bold"
+        className="num text-center text-lg font-semibold"
         onChange={(event) => onChange(event.target.value)}
       />
     </div>

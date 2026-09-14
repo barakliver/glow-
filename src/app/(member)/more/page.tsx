@@ -49,11 +49,11 @@ export default async function MorePage() {
       <PageHeader title="עוד" />
 
       <section className="surface flex items-center gap-3 p-4">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent/12 text-lg font-extrabold text-accent-ink">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent/12 text-lg font-semibold text-accent-ink">
           {user.profile.full_name.charAt(0)}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-base font-bold">{user.profile.full_name}</p>
+          <p className="truncate text-base font-semibold">{user.profile.full_name}</p>
           <p className="num truncate text-xs text-muted" dir="ltr">
             {user.profile.email}
           </p>
@@ -70,7 +70,7 @@ export default async function MorePage() {
         >
           <Shield className="size-5 text-accent-ink" aria-hidden />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold">אזור ניהול</p>
+            <p className="text-sm font-semibold">אזור ניהול</p>
             <p className="text-xs text-muted">לוח שבועי, מתאמנים, תבניות והזמנות</p>
           </div>
           <ChevronLeft className="size-4 text-muted" aria-hidden />
@@ -89,7 +89,7 @@ export default async function MorePage() {
                 >
                   <Icon className="size-5 shrink-0 text-muted" aria-hidden />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold">{link.label}</p>
+                    <p className="text-sm font-semibold">{link.label}</p>
                     <p className="truncate text-xs text-muted">{link.description}</p>
                   </div>
                   <ChevronLeft className="size-4 shrink-0 text-muted" aria-hidden />

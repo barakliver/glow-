@@ -33,8 +33,8 @@ export function WorkoutHistoryList({
   }));
 
   return (
-    <section className="surface p-5">
-      <h2 className="mb-3 text-sm font-bold">{title}</h2>
+    <section className="surface p-6">
+      <h2 className="mb-3 text-sm font-semibold">{title}</h2>
       <ol className="space-y-2.5">
         {annotated.reverse().map((entry) => (
           <li
@@ -46,12 +46,12 @@ export function WorkoutHistoryList({
                 {showWorkoutTitle ? (
                   <Link
                     href={`/workout/wods/${entry.workout.slug}`}
-                    className="truncate text-sm font-bold hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    className="truncate text-sm font-semibold hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   >
                     {entry.workout.title}
                   </Link>
                 ) : (
-                  <p className="text-sm font-bold">
+                  <p className="text-sm font-semibold">
                     {SCORE_TYPE_LABELS[entry.workout.score_type]}
                   </p>
                 )}
@@ -78,7 +78,7 @@ export function WorkoutHistoryList({
                 </span>
               )}
               {(entry.note.kind === 'best' || entry.note.kind === 'improved') && (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-success">
+                <span className="inline-flex items-center gap-1 text-xs font-medium text-success">
                   <CheckCircle2 className="size-3.5" aria-hidden />
                   {PROGRESS_NOTE_TEXT[entry.note.kind]}
                 </span>

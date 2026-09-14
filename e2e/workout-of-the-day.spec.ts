@@ -158,25 +158,39 @@ test.describe('the workout of the day', () => {
   }) => {
     await signInAs(page, DEMO.member);
 
-    // A class that already happened, so the result form is open. The form is
-    // deliberately not offered before the class starts.
+    /*
+     * A class that already happened AND that this member actually attended.
+     *
+     * Both halves matter. The form is deliberately not offered before a class
+     * starts, and it is also not offered for a class the member was marked
+     * absent from - and the completed tab lists both. Taking the first row and
+     * hoping used to pass on most days and fail on the ones where that row
+     * happened to be an absence, which is a test telling the truth about
+     * nothing.
+     */
     await page.goto('/bookings');
     await page.getByRole('tab', { name: 'הושלמו' }).click();
-    const past = page.getByRole('link', { name: /.+/ }).filter({ visible: true });
-    let opened = false;
-    for (let index = 0; index < (await past.count()); index += 1) {
-      const href = await past.nth(index).getAttribute('href');
-      if (href?.startsWith('/classes/')) {
-        await past.nth(index).click();
-        opened = true;
+
+    const completed = page.locator('a[href^="/classes/"]').filter({ visible: true });
+    const hrefs = await completed.evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('href')!),
+    );
+    expect(hrefs.length, 'expected a completed booking in the demo seed').toBeGreaterThan(0);
+
+    const form = page.getByRole('heading', { name: /רישום תוצאה|עדכון התוצאה/ });
+    let found = false;
+    for (const href of hrefs) {
+      await page.goto(href);
+      await expect(page).toHaveURL(/\/classes\//);
+      if (await form.isVisible().catch(() => false)) {
+        found = true;
         break;
       }
     }
-    expect(opened, 'expected a completed booking in the demo seed').toBe(true);
-    await expect(page).toHaveURL(/\/classes\//);
-
-    const form = page.getByRole('heading', { name: /רישום תוצאה|עדכון התוצאה/ });
-    await expect(form).toBeVisible();
+    expect(
+      found,
+      `none of the ${hrefs.length} completed bookings offered the result form`,
+    ).toBe(true);
 
     // Whatever this workout is scored on, one of these inputs is on screen and
     // the others are not - that is the whole point of the form.

@@ -27,7 +27,7 @@ export function AvocadoCard({
   const chosen = style ? AVOCADO_STYLES[style] : null;
 
   return (
-    <section className="surface p-5" aria-labelledby="avocado-title">
+    <section className="surface p-6" aria-labelledby="avocado-title">
       <div className="flex items-start gap-4">
         <RipenessMark
           ripeness={score.level.ripeness}
@@ -40,7 +40,7 @@ export function AvocadoCard({
             {chosen ? chosen.name : 'האבוקדו שלך'}
           </h2>
           <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-            <p className="text-xl font-extrabold leading-tight tracking-tight">{score.level.name}</p>
+            <p className="text-xl font-semibold leading-tight tracking-tight">{score.level.name}</p>
             {score.streakWeeks > 1 && (
               <Badge tone="accent">
                 <Flame className="size-3" aria-hidden />
@@ -49,16 +49,16 @@ export function AvocadoCard({
             )}
           </div>
           <p className="num mt-2 text-xs text-muted">
-            <span className="font-bold text-ink">{num(score.total)}</span> נקודות · השבוע{' '}
-            <span className="font-bold text-ink">+{num(score.thisWeek)}</span>
+            <span className="font-semibold text-ink">{num(score.total)}</span> נקודות · השבוע{' '}
+            <span className="font-semibold text-ink">+{num(score.thisWeek)}</span>
           </p>
         </div>
       </div>
 
       <div className="mt-5 border-t border-line pt-5">
         <div className="flex items-baseline justify-between gap-3">
-          <p className="text-sm font-semibold">היעד השבועי שלך</p>
-          <p className="num text-sm font-bold text-accent-ink">
+          <p className="text-sm font-medium">היעד השבועי שלך</p>
+          <p className="num text-sm font-semibold text-accent-ink">
             {num(goal.done)} / {num(goal.target)}
           </p>
         </div>
@@ -78,7 +78,7 @@ export function AvocadoCard({
 
       <Link
         href="/progress"
-        className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-ink/80 transition-colors hover:text-ink"
+        className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-ink/80 transition-colors hover:text-ink"
       >
         פירוט הנקודות
         <ChevronLeft className="size-3.5" aria-hidden />

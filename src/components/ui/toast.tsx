@@ -76,7 +76,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           >
             {TONE_ICON[item.tone]}
             <div className="flex-1 text-start">
-              <ToastPrimitive.Title className="text-sm font-bold">{item.title}</ToastPrimitive.Title>
+              <ToastPrimitive.Title className="text-sm font-semibold">{item.title}</ToastPrimitive.Title>
               {item.description && (
                 <ToastPrimitive.Description className="mt-0.5 text-xs text-muted">
                   {item.description}

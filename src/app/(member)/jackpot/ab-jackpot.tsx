@@ -86,7 +86,7 @@ export function AbJackpot({ pool }: { pool: Exercise[] }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="surface overflow-hidden">
         <ul className="divide-y divide-line">
           {Array.from({ length: REEL_COUNT }, (_, reel) => {
@@ -105,7 +105,7 @@ export function AbJackpot({ pool }: { pool: Exercise[] }) {
               >
                 <span
                   className={cn(
-                    'num flex size-9 shrink-0 items-center justify-center rounded-full border text-sm font-bold',
+                    'num flex size-9 shrink-0 items-center justify-center rounded-full border text-sm font-semibold',
                     settled && !spinning
                       ? 'border-accent/40 bg-accent/12 text-accent-ink'
                       : 'border-line text-muted',
@@ -120,7 +120,7 @@ export function AbJackpot({ pool }: { pool: Exercise[] }) {
                     <>
                       <p
                         className={cn(
-                          'truncate text-base font-bold transition-opacity',
+                          'truncate text-base font-semibold transition-opacity',
                           spinning ? 'opacity-50' : 'opacity-100',
                         )}
                       >
@@ -147,8 +147,8 @@ export function AbJackpot({ pool }: { pool: Exercise[] }) {
       </Button>
 
       {slots && !rolling && (
-        <section className="surface p-5" aria-live="polite">
-          <h2 className="text-sm font-bold">הסבב שלך</h2>
+        <section className="surface p-6" aria-live="polite">
+          <h2 className="text-sm font-semibold">הסבב שלך</h2>
           <p className="mt-1.5 text-xs text-muted">
             שלושה סבבים של שלושת התרגילים, מנוחה של 30 שניות בין סבב לסבב.
           </p>
@@ -156,7 +156,7 @@ export function AbJackpot({ pool }: { pool: Exercise[] }) {
             {slots.map((slot, index) => (
               <li key={slot.exercise.id} className="rounded-xl border border-line bg-raised p-4">
                 <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm font-bold">{slot.exercise.name_he}</p>
+                  <p className="text-sm font-semibold">{slot.exercise.name_he}</p>
                   <Badge tone="accent">{slot.dose}</Badge>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-muted">
