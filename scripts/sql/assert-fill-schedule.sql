@@ -82,18 +82,33 @@ begin
   join class_workouts cw on cw.class_id = c.id
   join workouts w on w.id = cw.workout_id
   where c.notes = 'generated:hourly-timetable'
-    and w.category <> case c.category
-      when 'mobility' then 'yoga'
-      when 'strength' then 'functional'
-      when 'functional' then 'functional'
-      else 'crossfit'
-    end::public.workout_category;
+    -- Mobility draws from either soft family: it alternates, because nothing
+    -- else maps to pilates and pinning it to yoga made every pilates session
+    -- in the library unreachable as a class workout.
+    and case c.category
+      when 'mobility' then w.category not in ('yoga', 'pilates')
+      when 'strength' then w.category <> 'functional'
+      when 'functional' then w.category <> 'functional'
+      else w.category <> 'crossfit'
+    end;
 
   if v_mismatched is not null then
     raise exception 'class kind paired with the wrong workout family: %', v_mismatched;
   end if;
 
   raise notice 'each class kind draws from the right family of workouts';
+
+  -- The point of alternating: both soft families actually get dealt out.
+  if not exists (
+    select 1 from classes c
+    join class_workouts cw on cw.class_id = c.id
+    join workouts w on w.id = cw.workout_id
+    where c.notes = 'generated:hourly-timetable' and w.category = 'pilates'
+  ) then
+    raise exception 'no pilates workout was dealt to any class - the whole family is unreachable';
+  end if;
+
+  raise notice 'pilates reaches the timetable too';
 end $$;
 
 -- 4. A member can actually book one, and the workout opens when they do.

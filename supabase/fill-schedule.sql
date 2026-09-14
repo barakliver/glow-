@@ -169,13 +169,16 @@ begin
 
       -- Give it a workout from the family that fits, walking through the
       -- library so the same session does not come round twice in a day.
+      -- Mobility alternates between the two soft families, because nothing
+      -- else maps to pilates and without this half the library - every
+      -- pilates session in it - could never be the workout of any class.
       v_family := case v_category
         when 'strength' then 'functional'
         when 'functional' then 'functional'
         when 'tabata' then 'crossfit'
         when 'conditioning' then 'crossfit'
         when 'open' then 'crossfit'
-        when 'mobility' then 'yoga'
+        when 'mobility' then case when mod(v_index, 2) = 0 then 'yoga' else 'pilates' end
       end::public.workout_category;
 
       select pick.id into v_workout

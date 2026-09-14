@@ -214,3 +214,46 @@ describe('scaling is three real levels, not one repeated', () => {
     }
   });
 });
+
+describe('every workout is reachable', () => {
+  /*
+   * The flat list and the by-category buckets are built separately, so a new
+   * file can be added to one and forgotten in the other - and the symptom is
+   * silent: the workout exists, the count is right, and it simply never shows
+   * up under any category tab in the app.
+   */
+  it('files every workout under its own category', () => {
+    for (const workout of WORKOUT_LIBRARY) {
+      const bucket = WORKOUTS_BY_CATEGORY[workout.category];
+      expect(
+        bucket.some((entry) => entry.slug === workout.slug),
+        `${workout.slug} (${workout.title}) is in the library but under no category`,
+      ).toBe(true);
+    }
+  });
+
+  it('puts nothing in a category that is not in the library', () => {
+    const slugs = new Set(WORKOUT_LIBRARY.map((workout) => workout.slug));
+    for (const [category, bucket] of Object.entries(WORKOUTS_BY_CATEGORY)) {
+      for (const workout of bucket) {
+        expect(slugs.has(workout.slug), `${workout.slug} is under ${category} but not shipped`).toBe(
+          true,
+        );
+        expect(workout.category, workout.slug).toBe(category);
+      }
+    }
+  });
+
+  /* The house and hero sessions are the ones most likely to be orphaned,
+     because they arrived in files of their own. Named so a failure says which. */
+  it('carries the named sessions people will go looking for', () => {
+    for (const slug of ['krantz', 'the-hora', 'croissant', 'hulk', 'spider-man', 'mille-feuille']) {
+      const workout = WORKOUT_LIBRARY.find((entry) => entry.slug === slug);
+      expect(workout, `${slug} is missing from the library`).toBeDefined();
+      expect(
+        WORKOUTS_BY_CATEGORY[workout!.category].some((entry) => entry.slug === slug),
+        `${slug} is not under ${workout!.category}`,
+      ).toBe(true);
+    }
+  });
+});
