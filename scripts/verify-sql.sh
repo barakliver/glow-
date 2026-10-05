@@ -132,6 +132,16 @@ apply glow_migrations supabase/fill-schedule.sql "fill-schedule.sql"
 apply glow_migrations supabase/fill-schedule.sql "fill-schedule.sql, again"
 assert glow_migrations scripts/sql/assert-fill-schedule.sql
 
+# The daily 17:00 session. Applied twice for the same reason: it claims a slot
+# the timetable already built, and claiming it twice must not make two classes.
+echo "==> asserting the daily 17:00 military session"
+refuses glow_early supabase/schedule-military.sql \
+  "Run supabase/setup.sql first" \
+  "it names the missing piece instead of failing somewhere confusing"
+apply glow_migrations supabase/schedule-military.sql "schedule-military.sql"
+apply glow_migrations supabase/schedule-military.sql "schedule-military.sql, again"
+assert glow_migrations scripts/sql/assert-military-schedule.sql
+
 # --- 2. setup.sql, the single file pasted into the Supabase SQL editor --------
 echo "==> applying setup.sql (the one-paste path)"
 "${PSQL[@]}" -d postgres -c "create database glow_setup;" >/dev/null
