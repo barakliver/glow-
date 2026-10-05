@@ -23,14 +23,17 @@ test.describe('the coach', () => {
 
     /*
      * Week 1 of the first block is 67% of the squat, so 120kg becomes 80kg.
-     * Scoped to the session that prescribes it rather than matched loosely
-     * across the page - /80.*ק/ will happily find a rest interval or a
-     * percentage somewhere else and then complain that it is not visible.
+     *
+     * Scoped to the session that actually prescribes it, found by its own
+     * title rather than by taking the first thing on the page with an article
+     * role. Both looser forms of this assertion have now been order-dependent
+     * in a full suite run and fine in isolation, which I have not root-caused;
+     * naming the session removes the question either way.
      */
-    const firstSession = page.getByRole('article').first();
-    await expect(firstSession).toContainText('סקוואט גבי');
-    await expect(firstSession).toContainText('80');
-    await expect(firstSession).toContainText('67%');
+    const squatDay = page.getByRole('article').filter({ hasText: 'תחתון א׳' }).first();
+    await expect(squatDay).toContainText('סקוואט גבי');
+    await expect(squatDay).toContainText('80');
+    await expect(squatDay).toContainText('67%');
   });
 
   /*

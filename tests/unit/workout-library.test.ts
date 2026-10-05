@@ -8,6 +8,7 @@ import {
 } from '@/lib/data/workouts';
 import { SCORE_FIELDS } from '@/lib/domain/workout-score';
 import { EQUIPMENT_LABELS } from '@/lib/labels';
+import { PERSONAL_WORKOUTS } from '@/lib/data/workouts/personal';
 import type { Equipment } from '@/lib/domain/types';
 
 describe('the shipped library', () => {
@@ -130,13 +131,29 @@ describe('the library fits the room', () => {
   it('never prescribes a load', () => {
     // What someone lifts is theirs to choose and theirs to record. A number on
     // the board is wrong for most of the room the moment it is written.
+    //
+    // The one exception is src/lib/data/workouts/personal.ts: sessions the
+    // owner wrote for himself, where the weight is the weight he chose and the
+    // workout is not a prescription handed to a room. The exemption is keyed to
+    // that file so it has to be made deliberately, and the test below stops it
+    // quietly growing to cover anything else.
     const load = /\d+\s*(\/\s*\d+\s*)?(ק״ג|ק"ג|קילו|kg)/i;
-    const offenders = WORKOUT_LIBRARY.flatMap((entry) =>
+    const personal = new Set(PERSONAL_WORKOUTS.map((entry) => entry.slug));
+    const offenders = WORKOUT_LIBRARY.filter((entry) => !personal.has(entry.slug)).flatMap((entry) =>
       lines(entry)
         .filter((line) => load.test(line))
         .map((line) => `${entry.slug}: ${line}`),
     );
     expect(offenders).toEqual([]);
+  });
+
+  it('keeps the load exemption to the owner’s own sessions', () => {
+    // If this file ever grows past what one person wrote for himself, the
+    // exemption has stopped being an exception and the rule is gone.
+    expect(PERSONAL_WORKOUTS.length).toBeLessThanOrEqual(5);
+    for (const entry of PERSONAL_WORKOUTS) {
+      expect(entry.slug, 'a personal session must be named as one').toMatch(/^barak-/);
+    }
   });
 
   it('runs every CrossFit session for a full hour, in four blocks', () => {

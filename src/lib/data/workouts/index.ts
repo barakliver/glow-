@@ -3,6 +3,7 @@ import { CROSSFIT_WORKOUTS } from './crossfit';
 import { FUNCTIONAL_WORKOUTS } from './functional';
 import { HERO_WORKOUTS } from './heroes';
 import { HOUSE_WORKOUTS } from './house';
+import { PERSONAL_WORKOUTS } from './personal';
 import { PILATES_WORKOUTS } from './pilates';
 import { YOGA_WORKOUTS } from './yoga';
 import { toWorkout, type LibraryWorkout } from './types';
@@ -24,6 +25,7 @@ export const WORKOUT_LIBRARY: LibraryWorkout[] = [
   ...YOGA_WORKOUTS,
   ...HOUSE_WORKOUTS,
   ...HERO_WORKOUTS,
+  ...PERSONAL_WORKOUTS,
 ];
 
 /**
@@ -33,13 +35,17 @@ export const WORKOUT_LIBRARY: LibraryWorkout[] = [
  */
 export const WORKOUTS_BY_CATEGORY: Record<WorkoutCategory, LibraryWorkout[]> = {
   crossfit: [...CROSSFIT_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'crossfit'),
-    ...HERO_WORKOUTS.filter((w) => w.category === 'crossfit')],
+    ...HERO_WORKOUTS.filter((w) => w.category === 'crossfit'),
+    ...PERSONAL_WORKOUTS.filter((w) => w.category === 'crossfit')],
   functional: [...FUNCTIONAL_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'functional'),
-    ...HERO_WORKOUTS.filter((w) => w.category === 'functional')],
+    ...HERO_WORKOUTS.filter((w) => w.category === 'functional'),
+    ...PERSONAL_WORKOUTS.filter((w) => w.category === 'functional')],
   pilates: [...PILATES_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'pilates'),
-    ...HERO_WORKOUTS.filter((w) => w.category === 'pilates')],
+    ...HERO_WORKOUTS.filter((w) => w.category === 'pilates'),
+    ...PERSONAL_WORKOUTS.filter((w) => w.category === 'pilates')],
   yoga: [...YOGA_WORKOUTS, ...HOUSE_WORKOUTS.filter((w) => w.category === 'yoga'),
-    ...HERO_WORKOUTS.filter((w) => w.category === 'yoga')],
+    ...HERO_WORKOUTS.filter((w) => w.category === 'yoga'),
+    ...PERSONAL_WORKOUTS.filter((w) => w.category === 'yoga')],
 };
 
 function hash32(input: string, seed: number): number {

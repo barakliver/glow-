@@ -1,5 +1,15 @@
 import Link from 'next/link';
-import { CalendarDays, CalendarPlus, Dumbbell, Flame, Sparkles, Timer, TrendingUp } from 'lucide-react';
+import {
+  CalendarDays,
+  CalendarPlus,
+  ChevronLeft,
+  Dumbbell,
+  Flame,
+  Sparkles,
+  Swords,
+  Timer,
+  TrendingUp,
+} from 'lucide-react';
 import { requireUser, getRepository } from '@/lib/auth';
 import { ReadinessCheck } from '@/components/readiness/readiness-check';
 import { ClassCard } from '@/components/classes/class-card';
@@ -10,6 +20,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { buildRecommendations, buildScore } from '@/lib/data/insights';
 import { weeklyGoal } from '@/lib/domain/score';
 import { AvocadoCard } from '@/components/score/avocado-card';
+import { AvocadoGlyph } from '@/components/brand/avocado-glyph';
 import { availabilityForClass } from '@/lib/domain/booking-rules';
 import { GOAL_LABELS } from '@/lib/labels';
 import {
@@ -231,6 +242,32 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* The owner's own session, one tap from the front door. */}
+      <section aria-labelledby="military-title">
+        <h2 id="military-title" className="section-label mb-2 block">
+          האימון שלך
+        </h2>
+        <Link
+          href="/workout/military"
+          className="surface relative flex items-center gap-4 overflow-hidden p-5 transition-colors hover:bg-raised"
+        >
+          <AvocadoGlyph
+            size={104}
+            className="pointer-events-none absolute -bottom-7 -start-5 text-ink/[0.035]"
+          />
+          <span className="relative flex size-12 shrink-0 items-center justify-center rounded-full border border-accent/40 bg-accent/12">
+            <Swords className="size-5 text-accent-ink" aria-hidden />
+          </span>
+          <span className="relative min-w-0 flex-1">
+            <span className="block text-base font-semibold">Barak Workout Military</span>
+            <span className="mt-0.5 block text-xs leading-relaxed text-muted">
+              16 סבבים · מונה, שעון ואומדן קלוריות על מסך אחד
+            </span>
+          </span>
+          <ChevronLeft className="relative size-4 shrink-0 text-muted" aria-hidden />
+        </Link>
+      </section>
 
       {/* Quick actions */}
       <section aria-labelledby="quick-actions-title">

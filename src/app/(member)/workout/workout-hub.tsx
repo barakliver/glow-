@@ -14,6 +14,7 @@ import {
   Play,
   RefreshCw,
   Sparkles,
+  Swords,
   Timer,
   Trophy,
 } from 'lucide-react';
@@ -326,6 +327,12 @@ export function WorkoutHub({
       </section>
 
       <section className="grid gap-2 sm:grid-cols-2">
+        <Button size="lg" block asChild>
+          <Link href="/workout/military">
+            <Swords className="size-4" aria-hidden />
+            Barak Workout Military
+          </Link>
+        </Button>
         <Button variant="secondary" size="lg" block asChild>
           <Link href="/workout/wods">
             <Library className="size-4" aria-hidden />
