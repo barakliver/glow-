@@ -250,7 +250,7 @@ export function WorkoutHub({
             description="נסו לשנות את המטרה או את הזמן הפנוי, או בחרו תבנית מהרשימה למטה."
           />
         ) : (
-          recommendations.map((recommendation) => (
+          recommendations.map((recommendation, rank) => (
             <article
               key={recommendation.template.id}
               className="rounded-lg border border-line bg-surface p-3.5"
@@ -265,7 +265,21 @@ export function WorkoutHub({
                 {DIFFICULTY_LABELS[recommendation.template.difficulty]}
               </p>
               <div className="mt-3 flex gap-3">
-                <Button size="sm" onClick={() => start(recommendation.template.id)} loading={pending}>
+                {/*
+                  * Only the top recommendation gets the filled accent.
+                  *
+                  * Three gold buttons down a list is three first choices,
+                  * which is none: the eye has nothing to land on and the gold
+                  * stops meaning "the action" anywhere else in the app. The
+                  * section already claims a ranking - this is the ranking,
+                  * shown rather than asserted.
+                  */}
+                <Button
+                  size="sm"
+                  variant={rank === 0 ? 'primary' : 'secondary'}
+                  onClick={() => start(recommendation.template.id)}
+                  loading={pending}
+                >
                   <Play className="size-4" aria-hidden />
                   התחלה
                 </Button>

@@ -21,6 +21,24 @@
     font-feature-settings: 'kern' 1;
     /* Prevent layout shift from scrollbar appearing/disappearing */
     scrollbar-gutter: stable;
+    /*
+     * One light source, and it is warm.
+     *
+     * A single flat fill behind twenty screens of cards is most of what makes
+     * a dark theme read as "a dark theme" rather than as a room. Two faint
+     * gold radials - strong at the top where the eye enters, almost nothing at
+     * the foot - give the surfaces something to be lifted off. Painted into
+     * the body's own background rather than an overlay, so it can never sit on
+     * top of text, and fixed so it does not travel with the scroll.
+     *
+     * Both stops are under 8% of a colour that is already close to the
+     * background, so no pairing in the app loses contrast against it.
+     */
+    background-image:
+      radial-gradient(95% 52% at 50% 0%, rgba(217, 198, 140, 0.075), transparent 68%),
+      radial-gradient(75% 40% at 50% 100%, rgba(217, 198, 140, 0.028), transparent 72%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
   }
 
   /* Numbers, times and English keep the Manrope face even inside Hebrew text. */

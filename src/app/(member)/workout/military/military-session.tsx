@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Flame, Pause, Play, RotateCcw, Scale, Square } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { AvocadoGlyph } from '@/components/brand/avocado-glyph';
 import { playCue, unlockAudio } from '@/lib/timer-feedback';
@@ -196,115 +195,167 @@ export function MilitarySession({ weightKg }: { weightKg: number | null }) {
     );
   }
 
+  const tapCounter = () => {
+    if (phase === 'ready') return start();
+    if (phase === 'paused') return resume();
+    countRound();
+  };
+
+  /*
+   * One screen, no scrolling.
+   *
+   * Everything here is read mid-round, by somebody out of breath who is not
+   * going to scroll for it: the clock, the count and the burn have to be on
+   * the same 844 points as each other. So the prescription is a line rather
+   * than a card, the clock and the burn share a row, and what is left over
+   * goes to the counter - which is the only thing anybody actually touches.
+   */
   return (
-    <div className="space-y-7">
+    <div className="flex min-h-[calc(100dvh-13rem)] flex-col gap-4">
       <PageHeader title="Barak Workout Military" backHref="/workout" />
 
-      <section className="surface p-6">
-        <p className="text-sm leading-relaxed text-muted">
-          <span className="num font-semibold text-ink">{ROUNDS}</span> סבבים ·{' '}
-          <span className="num font-semibold text-ink">{RUN_METRES}</span> מטר הלוך וחזור ·{' '}
-          <span className="num font-semibold text-ink">{CLEAN_AND_JERKS}</span> קלין וג׳רק ב־
-          <span className="num font-semibold text-ink">{LOAD_KG}</span> ק״ג
-        </p>
-      </section>
+      <p className="text-center text-xs leading-relaxed text-muted">
+        <span className="num font-semibold text-ink">{ROUNDS}</span> סבבים ·{' '}
+        <span className="num font-semibold text-ink">{RUN_METRES}</span> מ׳ הלוך וחזור ·{' '}
+        <span className="num font-semibold text-ink">{CLEAN_AND_JERKS}</span> קלין וג׳רק ב־
+        <span className="num font-semibold text-ink">{LOAD_KG}</span> ק״ג
+      </p>
 
-      {/* The clock and the counter share one screen, because mid-round nobody
-          is navigating anywhere. */}
-      <section className="surface p-6 text-center" aria-live="off">
-        <p className="label-muted block">נותר</p>
-        <p
-          className={cn(
-            'num mt-1 text-[56px] font-medium leading-none tracking-tight tabular-nums',
-            remaining <= 60 && phase === 'running' ? 'text-warning' : 'text-ink',
-          )}
-        >
-          {clock(remaining)}
-        </p>
-        {added > 0 ? (
-          <Badge tone="outline" className="mt-3">
-            הוארך ב־<span className="num">{added}</span> דק׳ לפי הקצב שלך
-          </Badge>
-        ) : (
-          <p className="mt-2.5 text-xs text-muted">
-            מתוך <span className="num">{BASE_SECONDS / 60}</span> דקות
+      <section className="grid grid-cols-2 gap-3">
+        <div className="surface px-4 py-3.5 text-center">
+          <p className="label-muted block">נותר</p>
+          <p
+            className={cn(
+              'num mt-1 text-[34px] font-medium leading-none tracking-tight tabular-nums',
+              remaining <= 60 && phase === 'running' ? 'text-warning' : 'text-ink',
+            )}
+          >
+            {clock(remaining)}
           </p>
-        )}
+          {added > 0 ? (
+            <p className="mt-1.5 text-[11px] leading-tight text-accent-ink">
+              הוארך ב־<span className="num">{added}</span> דק׳
+            </p>
+          ) : (
+            <p className="mt-1.5 text-[11px] leading-tight text-muted">
+              מתוך <span className="num">{BASE_SECONDS / 60}</span> דקות
+            </p>
+          )}
+        </div>
+
+        <div className="surface px-4 py-3.5 text-center">
+          <p className="label-muted flex items-center justify-center gap-1">
+            <Flame className="size-3 text-accent-ink" aria-hidden />
+            קלוריות
+          </p>
+          <p className="num mt-1 text-[34px] font-medium leading-none tracking-tight">
+            {burned === null ? '—' : num(burned)}
+            {burned !== null && <span className="text-sm text-muted"> / {num(TARGET_KCAL)}</span>}
+          </p>
+          {burned === null ? (
+            <Link href="/tracking" className="mt-1.5 block text-[11px] text-accent-ink underline">
+              רישום משקל
+            </Link>
+          ) : (
+            <Progress value={burnedPercent ?? 0} className="mt-2" label="התקדמות ליעד הקלוריות" />
+          )}
+        </div>
       </section>
 
-      {/* The button. Big enough to hit without looking, which is the only
-          size that matters at round eleven. */}
+      {/*
+        * The button, and it has to look like one from the moment the screen
+        * opens.
+        *
+        * It used to render disabled and half-faded until the separate start
+        * control was pressed, so the largest thing on the page looked broken
+        * on arrival. It is now live in every phase: the first tap starts the
+        * clock, each tap after it counts a round. Nothing is dimmed, because
+        * nothing here is unavailable.
+        */}
       <button
         type="button"
-        onClick={countRound}
-        disabled={phase !== 'running'}
-        aria-label={`סיימתי סבב. ${roundsDone} מתוך ${ROUNDS}`}
+        onClick={tapCounter}
+        /* The visible label changes with the phase by design, so the tests
+         * hold onto this instead of onto whatever it currently says. */
+        data-testid="round-counter"
+        aria-label={
+          phase === 'ready'
+            ? 'התחלת האימון'
+            : `סיימתי סבב. ${roundsDone} מתוך ${ROUNDS}`
+        }
         className={cn(
-          'flex min-h-[220px] w-full flex-col items-center justify-center gap-2 rounded-2xl border transition-colors',
-          phase === 'running'
-            ? 'border-accent/50 bg-accent/12 active:bg-accent/25'
-            : 'border-line bg-surface opacity-60',
+          'group relative flex flex-1 flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl',
+          /* Generous, but not a whole screen of empty gold: past about 340px
+           * the number stops reading as big and starts reading as lost. */
+          'min-h-[240px] max-h-[340px]',
+          'border border-accent/45 bg-gradient-to-b from-accent/[0.16] to-accent/[0.05]',
+          'shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_50px_-32px_rgba(0,0,0,0.95)]',
+          'transition-[transform,background-color] duration-150 ease-out',
+          'active:scale-[0.985] active:bg-accent/25',
+          phase === 'running' && 'border-accent/70',
         )}
       >
-        <span className="num text-[88px] font-medium leading-none tracking-tight text-ink">
+        {/*
+          * The button fills like a vessel as the rounds land.
+          *
+          * Ripeness is already this app's word for progress, so the first go
+          * at this ripened an avocado behind the number - and the fruit's
+          * stone punched a dark hole straight through the label under it. A
+          * watermark centred behind a column of text will always fight the
+          * text. The gold rising from the bottom edge cannot: it is behind
+          * everything, it reads from across the room, and the waterline is
+          * the one thing here you can take in without reading. The number
+          * above is still the source of truth; this only ever agrees with it.
+          */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-accent/[0.22] to-accent/[0.06] transition-[height] duration-500 ease-out"
+          style={{ height: `${(roundsDone / ROUNDS) * 100}%` }}
+        >
+          {roundsDone > 0 && (
+            <span className="absolute inset-x-0 top-0 h-px bg-accent/40" />
+          )}
+        </span>
+        <AvocadoGlyph
+          size={132}
+          aria-hidden
+          className="pointer-events-none absolute -bottom-8 start-1/2 -translate-x-1/2 text-ink/[0.04] rtl:translate-x-1/2"
+        />
+        <span className="num relative text-[92px] font-medium leading-none tracking-tight text-ink">
           {num(roundsDone)}
           <span className="text-3xl text-muted"> / {num(ROUNDS)}</span>
         </span>
-        <span className="text-sm font-semibold text-accent-ink">
-          {phase === 'running' ? 'סיימתי סבב' : 'מתחילים כדי לספור'}
+        <span className="relative text-sm font-semibold text-accent-ink">
+          {phase === 'ready'
+            ? 'לחיצה להתחלה'
+            : phase === 'paused'
+              ? 'מושהה · לחיצה להמשך'
+              : 'סיימתי סבב'}
         </span>
+        {average !== null && (
+          <span className="num relative text-[11px] text-muted">ממוצע לסבב {clock(average)}</span>
+        )}
       </button>
 
-      <section className="surface p-6">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-sm font-semibold">
-            <Flame className="size-4 text-accent-ink" aria-hidden />
-            אומדן קלוריות
-          </h2>
-          {burned !== null && (
-            <span className="num text-sm font-semibold text-accent-ink">
-              {num(burned)} / {num(TARGET_KCAL)}
-            </span>
-          )}
-        </div>
-        {burned === null ? <NoWeight /> : <Progress value={burnedPercent ?? 0} className="mt-3" label="התקדמות ליעד הקלוריות" />}
-        {average && (
-          <p className="num mt-3 text-xs text-muted">ממוצע לסבב {clock(average)}</p>
-        )}
-      </section>
-
-      <div className="flex gap-3">
-        {phase === 'ready' && (
-          <Button block size="lg" onClick={start}>
-            <Play className="size-4" aria-hidden />
-            התחלה
-          </Button>
-        )}
-        {phase === 'running' && (
-          <>
+      {phase !== 'ready' && (
+        <div className="flex gap-3">
+          {phase === 'running' ? (
             <Button variant="secondary" block size="lg" onClick={pause}>
               <Pause className="size-4" aria-hidden />
               השהיה
             </Button>
-            <Button variant="secondary" block size="lg" onClick={stop}>
-              <Square className="size-4" aria-hidden />
-              סיום
-            </Button>
-          </>
-        )}
-        {phase === 'paused' && (
-          <>
-            <Button block size="lg" onClick={resume}>
+          ) : (
+            <Button variant="secondary" block size="lg" onClick={resume}>
               <Play className="size-4" aria-hidden />
               המשך
             </Button>
-            <Button variant="secondary" block size="lg" onClick={stop}>
-              <Square className="size-4" aria-hidden />
-              סיום
-            </Button>
-          </>
-        )}
-      </div>
+          )}
+          <Button variant="secondary" block size="lg" onClick={stop}>
+            <Square className="size-4" aria-hidden />
+            סיום
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

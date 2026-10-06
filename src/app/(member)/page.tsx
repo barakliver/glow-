@@ -125,7 +125,7 @@ export default async function HomePage() {
   const firstName = user.profile.full_name.split(' ')[0];
 
   return (
-    <div className="space-y-9">
+    <div className="space-y-7">
       <header className="pt-1">
         <p className="text-sm text-muted">{greeting(reference)},</p>
         <h1 className="display mt-0.5 text-[32px] leading-none tracking-tight">{firstName}</h1>

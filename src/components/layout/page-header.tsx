@@ -1,5 +1,9 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+/* Hebrew, as opposed to a title that happens to be written in English. */
+const HEBREW = /[\u0590-\u05FF]/;
 
 export function PageHeader({
   title,
@@ -25,7 +29,23 @@ export function PageHeader({
           </Link>
         )}
         <div className="min-w-0">
-          <h1 className="truncate display text-xl tracking-tight">{title}</h1>
+          {/*
+            * The serif names the page - but only in Hebrew.
+            *
+            * Frank Ruhl Libre has a full Latin set, and it is a formal
+            * bookish one: "Barak Workout Military" set in it did not read as
+            * this app's heading, it read as a heading borrowed from somewhere
+            * else entirely. An English title therefore takes the same face as
+            * the numbers, which is the one Latin voice the app already has.
+            */}
+          <h1
+            className={cn(
+              'truncate text-xl tracking-tight',
+              HEBREW.test(title) ? 'display' : 'font-num font-semibold',
+            )}
+          >
+            {title}
+          </h1>
           {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
         </div>
       </div>

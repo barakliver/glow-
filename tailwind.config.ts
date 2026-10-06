@@ -12,19 +12,24 @@ const config: Config = {
     extend: {
       colors: {
         /*
-         * A warm near-black room with one cold, deliberate accent. Royal blue
-         * against the warm greys is what makes it read as considered rather
-         * than as a default dark theme - and the accent only ever appears on
-         * an action or on something live.
+         * A warm near-black room with one warm accent, and the accent only
+         * ever appears on an action or on something live.
          *
-         * Warmer and quieter than before. The greens in the neutrals are what
-         * keep a near-black room from reading as a dashboard: everything is a
-         * few degrees toward olive, so the white text lands warm rather than
-         * clinical, and the blue has something to be cold against.
+         * The neutrals are a few degrees toward olive rather than toward
+         * slate, which is what keeps a near-black room from reading as a
+         * dashboard: the white text lands warm instead of clinical, and the
+         * gold has somewhere to belong.
+         *
+         * The step from bg to surface used to be about 4% of lightness, which
+         * at phone brightness in daylight is no step at all - every card read
+         * as an outline drawn on black rather than as an object sitting on it.
+         * Both greys are lifted, and the card's top highlight moved inside
+         * its own edge (see boxShadow.card), which is what a lit surface
+         * actually does.
          */
         bg: '#0D0F0E',
-        surface: '#151816',
-        raised: '#1D211E',
+        surface: '#191D1A',
+        raised: '#232825',
         ink: '#F6F4EE',
         /*
          * Secondary text carries most of this interface - every caption, every
@@ -68,10 +73,10 @@ const config: Config = {
         background: '#0D0F0E',
         foreground: '#F6F4EE',
         primary: { DEFAULT: '#D9C68C', foreground: '#0D0F0E' },
-        secondary: { DEFAULT: '#1D211E', foreground: '#F6F4EE' },
+        secondary: { DEFAULT: '#232825', foreground: '#F6F4EE' },
         destructive: { DEFAULT: '#FF776D', foreground: '#0D0F0E' },
-        popover: { DEFAULT: '#151816', foreground: '#F6F4EE' },
-        card: { DEFAULT: '#151816', foreground: '#F6F4EE' },
+        popover: { DEFAULT: '#191D1A', foreground: '#F6F4EE' },
+        card: { DEFAULT: '#191D1A', foreground: '#F6F4EE' },
       },
       fontFamily: {
         sans: ['var(--font-heebo)', 'system-ui', 'sans-serif'],
@@ -111,9 +116,9 @@ const config: Config = {
          */
         glow: '0 0 0 1px rgba(217,198,140,0.32)',
         'glow-soft': '0 8px 24px -14px rgba(0,0,0,0.9)',
-        card: '0 1px 0 0 rgba(255,255,255,0.028), 0 18px 44px -28px rgba(0,0,0,0.9)',
+        card: 'inset 0 1px 0 0 rgba(255,255,255,0.055), 0 18px 44px -28px rgba(0,0,0,0.9)',
         /* For the one element that should feel like it is floating. */
-        lift: '0 1px 0 0 rgba(255,255,255,0.04), 0 28px 60px -32px rgba(0,0,0,0.95)',
+        lift: 'inset 0 1px 0 0 rgba(255,255,255,0.07), 0 28px 60px -32px rgba(0,0,0,0.95)',
       },
       keyframes: {
         'accordion-down': {
