@@ -142,6 +142,13 @@ apply glow_migrations supabase/schedule-military.sql "schedule-military.sql"
 apply glow_migrations supabase/schedule-military.sql "schedule-military.sql, again"
 assert glow_migrations scripts/sql/assert-military-schedule.sql
 
+# The one-row top-up, applied twice: it is what gets pasted when the library is
+# already installed and only the newest workout is missing.
+echo "==> asserting the single-workout top-up"
+apply glow_migrations supabase/add-military.sql "add-military.sql"
+apply glow_migrations supabase/add-military.sql "add-military.sql, again"
+assert glow_migrations scripts/sql/assert-military-present.sql
+
 # --- 2. setup.sql, the single file pasted into the Supabase SQL editor --------
 echo "==> applying setup.sql (the one-paste path)"
 "${PSQL[@]}" -d postgres -c "create database glow_setup;" >/dev/null
